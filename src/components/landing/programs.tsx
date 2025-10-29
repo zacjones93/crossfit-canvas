@@ -1,4 +1,4 @@
-import { Dumbbell, Trophy, Baby, User, Yoga, Bike } from "lucide-react";
+import { Dumbbell, Trophy, Baby, User, Activity, Bike } from "lucide-react";
 
 export function Programs() {
   const programs = [
@@ -26,7 +26,7 @@ export function Programs() {
       description: "One-on-one coaching tailored to your specific goals and schedule.",
     },
     {
-      icon: Yoga,
+      icon: Activity,
       title: "Yoga Classes",
       description: "Flexibility, mobility, and recovery. Perfect complement to strength training.",
     },
