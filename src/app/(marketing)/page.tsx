@@ -1,18 +1,14 @@
 import { Metadata } from "next";
 import { Hero } from "@/components/landing/hero";
 import { SocialProof } from "@/components/landing/social-proof";
+import { GettingStarted } from "@/components/landing/getting-started";
 import { FAQHighlights } from "@/components/landing/faq-highlights";
-import { ValuePillars } from "@/components/landing/value-pillars";
 import { Pricing } from "@/components/landing/pricing";
-import { ClassBreakdown } from "@/components/landing/class-breakdown";
-import { Programs } from "@/components/landing/programs";
-import { Coaches } from "@/components/landing/coaches";
-import { Testimonials } from "@/components/landing/testimonials";
+import { GoogleReviews } from "@/components/landing/google-reviews";
+import { Community } from "@/components/landing/community";
+import { AccessibleLocation } from "@/components/landing/accessible-location";
 import { Facility } from "@/components/landing/facility";
-import { Schedule } from "@/components/landing/schedule";
-import { Location } from "@/components/landing/location";
 import { FinalCTA } from "@/components/landing/final-cta";
-import { Footer } from "@/components/landing/footer";
 
 export const metadata: Metadata = {
   title: "CrossFit Canvas | Premier CrossFit Gym in Caldwell, Idaho",
@@ -25,18 +21,15 @@ export default function Home() {
     <main>
       <Hero />
       <SocialProof />
-      <FAQHighlights />
-      <ValuePillars />
-      <Pricing />
-      <ClassBreakdown />
-      <Programs />
-      <Coaches />
-      <Testimonials />
+      <GettingStarted />
+      <GoogleReviews />
+      <Community />
+      <AccessibleLocation />
       <Facility />
-      <Schedule />
-      <Location />
+      {/* <ValuePillars /> */}
+      <Pricing />
+      <FAQHighlights />
       <FinalCTA />
-      <Footer />
     </main>
   );
 }

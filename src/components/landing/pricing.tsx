@@ -4,23 +4,23 @@ import { Check } from "lucide-react";
 export function Pricing() {
   const plans = [
     {
-      name: "Try Us First",
-      price: "$199",
+      name: "TRY US FIRST",
+      price: "$169",
       period: "one-time",
-      description: "21 Days Unlimited",
+      description: "10-Class Pack",
       features: [
-        "Unlimited classes for 21 days",
-        "Foundations coaching included",
-        "No commitment required",
-        "Full facility access",
+        "10 classes",
+        "All class types included",
+        "Open gym access",
       ],
-      cta: "Start Your Trial",
+      cta: "GET STARTED",
       featured: false,
+      href: "https://canvas.pushpress.com/landing/plans/plan_91a3a83ae76cf7",
     },
     {
-      name: "Most Popular",
-      price: "$165",
-      period: "/month",
+      name: "MOST POPULAR",
+      price: "$45",
+      period: "/week",
       description: "Unlimited Membership",
       features: [
         "Unlimited classes per month",
@@ -28,34 +28,36 @@ export function Pricing() {
         "Open gym access",
         "Member app & tracking",
       ],
-      cta: "Get Started",
+      cta: "GET STARTED",
       featured: true,
+      href: "https://canvas.pushpress.com/landing/plans/plan_9e9a199f39f4f8",
     },
     {
-      name: "Flexible Schedule",
-      price: "$135",
-      period: "/month",
+      name: "FLEXIBLE SCHEDULE",
+      price: "$35",
+      period: "/week",
       description: "12 Classes/Month",
       features: [
         "12 classes per month",
         "All class types included",
-        "Roll over unused classes",
         "Open gym access",
+        "Member app & tracking"
       ],
-      cta: "Choose This Plan",
+      cta: "CHOOSE THIS PLAN",
       featured: false,
+      href: "https://canvas.pushpress.com/landing/plans/plan_766d9a593e8a76",
     },
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-black relative">
       <div className="container mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="font-heading text-5xl md:text-6xl uppercase text-white mb-4 tracking-wide">
             Simple, Transparent Pricing
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="font-sans text-xl text-white/80">
             No contracts. No hidden fees. Cancel anytime.
           </p>
         </div>
@@ -65,83 +67,110 @@ export function Pricing() {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`rounded-2xl p-8 ${
+              className={`bg-white overflow-hidden ${
                 plan.featured
-                  ? "bg-orange-600 text-white shadow-2xl scale-105 border-4 border-orange-600"
-                  : "bg-white text-gray-900 shadow-lg border-2 border-gray-200"
-              } transition-all hover:shadow-xl`}
+                  ? "shadow-[0_0_0_4px_#DC143C] md:scale-105 relative order-first md:order-none"
+                  : "shadow-[0_8px_24px_rgba(255,255,255,0.1)]"
+              } transition-all hover:shadow-[0_12px_32px_rgba(220,20,60,0.4)] hover:-translate-y-1`}
             >
+              {/* Featured indicator */}
               {plan.featured && (
-                <div className="text-center mb-4">
-                  <span className="inline-block bg-white text-orange-600 px-4 py-1 rounded-full text-sm font-bold">
+                <div className="absolute top-0 left-0 right-0 h-2 bg-[#DC143C]" />
+              )}
+
+              <div className="p-8">
+                {/* Plan name */}
+                <div className="text-center mb-6">
+                  <span className={`font-subheading text-sm font-bold tracking-wider ${
+                    plan.featured ? "text-[#DC143C]" : "text-charcoal-medium"
+                  }`}>
                     {plan.name}
                   </span>
                 </div>
-              )}
-              {!plan.featured && (
-                <div className="text-center mb-4">
-                  <span className="text-lg font-semibold">{plan.name}</span>
-                </div>
-              )}
 
-              <div className="text-center mb-6">
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-bold">{plan.price}</span>
-                  <span
-                    className={`text-lg ${plan.featured ? "text-white/80" : "text-gray-600"}`}
-                  >
-                    {plan.period}
-                  </span>
-                </div>
-                <p
-                  className={`text-lg font-medium mt-2 ${
-                    plan.featured ? "text-white/90" : "text-gray-700"
-                  }`}
-                >
-                  {plan.description}
-                </p>
-              </div>
-
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-start gap-3">
-                    <Check
-                      className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-                        plan.featured ? "text-white" : "text-orange-600"
-                      }`}
-                    />
-                    <span className={plan.featured ? "text-white" : "text-gray-700"}>
-                      {feature}
+                {/* Price */}
+                <div className="text-center mb-2">
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="font-heading text-6xl text-black">{plan.price}</span>
+                    <span className="font-sans text-lg text-charcoal-medium">
+                      {plan.period}
                     </span>
-                  </li>
-                ))}
-              </ul>
+                  </div>
+                  <p className="font-heading text-xl text-black mt-2 tracking-wide">
+                    {plan.description}
+                  </p>
+                </div>
 
-              <Button
-                className={`w-full py-6 text-lg font-semibold ${
-                  plan.featured
-                    ? "bg-white text-orange-600 hover:bg-gray-100"
-                    : "bg-orange-600 text-white hover:bg-orange-700"
-                }`}
-                size="lg"
-              >
-                {plan.cta}
-              </Button>
+                {/* Red brush stroke divider */}
+                <div className="h-[2px] bg-[#DC143C] my-6 mx-auto w-16" />
+
+                {/* Features */}
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-start gap-3">
+                      <Check
+                        className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#DC143C]"
+                        strokeWidth={3}
+                      />
+                      <span className="font-sans text-sm text-charcoal-medium">
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA Button */}
+                <Button
+                  asChild
+                  className={`w-full py-6 text-base font-bold uppercase rounded-[4px] ${
+                    plan.featured
+                      ? "bg-[#DC143C] hover:bg-[#B01030] text-white shadow-[0_4px_12px_rgba(220,20,60,0.4)]"
+                      : "bg-black hover:bg-charcoal-dark text-white"
+                  } transition-all`}
+                  size="lg"
+                >
+                  <a href={plan.href} target="_blank" rel="noopener noreferrer">
+                    {plan.cta}
+                  </a>
+                </Button>
+              </div>
             </div>
           ))}
         </div>
 
         {/* Additional Options */}
-        <div className="mt-12 text-center">
-          <p className="text-lg font-semibold text-gray-900 mb-3">Additional Options Available:</p>
-          <div className="flex flex-wrap justify-center gap-4 text-gray-700">
-            <span>• Drop-in: $25/class</span>
-            <span>• 10-Class Pack: $200 (save $50)</span>
-            <span>• Free No Sweat Intro Consultation</span>
+        <div className="mt-16 text-center">
+          <p className="font-subheading text-lg font-bold text-white mb-4">
+            Additional Options Available:
+          </p>
+          <div className="flex flex-wrap justify-center gap-6 text-white/80 font-sans">
+            <a href="/schedule" className="hover:text-[#DC143C] transition-colors">
+              • Drop-in: $20/class
+            </a>
+            <a
+              href="https://canvas.pushpress.com/landing/plans/plan_3f8d7b94131578"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#DC143C] transition-colors"
+            >
+              • 1 Week Drop-In: $45
+            </a>
+            <a
+              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#DC143C] transition-colors"
+            >
+              • Free No Sweat Intro Consultation
+            </a>
           </div>
-          <button className="mt-6 text-orange-600 hover:text-orange-700 font-medium">
-            Questions about pricing? Contact us →
-          </button>
+          <a href="/contact" className="group mt-6 text-[#DC143C] hover:text-[#B01030] font-medium inline-block">
+            <span className="relative">
+              Questions about pricing? Contact us
+              <span className="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-[#DC143C] transform origin-left transition-transform group-hover:scale-x-110" />
+            </span>
+            <span className="ml-1 transition-transform group-hover:translate-x-1 inline-block">→</span>
+          </a>
         </div>
       </div>
     </section>

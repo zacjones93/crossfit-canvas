@@ -1,5 +1,7 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 
 export function Facility() {
   const features = [
@@ -13,41 +15,54 @@ export function Facility() {
   ];
 
   return (
-    <section className="py-20 bg-gray-900 text-white">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            12,000 Square Feet of Premium Fitness Space
-          </h2>
-        </div>
+    <section className="bg-black relative">
+      {/* Subtle concrete texture */}
+      <div className="absolute inset-0 opacity-[0.03] bg-[url('/texture/concrete.png')] bg-repeat" />
 
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {/* Placeholder for facility photos - using gradient boxes */}
-          {[...Array(6)].map((_, index) => (
-            <div
-              key={index}
-              className="aspect-video bg-gradient-to-br from-gray-700 to-gray-800 rounded-lg"
-            />
-          ))}
-        </div>
+      <div className="container mx-auto relative z-10">
+        <div className="grid md:grid-cols-2 items-center">
+          {/* Content on Left */}
+          <div className="px-6 py-12 md:px-12 md:py-20 order-2 md:order-1">
+            <div className="relative">
+              {/* Red paint stroke accent on left edge */}
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#DC143C] -ml-6" />
 
-        <div className="max-w-3xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-4 mb-8">
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-orange-500 flex-shrink-0" />
-                <span className="text-lg">{feature}</span>
+              <div className="space-y-8 text-white">
+                <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl uppercase tracking-wide leading-tight">
+                  12,000 Square Feet of Premium Fitness Space
+                </h2>
+
+                <div className="space-y-4">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <Check className="w-5 h-5 mt-0.5 text-[#DC143C] flex-shrink-0" strokeWidth={3} />
+                      <span className="font-sans text-base text-white/90">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Link href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc" target="_blank" rel="noopener noreferrer">
+                  <Button
+                    size="lg"
+                    className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base font-bold uppercase px-8 py-6 rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)]"
+                  >
+                    Schedule a Tour
+                  </Button>
+                </Link>
               </div>
-            ))}
+            </div>
           </div>
 
-          <div className="text-center">
-            <Button
-              size="lg"
-              className="bg-orange-600 hover:bg-orange-700 text-white text-lg px-8 py-6"
-            >
-              Schedule a Tour
-            </Button>
+          {/* Image on Right */}
+          <div className="relative h-[400px] md:h-[600px] order-1 md:order-2">
+            <Image
+              src="/assets/canvas-gym-shot.png"
+              alt="CrossFit Canvas facility interior"
+              fill
+              className="object-cover grayscale"
+            />
+            {/* Dark gradient overlay for consistency */}
+            <div className="absolute inset-0 bg-gradient-to-l from-black/40 to-transparent" />
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { MapPin, Clock, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SITE_PHONE } from "@/constants";
 
 export function Location() {
   return (
@@ -8,10 +9,7 @@ export function Location() {
         <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
           {/* Map */}
           <div>
-            <div className="bg-gradient-to-br from-gray-300 to-gray-400 rounded-xl aspect-square md:aspect-auto md:h-full min-h-[400px] flex items-center justify-center">
-              <p className="text-gray-600 font-medium">Map Embed Placeholder</p>
-              {/* Google Maps embed would go here */}
-            </div>
+
           </div>
 
           {/* Contact Info */}
@@ -42,7 +40,7 @@ export function Location() {
                   <Phone className="w-6 h-6 text-orange-600 flex-shrink-0 mt-1" />
                   <div>
                     <p className="font-semibold text-gray-900 text-lg">Phone</p>
-                    <p className="text-gray-700">(555) 123-4567</p>
+                    <p className="text-gray-700">{SITE_PHONE}</p>
                   </div>
                 </div>
 

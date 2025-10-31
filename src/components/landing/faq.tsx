@@ -4,14 +4,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { GITHUB_REPO_URL } from "@/constants";
 
 const faqs = [
   {
     question: "Is this template really free?",
     answer: (
       <>
-        Yes, this template is completely free and <a href={GITHUB_REPO_URL} target="_blank">open source</a>! You can use it for both personal and commercial projects without any licensing fees. You can fork, copy, modify, and distribute it as you see fit without any restrictions and attribution.
+        Yes, this template is completely free and open source! You can use it for both personal and commercial projects without any licensing fees. You can fork, copy, modify, and distribute it as you see fit without any restrictions and attribution.
       </>
     ),
   },
@@ -67,7 +66,7 @@ const faqs = [
           <li>Add your Cloudflare API token to GitHub secrets</li>
           <li>Push to the main branch</li>
         </ol>
-        <p className="mt-2">The deployment process is fully documented in the <a href={`${GITHUB_REPO_URL}/blob/main/README.md`} target="_blank">GitHub repository</a>.</p>
+        <p className="mt-2">The deployment process is fully documented in the GitHub repository.</p>
       </>
     ),
   },
@@ -76,7 +75,7 @@ const faqs = [
     answer: (
       <>
         <p>You&apos;ll need a Cloudflare account (free tier is fine), Node.js installed locally, and basic knowledge of React and TypeScript. The template includes detailed documentation to guide you through the setup.</p>
-        <p>You can also check out the <a href={`${GITHUB_REPO_URL}/blob/main/README.md`} target="_blank">documentation</a> for more information.</p>
+        <p>You can also check out the documentation for more information.</p>
       </>
     ),
   },
@@ -125,7 +124,7 @@ const faqs = [
     question: "How can I contribute?",
     answer: (
       <>
-        Contributions are welcome! Feel free to open issues, submit pull requests, or help improve the documentation on <a href={GITHUB_REPO_URL} target="_blank">GitHub</a>. The project follows standard open source contribution guidelines.
+        Contributions are welcome! Feel free to open issues, submit pull requests, or help improve the documentation on GitHub. The project follows standard open source contribution guidelines.
       </>
     ),
   },

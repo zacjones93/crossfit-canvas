@@ -57,7 +57,7 @@ export function Schedule() {
               size="lg"
               className="bg-orange-600 hover:bg-orange-700 text-white text-lg px-8 py-6"
             >
-              Book Your Free Intro
+              Book Your Free No-Sweat Intro
             </Button>
             <Button
               size="lg"

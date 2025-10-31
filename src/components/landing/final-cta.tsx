@@ -1,25 +1,43 @@
 import { Button } from "@/components/ui/button";
+import { SITE_PHONE } from "@/constants";
 
 export function FinalCTA() {
   return (
-    <section className="py-24 bg-orange-600">
-      <div className="container mx-auto px-6 text-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+    <section className="py-24 relative overflow-hidden">
+      {/* Background Image with Dark Overlay */}
+      <div className="absolute inset-0 z-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/assets/gym-fam.png')" }}
+        />
+        {/* Dark overlay for better text contrast */}
+        <div className="absolute inset-0 bg-black/70" />
+      </div>
+
+      <div className="container mx-auto px-6 text-center relative z-10">
+        <h2 className="font-heading text-5xl md:text-6xl uppercase text-white mb-4 tracking-wide">
           Ready to Start Your Fitness Journey?
         </h2>
-        <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-3xl mx-auto">
-          Join Caldwell's friendliest gym. No experience needed.
+        <p className="font-sans text-xl md:text-2xl text-white mb-12 max-w-3xl mx-auto">
+          Join Caldwell&apos;s friendliest gym. No experience needed.
         </p>
 
         <Button
+          asChild
           size="lg"
-          className="bg-white text-orange-600 hover:bg-gray-100 text-xl px-12 py-8 h-auto rounded-lg shadow-2xl font-bold"
+          className="bg-white text-[#DC143C] hover:bg-gray-100 text-base md:text-xl px-6 md:px-12 py-6 md:py-8 h-auto rounded-[4px] shadow-[0_8px_24px_rgba(0,0,0,0.3)] font-bold uppercase hover:scale-105 transition-all w-full md:w-auto md:min-w-[300px] max-w-[500px]"
         >
-          Book Your Free No Sweat Intro
+          <a
+            href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Book Your Free No Sweat Intro
+          </a>
         </Button>
 
-        <p className="text-white/80 mt-6 text-lg">
-          Have questions? Call us at (555) 123-4567 or send a message
+        <p className="font-sans text-white text-base mt-6">
+          Have questions? Call us at {SITE_PHONE} or send a message
         </p>
       </div>
     </section>

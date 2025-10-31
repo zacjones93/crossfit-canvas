@@ -2,27 +2,27 @@ import { Star } from "lucide-react";
 
 export function SocialProof() {
   return (
-    <section className="bg-gray-100 py-10">
+    <section className="bg-black py-10 relative">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 text-center">
-          {/* Star Rating */}
-          <div className="flex items-center gap-2">
-            <div className="flex">
+          {/* Star Rating - Crimson Red stars */}
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex gap-0.5 md:gap-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+                <Star key={i} className="w-5 h-5 md:w-7 md:h-7 fill-[#DC143C] text-[#DC143C]" />
               ))}
             </div>
-            <span className="text-lg font-semibold text-gray-900">
-              4.8 Stars from 200+ Reviews
+            <span className="font-subheading text-base md:text-lg font-bold text-white text-balance">
+              5 Stars from 100+ Reviews
             </span>
           </div>
 
-          {/* Testimonial Quote */}
+          {/* Testimonial Quote - Brush font italic */}
           <div className="max-w-2xl">
-            <p className="text-lg italic text-gray-700">
-              "The coaches are amazing and the community is so welcoming!"
+            <p className="font-heading text-xl text-white leading-relaxed tracking-wide text-balance">
+              &quot;Love this gym it is a true community with amazing coaches&quot;
             </p>
-            <p className="text-sm text-gray-600 mt-1">- Sarah M.</p>
+            <p className="font-sans text-base text-gray-300">- Anne Johnston</p>
           </div>
         </div>
       </div>
