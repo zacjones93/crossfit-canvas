@@ -131,6 +131,7 @@ export function GoogleReviews() {
                     width={48}
                     height={48}
                     className="w-12 h-12 rounded-full"
+                    unoptimized
                   />
                 )}
                 <div className="flex-1 min-w-0">

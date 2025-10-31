@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
   experimental: {
     typedRoutes: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+    ],
+  },
   eslint: {
     ignoreDuringBuilds: process.env.SKIP_LINTER === 'true'
   },
