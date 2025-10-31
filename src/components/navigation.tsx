@@ -1,52 +1,64 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import type { Route } from 'next'
 import { usePathname } from "next/navigation"
-import { ComponentIcon, Menu } from 'lucide-react'
+import { Menu, ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useSessionStore } from "@/state/session"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { useNavStore } from "@/state/nav"
-import { Skeleton } from "@/components/ui/skeleton"
-import { SITE_NAME } from "@/constants"
 
 type NavItem = {
   name: string;
   href: Route;
 }
 
+type ProgramItem = {
+  name: string;
+  href: Route;
+}
+
 const ActionButtons = () => {
-  const { session, isLoading } = useSessionStore()
   const { setIsOpen } = useNavStore()
 
-  if (isLoading) {
-    return <Skeleton className="h-10 w-[80px] bg-primary" />
-  }
-
-  if (session) {
-    return null;
-  }
-
   return (
-    <Button asChild onClick={() => setIsOpen(false)}>
-      <Link href="/sign-in">Sign In</Link>
+    <Button
+      asChild
+      onClick={() => setIsOpen(false)}
+      className="bg-[#DC143C] hover:bg-[#B01030] text-white font-bold uppercase text-sm px-6 rounded-[4px] transition-all hover:scale-105"
+    >
+      <Link href="/pricing">Join Now</Link>
     </Button>
   )
 }
 
 export function Navigation() {
-  const { session, isLoading } = useSessionStore()
   const { isOpen, setIsOpen } = useNavStore()
   const pathname = usePathname()
 
+  const programItems: ProgramItem[] = [
+    { name: "CrossFit Classes", href: "/programs/crossfit-classes" },
+    { name: "Olympic Lifting", href: "/programs/olympic-lifting" },
+    { name: "Nutrition", href: "/programs/nutrition" },
+    { name: "Personal Training", href: "/programs/personal-training" },
+    { name: "Kids Fitness Classes", href: "/programs/kids-fitness-classes" },
+    { name: "Hyrox", href: "/programs/hyrox" },
+  ]
+
   const navItems: NavItem[] = [
     { name: "Home", href: "/" },
-    ...(session ? [
-      { name: "Settings", href: "/settings" },
-      { name: "Dashboard", href: "/dashboard" },
-    ] as NavItem[] : []),
+    { name: "What is CrossFit?", href: "/what-is-crossfit" },
+    { name: "About", href: "/about" },
+    { name: "Schedule", href: "/schedule" },
+    { name: "Pricing", href: "/pricing" },
   ]
 
   const isActiveLink = (itemHref: string) => {
@@ -57,77 +69,117 @@ export function Navigation() {
   }
 
   return (
-    <nav className="dark:bg-muted/30 bg-muted/60 shadow dark:shadow-xl z-10">
+    <nav className="bg-black shadow-lg sticky top-0 z-50 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <Link href="/" className="text-xl md:text-2xl font-bold text-primary flex items-center gap-2 md:gap-3">
-              <ComponentIcon className="w-6 h-6 md:w-7 md:h-7" />
-              {SITE_NAME}
+            <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
+              <Image
+                src="/crossfit-canvas.jpg"
+                alt="CrossFit Canvas Logo"
+                width={240}
+                height={80}
+                className="h-20 w-auto"
+                priority
+              />
             </Link>
           </div>
           <div className="hidden md:flex md:items-center md:space-x-6">
-            <div className="flex items-baseline space-x-4">
-              {isLoading ? (
-                <>
-                  <Skeleton className="h-8 w-16" />
-                  <Skeleton className="h-8 w-16" />
-                  <Skeleton className="h-8 w-16" />
-                </>
-              ) : (
-                navItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className={cn(
-                      "text-muted-foreground hover:text-foreground no-underline px-3 h-16 flex items-center text-sm font-medium transition-colors relative",
-                      isActiveLink(item.href) && "text-foreground after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-foreground"
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                ))
-              )}
+            <div className="flex items-baseline space-x-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={cn(
+                    "group font-subheading text-white/80 hover:text-white no-underline px-4 h-20 flex items-center text-sm font-bold uppercase tracking-wide transition-colors relative",
+                    isActiveLink(item.href) && "text-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-[#DC143C]"
+                  )}
+                >
+                  {item.name}
+                  <span className={cn(
+                    "absolute left-0 bottom-0 h-[3px] w-0 bg-[#DC143C] transition-all group-hover:w-full",
+                    isActiveLink(item.href) && "w-full"
+                  )} />
+                </Link>
+              ))}
+
+              {/* Programs Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className={cn(
+                  "group font-subheading text-white/80 hover:text-white no-underline px-4 h-20 flex items-center text-sm font-bold uppercase tracking-wide transition-colors relative outline-none",
+                  pathname.startsWith('/programs') && "text-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-[#DC143C]"
+                )}>
+                  Programs
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                  <span className={cn(
+                    "absolute left-0 bottom-0 h-[3px] w-0 bg-[#DC143C] transition-all group-hover:w-full",
+                    pathname.startsWith('/programs') && "w-full"
+                  )} />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-black border-white/10 mt-2">
+                  {programItems.map((program) => (
+                    <DropdownMenuItem key={program.name} asChild>
+                      <Link
+                        href={program.href!}
+                        className="font-subheading text-white/80 hover:text-white focus:text-white uppercase text-xs cursor-pointer focus:bg-white/10 focus-visible:outline-none"
+                      >
+                        {program.name}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <ActionButtons />
           </div>
           <div className="md:hidden flex items-center">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="p-6">
+                <Button variant="ghost" size="icon" className="p-6 text-white hover:text-[#DC143C] hover:bg-white/10">
                   <Menu className="w-9 h-9" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[240px] sm:w-[300px]">
+              <SheetContent side="right" className="w-[240px] sm:w-[300px] bg-black border-l border-white/10">
                 <div className="mt-6 flow-root">
                   <div className="space-y-2">
-                    {isLoading ? (
-                      <>
-                        <Skeleton className="h-10 w-full" />
-                        <Skeleton className="h-10 w-full" />
-                        <Skeleton className="h-10 w-full" />
-                      </>
-                    ) : (
-                      <>
-                        {navItems.map((item) => (
-                          <Link
-                            key={item.name}
-                            href={item.href}
-                            className={cn(
-                              "block px-3 py-2 text-base font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 no-underline transition-colors relative",
-                              isActiveLink(item.href) && "text-foreground"
-                            )}
-                            onClick={() => setIsOpen(false)}
-                          >
-                            {item.name}
-                          </Link>
-                        ))}
-                        <div className="px-3 pt-4">
-                          <ActionButtons />
-                        </div>
-                      </>
-                    )}
+                    {navItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={cn(
+                          "group block px-3 py-3 text-base font-subheading font-bold uppercase tracking-wide text-white/80 hover:text-white hover:bg-white/5 no-underline transition-colors relative rounded",
+                          isActiveLink(item.href) && "text-white bg-white/5 border-l-4 border-[#DC143C]"
+                        )}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    ))}
+
+                    {/* Programs Section */}
+                    <div className="mt-4 pt-4 border-t border-white/10">
+                      <div className="px-3 py-2 text-xs font-subheading font-bold uppercase tracking-wider text-white/40">
+                        Programs
+                      </div>
+                      {programItems.map((program) => (
+                        <Link
+                          key={program.name}
+                          href={program.href!}
+                          className={cn(
+                            "group block px-3 py-3 text-base font-subheading font-bold uppercase tracking-wide text-white/80 hover:text-white focus:text-white hover:bg-white/5 focus:bg-white/5 no-underline transition-colors relative rounded focus-visible:outline-none",
+                            pathname === program.href && "text-white bg-white/5 border-l-4 border-[#DC143C]"
+                          )}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {program.name}
+                        </Link>
+                      ))}
+                    </div>
+
+                    <div className="px-3 pt-4">
+                      <ActionButtons />
+                    </div>
                   </div>
                 </div>
               </SheetContent>

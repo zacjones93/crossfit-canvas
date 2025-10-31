@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { SiX as XIcon, SiGithub as GithubIcon } from '@icons-pack/react-simple-icons'
-import ThemeSwitch from "@/components/theme-switch";
-import { GITHUB_REPO_URL, SITE_NAME } from "@/constants";
-import { Button } from "./ui/button";
-import AgenticDevStudioLogo from "./agenticdev-studio-logo";
-import { getGithubStars } from "@/utils/stats";
-import { Suspense } from "react";
-import { StarIcon } from "@heroicons/react/24/solid";
+import { SITE_NAME } from "@/constants";
 
 export function Footer() {
   return (
@@ -78,24 +72,9 @@ export function Footer() {
               </p>
 
               <div className="flex flex-col md:flex-row items-center gap-4 md:space-x-4">
-                {GITHUB_REPO_URL && (
-                  <Suspense fallback={<GithubButtonFallback />}>
-                    <GithubButton />
-                  </Suspense>
-                )}
-
                 <div className="flex items-center gap-4">
-                  <ThemeSwitch />
 
-                  <a
-                    href="https://agenticdev.agency"
-                    target="_blank"
-                    className="flex items-center font-medium text-sm hover:text-foreground transition-colors"
-                  >
-                    <span className="whitespace-nowrap">Built by</span>
-                    <AgenticDevStudioLogo className="h-7 w-7 mx-1.5" />
-                    <span className="whitespace-nowrap">AgenticDev</span>
-                  </a>
+
                 </div>
               </div>
             </div>
@@ -103,50 +82,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
-}
-
-// This component will be wrapped in Suspense
-async function GithubButton() {
-  const starsCount = await getGithubStars();
-
-  return (
-    <Button variant="outline" size="lg" className="w-full" asChild>
-      <a
-        href={GITHUB_REPO_URL!}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center justify-center space-x-2"
-      >
-        <GithubIcon className="h-6! w-6!" />
-        <span className="whitespace-nowrap inline-flex items-center justify-center">
-          {starsCount ? (
-            <>
-              <span>Fork on Github - <span className="text-yellow-500 font-bold text-[20px]">{starsCount}</span></span>
-              <StarIcon className="ml-1 text-yellow-500 h-[24px]! w-[24px]!" />
-            </>
-          ) : (
-            "Fork on Github"
-          )}
-        </span>
-      </a>
-    </Button>
-  );
-}
-
-// Fallback while loading stars count
-function GithubButtonFallback() {
-  return (
-    <Button variant="outline" size="sm" className="w-full md:w-auto h-9" asChild>
-      <a
-        href={GITHUB_REPO_URL!}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center justify-center space-x-2"
-      >
-        <GithubIcon className="h-4 w-4" />
-        <span className="whitespace-nowrap inline-flex items-center gap-1">Fork on Github</span>
-      </a>
-    </Button>
   );
 }
