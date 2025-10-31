@@ -4,8 +4,8 @@
  */
  {
     "$schema": "node_modules/wrangler/config-schema.json",
-    "account_id": "0d5667a195a90458761fe59fca898f9c",
-    "name": "cloudflare-workers-nextjs-saas-template",
+    "account_id": "cb6389040876842df9db689f910adfd7",
+    "name": "crossfit-canvas",
     "main": ".open-next/worker.js",
     "compatibility_date": "2025-03-01",
     "compatibility_flags": [
@@ -39,9 +39,9 @@
      * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
      */
     "vars": {
-        "EMAIL_FROM": "no-reply@notifications.lubomirgeorgiev.com",
-        "EMAIL_FROM_NAME": "Lubomir Georgiev",
-        "EMAIL_REPLY_TO": "lubo@lubomirgeorgiev.com"
+        "EMAIL_FROM": "info@crossfitcanvas.com",
+        "EMAIL_FROM_NAME": "CrossFit Canvas",
+        "EMAIL_REPLY_TO": "info@crossfitcanvas.com"
     },
     /**
      * Note: Use secrets to store sensitive data.
@@ -55,7 +55,7 @@
      "services": [
       {
         "binding": "WORKER_SELF_REFERENCE",
-        "service": "cloudflare-workers-nextjs-saas-template"
+        "service": "crossfit-canvas"
       }
     ],
 
@@ -75,18 +75,18 @@
       },
     ],
 
-    "d1_databases": [
-        {
-            "binding": "NEXT_TAG_CACHE_D1",
-            "database_name": "cloudflare-workers-nextjs-saas",
-            "database_id": "db968793-55f4-481e-b281-7e1907a775b1",
-            "migrations_dir": "src/db/migrations"
-        }
-    ],
-    "kv_namespaces": [
-        {
-            "binding": "NEXT_INC_CACHE_KV",
-            "id": "e922d6e22f4a46b6a92be653e90c6ca1"
-        }
-    ]
+    // "d1_databases": [
+    //     {
+    //         "binding": "NEXT_TAG_CACHE_D1",
+    //         "database_name": "cloudflare-workers-nextjs-saas",
+    //         "database_id": "db968793-55f4-481e-b281-7e1907a775b1",
+    //         "migrations_dir": "src/db/migrations"
+    //     }
+    // ],
+    // "kv_namespaces": [
+    //     {
+    //         "binding": "NEXT_INC_CACHE_KV",
+    //         "id": "e922d6e22f4a46b6a92be653e90c6ca1"
+    //     }
+    // ]
   }

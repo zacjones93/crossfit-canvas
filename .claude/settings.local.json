@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "mcp__playwright__browser_take_screenshot",
+      "WebSearch",
+      "WebFetch(domain:featurable.com)",
+      "Bash(pnpm add:*)",
+      "mcp__grep__searchGitHub",
+      "Bash(pnpm remove:*)",
+      "WebFetch(domain:www.crossfitcanvas.com)",
+      "WebFetch(domain:library.crossfit.com)",
+      "WebFetch(domain:www.prvnnashville.com)",
+      "mcp__playwright__browser_navigate",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
