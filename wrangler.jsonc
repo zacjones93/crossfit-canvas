@@ -74,19 +74,17 @@
         "new_sqlite_classes": ["DOQueueHandler"],
       },
     ],
-
-    // "d1_databases": [
-    //     {
-    //         "binding": "NEXT_TAG_CACHE_D1",
-    //         "database_name": "cloudflare-workers-nextjs-saas",
-    //         "database_id": "db968793-55f4-481e-b281-7e1907a775b1",
-    //         "migrations_dir": "src/db/migrations"
-    //     }
-    // ],
-    // "kv_namespaces": [
-    //     {
-    //         "binding": "NEXT_INC_CACHE_KV",
-    //         "id": "e922d6e22f4a46b6a92be653e90c6ca1"
-    //     }
-    // ]
+    "d1_databases": [
+        {
+          "binding": "NEXT_TAG_CACHE_D1",
+          "database_name": "NEXT_TAG_CACHE_D1",
+          "database_id": "17b8b8c4-30da-4585-a76c-c44668658aa9"
+        }
+      ],
+    "kv_namespaces": [
+        {
+            "binding": "NEXT_INC_CACHE_KV",
+            "id": "90d49873405e4733ae7e68197df6576a"
+        }
+    ]
   }
