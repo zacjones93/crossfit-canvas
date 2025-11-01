@@ -48,11 +48,11 @@ function ProgramHero() {
 
 function ScheduleSection() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Class Schedule
             </h2>
             <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
@@ -107,14 +107,14 @@ function MovementsFocusSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Movements We Focus On
             </h2>
-            <p className="font-sans text-xl text-charcoal-medium">
+            <p className="font-sans text-xl text-muted-foreground">
               Progressive coaching on all major Olympic lifting movements
             </p>
           </div>
@@ -125,17 +125,17 @@ function MovementsFocusSection() {
               return (
                 <div
                   key={index}
-                  className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
                 >
                   <Icon
                     className="w-12 h-12 text-[#DC143C] mb-4"
                     strokeWidth={2}
                   />
-                  <h3 className="font-heading text-2xl uppercase tracking-wide text-black mb-3">
+                  <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                     {movement.title}
                   </h3>
                   <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
-                  <p className="font-sans text-charcoal-medium leading-relaxed">
+                  <p className="font-sans text-muted-foreground leading-relaxed">
                     {movement.description}
                   </p>
                 </div>
@@ -171,11 +171,11 @@ function CoachingApproachSection() {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Our Coaching Approach
             </h2>
           </div>
@@ -186,17 +186,17 @@ function CoachingApproachSection() {
               return (
                 <div
                   key={index}
-                  className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
                 >
                   <Icon
                     className="w-12 h-12 text-[#DC143C] mb-4"
                     strokeWidth={2}
                   />
-                  <h3 className="font-heading text-2xl uppercase tracking-wide text-black mb-3">
+                  <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                     {benefit.title}
                   </h3>
                   <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
-                  <p className="font-sans text-charcoal-medium leading-relaxed">
+                  <p className="font-sans text-muted-foreground leading-relaxed">
                     {benefit.description}
                   </p>
                 </div>

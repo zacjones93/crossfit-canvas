@@ -26,17 +26,17 @@ export function Testimonials() {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             What Our Members Say
           </h2>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-gray-50 rounded-xl p-8 relative">
+            <div key={index} className="bg-muted rounded-xl p-8 relative">
               <Quote className="w-12 h-12 text-orange-600 opacity-20 absolute top-4 right-4" />
 
               <div className="relative">
@@ -45,13 +45,13 @@ export function Testimonials() {
                   <span className="text-2xl font-bold text-white">{testimonial.name[0]}</span>
                 </div>
 
-                <p className="text-lg italic text-gray-700 mb-6 leading-relaxed">
+                <p className="text-lg italic text-muted-foreground mb-6 leading-relaxed">
                   &quot;{testimonial.quote}&quot;
                 </p>
 
                 <div className="text-center">
-                  <p className="font-bold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-600">{testimonial.memberSince}</p>
+                  <p className="font-bold text-foreground">{testimonial.name}</p>
+                  <p className="text-sm text-muted-foreground">{testimonial.memberSince}</p>
                   <p className="text-sm text-orange-600 font-medium mt-2">
                     {testimonial.achievement}
                   </p>

@@ -105,7 +105,7 @@ export function GoogleReviews() {
                     "w-6 h-6",
                     i < Math.floor(data.rating)
                       ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
+                      : "text-muted"
                   )}
                 />
               ))}
@@ -147,7 +147,7 @@ export function GoogleReviews() {
                             "w-4 h-4",
                             i < review.rating
                               ? "fill-yellow-400 text-yellow-400"
-                              : "text-gray-300"
+                              : "text-muted"
                           )}
                         />
                       ))}

@@ -13,13 +13,13 @@ export default function WhatIsCrossFit() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-gray-50 to-white py-16 md:py-24">
+      <section className="relative bg-gradient-to-b from-muted to-background py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="mb-6 text-4xl font-bold tracking-tight text-gray-900 md:text-5xl lg:text-6xl font-heading">
+            <h1 className="mb-6 text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl font-heading">
               What is CrossFit?
             </h1>
-            <p className="text-lg text-gray-600 md:text-xl font-sans">
+            <p className="text-lg text-muted-foreground md:text-xl font-sans">
               CrossFit is a strength and conditioning program that combines
               functional movements performed at high intensity. It&apos;s
               designed to prepare you for any physical challenge life throws
@@ -34,11 +34,11 @@ export default function WhatIsCrossFit() {
         <div className="container mx-auto px-4">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
-              <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl font-heading">
+              <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl font-heading">
                 Constantly Varied, Functional Movements, Executed at High
                 Intensity
               </h2>
-              <div className="space-y-4 text-gray-600 font-sans">
+              <div className="space-y-4 text-muted-foreground font-sans">
                 <p>
                   CrossFit is more than just a workout, it&apos;s a methodology
                   that prepares you for the unknown and unknowable. Whether
@@ -71,7 +71,7 @@ export default function WhatIsCrossFit() {
       </section>
 
       {/* Functional Movements */}
-      <section className="bg-gray-50 py-16 md:py-24">
+      <section className="bg-muted py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div className="order-2 lg:order-1">
@@ -85,10 +85,10 @@ export default function WhatIsCrossFit() {
               </div>
             </div>
             <div className="order-1 lg:order-2">
-              <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl font-heading">
+              <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl font-heading">
                 Functional Movements
               </h2>
-              <div className="space-y-4 text-gray-600 font-sans">
+              <div className="space-y-4 text-muted-foreground font-sans">
                 <p>
                   Functional movements are natural, multi-joint actions that
                   mirror real-life activities. Think squatting, lifting,
@@ -114,10 +114,10 @@ export default function WhatIsCrossFit() {
         <div className="container mx-auto px-4">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
-              <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl font-heading">
+              <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl font-heading">
                 Constantly Varied
               </h2>
-              <div className="space-y-4 text-gray-600 font-sans">
+              <div className="space-y-4 text-muted-foreground font-sans">
                 <p>
                   No two workouts are the same at CrossFit Canvas. Variety keeps
                   your body constantly improving and also keeps things exciting,
@@ -128,7 +128,7 @@ export default function WhatIsCrossFit() {
                   skills, and another on high-intensity metabolic conditioning
                   (breathing heavy). Or there might be a mix of all three!
                 </p>
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-foreground">
                   The result? Comprehensive fitness that prepares you for
                   anything.
                 </p>
@@ -147,35 +147,35 @@ export default function WhatIsCrossFit() {
       </section>
 
       {/* High Intensity */}
-      <section className="bg-gray-50 py-16 md:py-24">
+      <section className="bg-muted py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl">
             <div className="mb-12 text-center">
-              <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl font-heading">
+              <h2 className="mb-6 text-3xl font-bold text-foreground md:text-4xl font-heading">
                 High Intensity
               </h2>
-              <p className="text-lg text-gray-600 font-sans">
+              <p className="text-lg text-muted-foreground font-sans">
                 Intensity is where the magic happens. If you don&apos;t push
                 yourself, you won&apos;t get the results you want. Intensity for
                 you will look different for the person next to you.
               </p>
             </div>
             <div className="grid gap-8 md:grid-cols-2">
-              <div className="rounded-lg bg-white p-6 shadow-sm">
-                <h3 className="mb-3 text-xl font-semibold text-gray-900 font-heading">
+              <div className="rounded-lg bg-card p-6 shadow-sm">
+                <h3 className="mb-3 text-xl font-semibold text-foreground font-heading">
                   Scalable
                 </h3>
-                <p className="text-gray-600 font-sans">
+                <p className="text-muted-foreground font-sans">
                   Intensity is relative to your fitness level. Beginners and
                   elite athletes train side by side, each at their optimal
                   intensity.
                 </p>
               </div>
-              <div className="rounded-lg bg-white p-6 shadow-sm">
-                <h3 className="mb-3 text-xl font-semibold text-gray-900 font-heading">
+              <div className="rounded-lg bg-card p-6 shadow-sm">
+                <h3 className="mb-3 text-xl font-semibold text-foreground font-heading">
                   Measurable
                 </h3>
-                <p className="text-gray-600 font-sans">
+                <p className="text-muted-foreground font-sans">
                   Track your progress through scores and times. See tangible
                   improvements in your fitness journey.
                 </p>

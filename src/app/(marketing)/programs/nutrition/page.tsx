@@ -55,15 +55,15 @@ function ProgramHero() {
 
 function PersonalizedApproachSection() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Comprehensive Diet Planning
             </h2>
             <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
-            <p className="font-sans text-xl text-charcoal-medium leading-relaxed">
+            <p className="font-sans text-xl text-muted-foreground leading-relaxed">
               We will pin-point a comprehensive diet plan, custom to your
               lifestyle, that helps you feel you are at your peak potential in
               terms of fitness, energy levels, and mood.
@@ -71,44 +71,44 @@ function PersonalizedApproachSection() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <Activity
                 className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
                 strokeWidth={2}
               />
-              <h3 className="font-heading text-xl uppercase tracking-wide text-black mb-3">
+              <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Peak Fitness
               </h3>
               <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
-              <p className="font-sans text-charcoal-medium leading-relaxed">
+              <p className="font-sans text-muted-foreground leading-relaxed">
                 Fuel your workouts and recovery with proper nutrition
               </p>
             </div>
 
-            <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <TrendingUp
                 className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
                 strokeWidth={2}
               />
-              <h3 className="font-heading text-xl uppercase tracking-wide text-black mb-3">
+              <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Energy Levels
               </h3>
               <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
-              <p className="font-sans text-charcoal-medium leading-relaxed">
+              <p className="font-sans text-muted-foreground leading-relaxed">
                 Maintain consistent energy throughout the day
               </p>
             </div>
 
-            <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <Heart
                 className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
                 strokeWidth={2}
               />
-              <h3 className="font-heading text-xl uppercase tracking-wide text-black mb-3">
+              <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Better Mood
               </h3>
               <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
-              <p className="font-sans text-charcoal-medium leading-relaxed">
+              <p className="font-sans text-muted-foreground leading-relaxed">
                 Feel your best mentally and emotionally
               </p>
             </div>
@@ -142,11 +142,11 @@ function WhatYouGetSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Nutrition Coaching Includes
             </h2>
           </div>
@@ -157,7 +157,7 @@ function WhatYouGetSection() {
               return (
                 <div
                   key={index}
-                  className="bg-white border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
                 >
                   <div className="flex flex-col md:flex-row gap-6 items-start">
                     <div className="flex-shrink-0">
@@ -167,11 +167,11 @@ function WhatYouGetSection() {
                       />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-heading text-2xl md:text-3xl uppercase tracking-wide text-black mb-3">
+                      <h3 className="font-heading text-2xl md:text-3xl uppercase tracking-wide text-foreground mb-3">
                         {item.title}
                       </h3>
                       <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
-                      <p className="font-sans text-lg text-charcoal-medium leading-relaxed">
+                      <p className="font-sans text-lg text-muted-foreground leading-relaxed">
                         {item.description}
                       </p>
                     </div>

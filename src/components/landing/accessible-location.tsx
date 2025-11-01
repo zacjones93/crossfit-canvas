@@ -15,13 +15,21 @@ export function AccessibleLocation() {
 
         {/* Map and Address Section */}
         <div className="max-w-6xl mx-auto space-y-6 md:space-y-0 md:relative">
-          {/* Map Image */}
+          {/* Map Image - Mobile */}
+          <Image
+            src="/assets/canvas-on-a-map-mobile.png"
+            alt="CrossFit Canvas location on map"
+            width={850}
+            height={920}
+            className="w-full h-auto object-cover grayscale md:hidden"
+          />
+          {/* Map Image - Desktop */}
           <Image
             src="/assets/canvas-on-a-map.png"
             alt="CrossFit Canvas location on map"
             width={850}
             height={300}
-            className="w-full h-auto object-cover md:object-contain grayscale"
+            className="w-full h-auto object-contain grayscale hidden md:block"
           />
 
           {/* Address Box - Below map on mobile, absolute positioned on top right on desktop */}

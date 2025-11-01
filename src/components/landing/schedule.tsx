@@ -12,33 +12,33 @@ export function Schedule() {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">50+ Classes Weekly</h2>
-          <p className="text-xl text-gray-600">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">50+ Classes Weekly</h2>
+          <p className="text-xl text-muted-foreground">
             Classes from 5:00 AM to 6:45 PM every day
           </p>
         </div>
 
         <div className="max-w-2xl mx-auto">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+          <h3 className="text-2xl font-bold text-foreground mb-6 text-center">
             Sample Schedule (Monday)
           </h3>
 
-          <div className="bg-gray-50 rounded-xl p-6 mb-8">
+          <div className="bg-muted rounded-xl p-6 mb-8">
             <div className="space-y-3">
               {schedule.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-4 bg-white rounded-lg"
+                  className="flex items-center justify-between p-4 bg-card rounded-lg"
                 >
-                  <span className="font-semibold text-gray-900">{item.time}</span>
+                  <span className="font-semibold text-foreground">{item.time}</span>
                   <span
                     className={`px-4 py-2 rounded-full text-sm font-medium ${
                       item.type === "HYROX Training"
                         ? "bg-orange-100 text-orange-700"
-                        : "bg-gray-100 text-gray-700"
+                        : "bg-gray-100 text-muted-foreground"
                     }`}
                   >
                     {item.type}
@@ -48,7 +48,7 @@ export function Schedule() {
             </div>
           </div>
 
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-muted-foreground mb-8">
             Classes available 7 days a week with options for every schedule
           </p>
 

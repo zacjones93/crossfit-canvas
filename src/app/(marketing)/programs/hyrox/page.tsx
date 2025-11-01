@@ -58,15 +58,15 @@ function ProgramHero() {
 
 function WhatIsHyroxSection() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               What is Hyrox?
             </h2>
             <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
-            <p className="font-sans text-xl text-charcoal-medium leading-relaxed mb-6">
+            <p className="font-sans text-xl text-muted-foreground leading-relaxed mb-6">
               Hyrox is a global fitness race for every body. It combines running
               with functional workout stations, creating the ultimate test of
               fitness.
@@ -124,11 +124,11 @@ function WhatIsHyroxSection() {
 
 function ScheduleSection() {
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Class Schedule
             </h2>
             <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
@@ -183,14 +183,14 @@ function TrainingFocusSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Training Focus
             </h2>
-            <p className="font-sans text-xl text-charcoal-medium">
+            <p className="font-sans text-xl text-muted-foreground">
               Our Hyrox programming targets the key areas you need to succeed.
             </p>
           </div>
@@ -201,17 +201,17 @@ function TrainingFocusSection() {
               return (
                 <div
                   key={index}
-                  className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
                 >
                   <Icon
                     className="w-12 h-12 text-[#DC143C] mb-4"
                     strokeWidth={2}
                   />
-                  <h3 className="font-heading text-2xl uppercase tracking-wide text-black mb-3">
+                  <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                     {focus.title}
                   </h3>
                   <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
-                  <p className="font-sans text-charcoal-medium leading-relaxed">
+                  <p className="font-sans text-muted-foreground leading-relaxed">
                     {focus.description}
                   </p>
                 </div>
@@ -253,11 +253,11 @@ function WhyTrainHereSection() {
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Why Train at CrossFit Canvas?
             </h2>
           </div>
@@ -268,17 +268,17 @@ function WhyTrainHereSection() {
               return (
                 <div
                   key={index}
-                  className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
                 >
                   <Icon
                     className="w-12 h-12 text-[#DC143C] mb-4"
                     strokeWidth={2}
                   />
-                  <h3 className="font-heading text-2xl uppercase tracking-wide text-black mb-3">
+                  <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                     {benefit.title}
                   </h3>
                   <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
-                  <p className="font-sans text-charcoal-medium leading-relaxed">
+                  <p className="font-sans text-muted-foreground leading-relaxed">
                     {benefit.description}
                   </p>
                 </div>
@@ -315,7 +315,7 @@ function ReadyToStartSection() {
           <Button
             asChild
             size="lg"
-            className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)]"
+            className="w-full sm:w-auto bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-6 sm:px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)]"
           >
             <a
               href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"

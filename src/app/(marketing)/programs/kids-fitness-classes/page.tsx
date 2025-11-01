@@ -56,15 +56,15 @@ function ProgramHero() {
 
 function PhilosophySection() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Movement First, Character Always
             </h2>
             <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
-            <p className="font-sans text-xl text-charcoal-medium leading-relaxed mb-6">
+            <p className="font-sans text-xl text-muted-foreground leading-relaxed mb-6">
               Our youth fitness program emphasizes how well your child moves,
               not how much or how fast. We prioritize functional movement
               development alongside character building.
@@ -72,44 +72,44 @@ function PhilosophySection() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <Target
                 className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
                 strokeWidth={2}
               />
-              <h3 className="font-heading text-xl uppercase tracking-wide text-black mb-3">
+              <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Quality Movement
               </h3>
               <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
-              <p className="font-sans text-charcoal-medium leading-relaxed">
+              <p className="font-sans text-muted-foreground leading-relaxed">
                 Focus on proper technique and body control
               </p>
             </div>
 
-            <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <Heart
                 className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
                 strokeWidth={2}
               />
-              <h3 className="font-heading text-xl uppercase tracking-wide text-black mb-3">
+              <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Character Building
               </h3>
               <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
-              <p className="font-sans text-charcoal-medium leading-relaxed">
+              <p className="font-sans text-muted-foreground leading-relaxed">
                 Develop confidence, discipline, and teamwork
               </p>
             </div>
 
-            <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <Trophy
                 className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
                 strokeWidth={2}
               />
-              <h3 className="font-heading text-xl uppercase tracking-wide text-black mb-3">
+              <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Fun & Engaging
               </h3>
               <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
-              <p className="font-sans text-charcoal-medium leading-relaxed">
+              <p className="font-sans text-muted-foreground leading-relaxed">
                 Keep kids excited about fitness
               </p>
             </div>
@@ -143,14 +143,14 @@ function ClassStructureSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Class Structure
             </h2>
-            <p className="font-sans text-xl text-charcoal-medium mb-8">
+            <p className="font-sans text-xl text-muted-foreground mb-8">
               Each 45-50 minute session follows a proven format
             </p>
           </div>
@@ -159,7 +159,7 @@ function ClassStructureSection() {
             {phases.map((phase, index) => (
               <div
                 key={index}
-                className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
@@ -168,11 +168,11 @@ function ClassStructureSection() {
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-heading text-2xl uppercase tracking-wide text-black mb-3">
+                    <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                       {phase.title}
                     </h3>
                     <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
-                    <p className="font-sans text-charcoal-medium leading-relaxed">
+                    <p className="font-sans text-muted-foreground leading-relaxed">
                       {phase.description}
                     </p>
                   </div>
@@ -188,23 +188,23 @@ function ClassStructureSection() {
 
 function ProgramScheduleSection() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Current Programs
             </h2>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Spring Program */}
-            <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
+            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
               <Calendar
                 className="w-12 h-12 text-[#DC143C] mb-4"
                 strokeWidth={2}
               />
-              <h3 className="font-heading text-3xl uppercase tracking-wide text-black mb-4">
+              <h3 className="font-heading text-3xl uppercase tracking-wide text-foreground mb-4">
                 Spring Session
               </h3>
               <div className="h-[2px] bg-[#DC143C] mb-6 w-12" />
@@ -216,10 +216,10 @@ function ProgramScheduleSection() {
                     strokeWidth={2}
                   />
                   <div>
-                    <p className="font-sans font-bold text-black">
+                    <p className="font-sans font-bold text-foreground">
                       6 Weeks Program
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       April 14 – May 24
                     </p>
                   </div>
@@ -231,13 +231,13 @@ function ProgramScheduleSection() {
                     strokeWidth={2}
                   />
                   <div>
-                    <p className="font-sans font-bold text-black">
+                    <p className="font-sans font-bold text-foreground">
                       Schedule Options
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       Monday/Wednesday @ 6:45pm
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       Saturday @ 9:15am
                     </p>
                   </div>
@@ -249,30 +249,30 @@ function ProgramScheduleSection() {
                     strokeWidth={2}
                   />
                   <div>
-                    <p className="font-sans font-bold text-black">Pricing</p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans font-bold text-foreground">Pricing</p>
+                    <p className="font-sans text-sm text-muted-foreground">
                       $99 for 2x/week
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       $125 for 3x/week
                     </p>
                   </div>
                 </div>
               </div>
 
-              <p className="font-sans text-sm text-charcoal-medium italic">
+              <p className="font-sans text-sm text-muted-foreground italic">
                 Free trial class available. Mid-program enrollment accepted with
                 prorated fees.
               </p>
             </div>
 
             {/* Summer Program */}
-            <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
+            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
               <Calendar
                 className="w-12 h-12 text-[#DC143C] mb-4"
                 strokeWidth={2}
               />
-              <h3 className="font-heading text-3xl uppercase tracking-wide text-black mb-4">
+              <h3 className="font-heading text-3xl uppercase tracking-wide text-foreground mb-4">
                 Summer Session
               </h3>
               <div className="h-[2px] bg-[#DC143C] mb-6 w-12" />
@@ -284,10 +284,10 @@ function ProgramScheduleSection() {
                     strokeWidth={2}
                   />
                   <div>
-                    <p className="font-sans font-bold text-black">
+                    <p className="font-sans font-bold text-foreground">
                       8 Weeks Program
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       June 2 – July 28
                     </p>
                   </div>
@@ -299,16 +299,16 @@ function ProgramScheduleSection() {
                     strokeWidth={2}
                   />
                   <div>
-                    <p className="font-sans font-bold text-black">
+                    <p className="font-sans font-bold text-foreground">
                       Schedule Options
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       Tuesday/Thursday @ 9:45-10:45am
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       Monday/Wednesday @ 6:45-7:45pm
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       Saturday @ 9:15-10:15am
                     </p>
                   </div>
@@ -320,11 +320,11 @@ function ProgramScheduleSection() {
                     strokeWidth={2}
                   />
                   <div>
-                    <p className="font-sans font-bold text-black">Pricing</p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans font-bold text-foreground">Pricing</p>
+                    <p className="font-sans text-sm text-muted-foreground">
                       $125 for 2x/week (16 classes)
                     </p>
-                    <p className="font-sans text-sm text-charcoal-medium">
+                    <p className="font-sans text-sm text-muted-foreground">
                       $150 for 3x/week (24 classes)
                     </p>
                   </div>

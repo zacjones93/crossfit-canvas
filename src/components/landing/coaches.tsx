@@ -15,26 +15,26 @@ export function Coaches() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-muted">
       <div className="container mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             Meet Your Coaches
           </h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
           {coaches.map((coach, index) => (
-            <div key={index} className="bg-white rounded-xl p-8 shadow-lg text-center">
+            <div key={index} className="bg-card rounded-xl p-8 shadow-lg text-center">
               {/* Placeholder for coach photo */}
               <div className="w-48 h-48 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 mx-auto mb-6 flex items-center justify-center">
                 <span className="text-6xl font-bold text-white">{coach.name[0]}</span>
               </div>
 
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{coach.name}</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-2">{coach.name}</h3>
               <p className="text-lg font-semibold text-orange-600 mb-2">{coach.title}</p>
-              <p className="text-sm text-gray-600 mb-4">{coach.credentials}</p>
-              <p className="text-gray-700 leading-relaxed mb-6">{coach.bio}</p>
+              <p className="text-sm text-muted-foreground mb-4">{coach.credentials}</p>
+              <p className="text-muted-foreground leading-relaxed mb-6">{coach.bio}</p>
             </div>
           ))}
         </div>

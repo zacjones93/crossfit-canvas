@@ -70,15 +70,15 @@ Time cap: 18:00`
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-background">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-16">
-            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-black mb-4">
+            <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               What Happens in a CrossFit Canvas Class?
             </h2>
-            <p className="font-sans text-xl text-charcoal-medium">
+            <p className="font-sans text-xl text-muted-foreground">
               Every 60-minute class follows a proven structure designed to improve your fitness safely and effectively. Every day is different, but you can expect the following pattern most days: warm up, skill/strength development, and a workout.
             </p>
           </div>
@@ -99,10 +99,10 @@ Time cap: 18:00`
 
                 {/* Content */}
                 <div className="flex-1 pb-4 md:pb-8">
-                  <div className="bg-white border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
+                  <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
                     <div className="flex items-baseline gap-3 mb-3">
                       <span className="font-subheading text-sm font-bold text-[#DC143C] tracking-wider">{phase.time}</span>
-                      <h3 className="font-heading text-2xl md:text-3xl uppercase tracking-wide text-black">{phase.title}</h3>
+                      <h3 className="font-heading text-2xl md:text-3xl uppercase tracking-wide text-foreground">{phase.title}</h3>
                     </div>
                     {/* Red divider */}
                     <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
@@ -114,17 +114,17 @@ Time cap: 18:00`
                         {phase.items.map((item, itemIndex) => (
                           <li key={itemIndex} className="flex items-start gap-3">
                             <span className="text-[#DC143C] mt-1 font-bold">•</span>
-                            <span className="font-sans text-charcoal-medium">{item}</span>
+                            <span className="font-sans text-muted-foreground">{item}</span>
                           </li>
                         ))}
                       </ul>
 
                       {/* Example section */}
-                      <div className="bg-gray-50 border-l-4 border-[#DC143C] rounded-[4px] p-4">
+                      <div className="bg-muted border-l-4 border-[#DC143C] rounded-[4px] p-4">
                         <p className="font-subheading text-xs font-bold text-[#DC143C] tracking-wider uppercase mb-2">
                           Example
                         </p>
-                        <pre className="font-sans text-sm text-charcoal-medium whitespace-pre-wrap leading-relaxed">
+                        <pre className="font-sans text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
                           {phase.example}
                         </pre>
                       </div>
