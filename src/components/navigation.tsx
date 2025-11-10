@@ -1,48 +1,48 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import type { Route } from 'next'
-import { usePathname } from "next/navigation"
-import { Menu, ChevronDown } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import Link from "next/link";
+import Image from "next/image";
+import type { Route } from "next";
+import { usePathname } from "next/navigation";
+import { Menu, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { cn } from "@/lib/utils"
-import { useNavStore } from "@/state/nav"
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { useNavStore } from "@/state/nav";
 
 type NavItem = {
   name: string;
   href: Route;
-}
+};
 
 type ProgramItem = {
   name: string;
   href: Route;
-}
+};
 
 const ActionButtons = () => {
-  const { setIsOpen } = useNavStore()
+  const { setIsOpen } = useNavStore();
 
   return (
     <Button
       asChild
       onClick={() => setIsOpen(false)}
-      className="bg-[#DC143C] hover:bg-[#B01030] text-white font-bold uppercase text-sm px-6 rounded-[4px] transition-all hover:scale-105"
+      className="bg-white text-black font-bold uppercase text-sm px-6 rounded-sm transition-all hover:scale-105"
     >
       <Link href="/pricing">Join Now</Link>
     </Button>
-  )
-}
+  );
+};
 
 export function Navigation() {
-  const { isOpen, setIsOpen } = useNavStore()
-  const pathname = usePathname()
+  const { isOpen, setIsOpen } = useNavStore();
+  const pathname = usePathname();
 
   const programItems: ProgramItem[] = [
     { name: "CrossFit Classes", href: "/programs/crossfit-classes" },
@@ -51,7 +51,7 @@ export function Navigation() {
     { name: "Personal Training", href: "/programs/personal-training" },
     { name: "Kids Fitness Classes", href: "/programs/kids-fitness-classes" },
     { name: "Hyrox", href: "/programs/hyrox" },
-  ]
+  ];
 
   const navItems: NavItem[] = [
     { name: "Home", href: "/" },
@@ -59,21 +59,24 @@ export function Navigation() {
     { name: "About", href: "/about" },
     { name: "Schedule", href: "/schedule" },
     { name: "Pricing", href: "/pricing" },
-  ]
+  ];
 
   const isActiveLink = (itemHref: string) => {
     if (itemHref === "/") {
-      return pathname === "/"
+      return pathname === "/";
     }
-    return pathname === itemHref || pathname.startsWith(`${itemHref}/`)
-  }
+    return pathname === itemHref || pathname.startsWith(`${itemHref}/`);
+  };
 
   return (
     <nav className="bg-black shadow-lg sticky top-0 z-50 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
+            <Link
+              href="/"
+              className="flex items-center hover:opacity-90 transition-opacity"
+            >
               <Image
                 src="/crossfit-canvas.jpg"
                 alt="CrossFit Canvas Logo"
@@ -92,29 +95,37 @@ export function Navigation() {
                   href={item.href}
                   className={cn(
                     "group font-subheading text-white/80 hover:text-white no-underline px-4 h-20 flex items-center text-sm font-bold uppercase tracking-wide transition-colors relative",
-                    isActiveLink(item.href) && "text-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-[#DC143C]"
+                    isActiveLink(item.href) &&
+                      "text-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-white"
                   )}
                 >
                   {item.name}
-                  <span className={cn(
-                    "absolute left-0 bottom-0 h-[3px] w-0 bg-[#DC143C] transition-all group-hover:w-full",
-                    isActiveLink(item.href) && "w-full"
-                  )} />
+                  <span
+                    className={cn(
+                      "absolute left-0 bottom-0 h-[3px] w-0 bg-white transition-all group-hover:w-full",
+                      isActiveLink(item.href) && "w-full"
+                    )}
+                  />
                 </Link>
               ))}
 
               {/* Programs Dropdown */}
               <DropdownMenu>
-                <DropdownMenuTrigger className={cn(
-                  "group font-subheading text-white/80 hover:text-white no-underline px-4 h-20 flex items-center text-sm font-bold uppercase tracking-wide transition-colors relative outline-none",
-                  pathname.startsWith('/programs') && "text-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-[#DC143C]"
-                )}>
+                <DropdownMenuTrigger
+                  className={cn(
+                    "group font-subheading text-white/80 hover:text-white no-underline px-4 h-20 flex items-center text-sm font-bold uppercase tracking-wide transition-colors relative outline-none",
+                    pathname.startsWith("/programs") &&
+                      "text-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-white"
+                  )}
+                >
                   Programs
                   <ChevronDown className="ml-1 h-4 w-4" />
-                  <span className={cn(
-                    "absolute left-0 bottom-0 h-[3px] w-0 bg-[#DC143C] transition-all group-hover:w-full",
-                    pathname.startsWith('/programs') && "w-full"
-                  )} />
+                  <span
+                    className={cn(
+                      "absolute left-0 bottom-0 h-[3px] w-0 bg-white transition-all group-hover:w-full",
+                      pathname.startsWith("/programs") && "w-full"
+                    )}
+                  />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-black border-white/10 mt-2">
                   {programItems.map((program) => (
@@ -135,12 +146,19 @@ export function Navigation() {
           <div className="md:hidden flex items-center">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="p-6 text-white hover:text-[#DC143C] hover:bg-white/10">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="p-6 text-white hover:bg-white/10"
+                >
                   <Menu className="w-9 h-9" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[240px] sm:w-[300px] bg-black border-l border-white/10">
+              <SheetContent
+                side="right"
+                className="w-[240px] sm:w-[300px] bg-black border-l border-white/10"
+              >
                 <div className="mt-6 flow-root">
                   <div className="space-y-2">
                     {navItems.map((item) => (
@@ -149,7 +167,8 @@ export function Navigation() {
                         href={item.href}
                         className={cn(
                           "group block px-3 py-3 text-base font-subheading font-bold uppercase tracking-wide text-white/80 hover:text-white hover:bg-white/5 no-underline transition-colors relative rounded",
-                          isActiveLink(item.href) && "text-white bg-white/5 border-l-4 border-[#DC143C]"
+                          isActiveLink(item.href) &&
+                            "text-white bg-white/5 border-l-4 border-white"
                         )}
                         onClick={() => setIsOpen(false)}
                       >
@@ -168,7 +187,8 @@ export function Navigation() {
                           href={program.href!}
                           className={cn(
                             "group block px-3 py-3 text-base font-subheading font-bold uppercase tracking-wide text-white/80 hover:text-white focus:text-white hover:bg-white/5 focus:bg-white/5 no-underline transition-colors relative rounded focus-visible:outline-none",
-                            pathname === program.href && "text-white bg-white/5 border-l-4 border-[#DC143C]"
+                            pathname === program.href &&
+                              "text-white bg-white/5 border-l-4 border-white"
                           )}
                           onClick={() => setIsOpen(false)}
                         >
@@ -188,6 +208,5 @@ export function Navigation() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
-

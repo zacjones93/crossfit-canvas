@@ -33,7 +33,7 @@ function ProgramHero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
             size="lg"
-            className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)] min-w-[200px]"
+            className="bg-white hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 min-w-[200px]"
             asChild
           >
             <a
@@ -48,7 +48,7 @@ function ProgramHero() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
-        <ChevronDown className="w-8 h-8 text-[#DC143C]" strokeWidth={3} />
+        <ChevronDown className="w-8 h-8 text-white/80" strokeWidth={3} />
       </div>
     </section>
   );
@@ -63,7 +63,7 @@ function PhilosophySection() {
             <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Movement First, Character Always
             </h2>
-            <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+            <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
             <p className="font-sans text-xl text-muted-foreground leading-relaxed mb-6">
               Our youth fitness program emphasizes how well your child moves,
               not how much or how fast. We prioritize functional movement
@@ -72,43 +72,43 @@ function PhilosophySection() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all text-center">
               <Target
-                className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
+                className="w-12 h-12 text-white mb-4 mx-auto"
                 strokeWidth={2}
               />
               <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Quality Movement
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
+              <div className="h-[2px] bg-white mb-4 w-12 mx-auto" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Focus on proper technique and body control
               </p>
             </div>
 
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all text-center">
               <Heart
-                className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
+                className="w-12 h-12 text-white mb-4 mx-auto"
                 strokeWidth={2}
               />
               <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Character Building
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
+              <div className="h-[2px] bg-white mb-4 w-12 mx-auto" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Develop confidence, discipline, and teamwork
               </p>
             </div>
 
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all text-center">
               <Trophy
-                className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
+                className="w-12 h-12 text-white mb-4 mx-auto"
                 strokeWidth={2}
               />
               <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Fun & Engaging
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
+              <div className="h-[2px] bg-white mb-4 w-12 mx-auto" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Keep kids excited about fitness
               </p>
@@ -159,11 +159,11 @@ function ClassStructureSection() {
             {phases.map((phase, index) => (
               <div
                 key={index}
-                className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all"
               >
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0">
-                    <div className="w-20 h-20 rounded-full bg-[#DC143C] text-white flex items-center justify-center font-bold text-sm">
+                    <div className="w-20 h-20 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">
                       {phase.time}
                     </div>
                   </div>
@@ -171,7 +171,7 @@ function ClassStructureSection() {
                     <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                       {phase.title}
                     </h3>
-                    <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+                    <div className="h-[2px] bg-white mb-4 w-12" />
                     <p className="font-sans text-muted-foreground leading-relaxed">
                       {phase.description}
                     </p>
@@ -199,20 +199,20 @@ function ProgramScheduleSection() {
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Spring Program */}
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-8 transition-all">
               <Calendar
-                className="w-12 h-12 text-[#DC143C] mb-4"
+                className="w-12 h-12 text-white mb-4"
                 strokeWidth={2}
               />
               <h3 className="font-heading text-3xl uppercase tracking-wide text-foreground mb-4">
                 Spring Session
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-6 w-12" />
+                  <div className="h-[2px] bg-white mb-6 w-12" />
 
               <div className="space-y-4 mb-6">
                 <div className="flex items-start gap-3">
                   <Clock
-                    className="w-5 h-5 text-[#DC143C] mt-1 flex-shrink-0"
+                    className="w-5 h-5 text-white mt-1 flex-shrink-0"
                     strokeWidth={2}
                   />
                   <div>
@@ -227,7 +227,7 @@ function ProgramScheduleSection() {
 
                 <div className="flex items-start gap-3">
                   <Users
-                    className="w-5 h-5 text-[#DC143C] mt-1 flex-shrink-0"
+                    className="w-5 h-5 text-white mt-1 flex-shrink-0"
                     strokeWidth={2}
                   />
                   <div>
@@ -245,11 +245,13 @@ function ProgramScheduleSection() {
 
                 <div className="flex items-start gap-3">
                   <DollarSign
-                    className="w-5 h-5 text-[#DC143C] mt-1 flex-shrink-0"
+                    className="w-5 h-5 text-white mt-1 flex-shrink-0"
                     strokeWidth={2}
                   />
                   <div>
-                    <p className="font-sans font-bold text-foreground">Pricing</p>
+                    <p className="font-sans font-bold text-foreground">
+                      Pricing
+                    </p>
                     <p className="font-sans text-sm text-muted-foreground">
                       $99 for 2x/week
                     </p>
@@ -267,20 +269,20 @@ function ProgramScheduleSection() {
             </div>
 
             {/* Summer Program */}
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-8 transition-all">
               <Calendar
-                className="w-12 h-12 text-[#DC143C] mb-4"
+                className="w-12 h-12 text-white mb-4"
                 strokeWidth={2}
               />
               <h3 className="font-heading text-3xl uppercase tracking-wide text-foreground mb-4">
                 Summer Session
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-6 w-12" />
+              <div className="h-[2px] bg-white mb-6 w-12" />
 
               <div className="space-y-4 mb-6">
                 <div className="flex items-start gap-3">
                   <Clock
-                    className="w-5 h-5 text-[#DC143C] mt-1 flex-shrink-0"
+                    className="w-5 h-5 text-white mt-1 flex-shrink-0"
                     strokeWidth={2}
                   />
                   <div>
@@ -295,7 +297,7 @@ function ProgramScheduleSection() {
 
                 <div className="flex items-start gap-3">
                   <Users
-                    className="w-5 h-5 text-[#DC143C] mt-1 flex-shrink-0"
+                    className="w-5 h-5 text-white mt-1 flex-shrink-0"
                     strokeWidth={2}
                   />
                   <div>
@@ -316,11 +318,13 @@ function ProgramScheduleSection() {
 
                 <div className="flex items-start gap-3">
                   <DollarSign
-                    className="w-5 h-5 text-[#DC143C] mt-1 flex-shrink-0"
+                    className="w-5 h-5 text-white mt-1 flex-shrink-0"
                     strokeWidth={2}
                   />
                   <div>
-                    <p className="font-sans font-bold text-foreground">Pricing</p>
+                    <p className="font-sans font-bold text-foreground">
+                      Pricing
+                    </p>
                     <p className="font-sans text-sm text-muted-foreground">
                       $125 for 2x/week (16 classes)
                     </p>
@@ -348,7 +352,7 @@ function WhyKidsFitnessSection() {
           <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-white mb-6">
             More Than Just Exercise
           </h2>
-          <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+          <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
           <p className="font-sans text-xl text-white/90 leading-relaxed mb-8">
             Our kids fitness classes teach valuable life skills: perseverance,
             teamwork, respect, and confidence. Kids learn that fitness can be
@@ -360,7 +364,7 @@ function WhyKidsFitnessSection() {
 
           <Button
             size="lg"
-            className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)]"
+            className="bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
             asChild
           >
             <a
@@ -385,7 +389,6 @@ export default function KidsFitnessClassesPage() {
       <ClassStructureSection />
       <ProgramScheduleSection />
       <WhyKidsFitnessSection />
-      <AccessibleLocation />
     </main>
   );
 }

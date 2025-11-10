@@ -25,7 +25,7 @@ export function Facility() {
           <div className="px-6 py-12 md:px-12 md:py-20 order-2 md:order-1">
             <div className="relative">
               {/* Red paint stroke accent on left edge */}
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#DC143C] -ml-6" />
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-white -ml-6" />
 
               <div className="space-y-8 text-white">
                 <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl uppercase tracking-wide leading-tight">
@@ -35,16 +35,25 @@ export function Facility() {
                 <div className="space-y-4">
                   {features.map((feature, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 mt-0.5 text-[#DC143C] flex-shrink-0" strokeWidth={3} />
-                      <span className="font-sans text-base text-white/90">{feature}</span>
+                      <Check
+                        className="w-5 h-5 mt-0.5 text-white flex-shrink-0"
+                        strokeWidth={3}
+                      />
+                      <span className="font-sans text-base text-white/90">
+                        {feature}
+                      </span>
                     </div>
                   ))}
                 </div>
 
-                <Link href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc" target="_blank" rel="noopener noreferrer">
+                <Link
+                  href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button
                     size="lg"
-                    className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base font-bold uppercase px-8 py-6 rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)]"
+                    className="bg-white text-black text-base font-bold uppercase px-8 py-6 rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
                   >
                     Schedule a Tour
                   </Button>

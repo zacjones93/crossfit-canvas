@@ -28,15 +28,15 @@ function ProgramHero() {
         </h1>
 
         <p className="font-sans text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto font-normal leading-relaxed">
-          Prepare for the world&apos;s fastest growing fitness race. Build strength,
-          endurance, and mental toughness.
+          Prepare for the world&apos;s fastest growing fitness race. Build
+          strength, endurance, and mental toughness.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
             asChild
             size="lg"
-            className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)] min-w-[200px]"
+            className="bg-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px]"
           >
             <a
               href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
@@ -50,7 +50,7 @@ function ProgramHero() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
-        <ChevronDown className="w-8 h-8 text-[#DC143C]" strokeWidth={3} />
+        <ChevronDown className="w-8 h-8 text-white/80" strokeWidth={3} />
       </div>
     </section>
   );
@@ -65,7 +65,7 @@ function WhatIsHyroxSection() {
             <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               What is Hyrox?
             </h2>
-            <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+            <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
             <p className="font-sans text-xl text-muted-foreground leading-relaxed mb-6">
               Hyrox is a global fitness race for every body. It combines running
               with functional workout stations, creating the ultimate test of
@@ -73,45 +73,45 @@ function WhatIsHyroxSection() {
             </p>
           </div>
 
-          <div className="bg-charcoal-dark text-white rounded-[4px] p-8 mb-8">
+          <div className="bg-charcoal-dark text-white rounded-sm p-8 mb-8">
             <h3 className="font-heading text-2xl uppercase tracking-wide mb-4">
               The Race Format
             </h3>
-            <div className="h-[2px] bg-[#DC143C] mb-6 w-12" />
+            <div className="h-[2px] bg-white mb-6 w-12" />
             <p className="font-sans text-white/90 leading-relaxed mb-6">
               8 x 1km runs alternating with 8 functional workout stations:
             </p>
             <ul className="grid md:grid-cols-2 gap-3 font-sans text-white/90">
               <li className="flex items-start gap-3">
-                <span className="text-[#DC143C] mt-1 font-bold">•</span>
+                <span className="text-white mt-1 font-bold">•</span>
                 <span>1000m SkiErg</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#DC143C] mt-1 font-bold">•</span>
+                <span className="text-white mt-1 font-bold">•</span>
                 <span>50m Sled Push</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#DC143C] mt-1 font-bold">•</span>
+                <span className="text-white mt-1 font-bold">•</span>
                 <span>50m Sled Pull</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#DC143C] mt-1 font-bold">•</span>
+                <span className="text-white mt-1 font-bold">•</span>
                 <span>80m Burpee Broad Jumps</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#DC143C] mt-1 font-bold">•</span>
+                <span className="text-white mt-1 font-bold">•</span>
                 <span>1000m Row</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#DC143C] mt-1 font-bold">•</span>
+                <span className="text-white mt-1 font-bold">•</span>
                 <span>200m Farmers Carry</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#DC143C] mt-1 font-bold">•</span>
+                <span className="text-white mt-1 font-bold">•</span>
                 <span>100m Sandbag Lunges</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-[#DC143C] mt-1 font-bold">•</span>
+                  <span className="text-white mt-1 font-bold">•</span>
                 <span>75 or 100 Wall Balls</span>
               </li>
             </ul>
@@ -131,12 +131,12 @@ function ScheduleSection() {
             <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Class Schedule
             </h2>
-            <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+            <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
           </div>
 
-          <div className="bg-charcoal-dark text-white rounded-[4px] p-8 text-center">
+          <div className="bg-charcoal-dark text-white rounded-sm p-8 text-center">
             <Clock
-              className="w-16 h-16 text-[#DC143C] mx-auto mb-6"
+              className="w-16 h-16 text-white mx-auto mb-6"
               strokeWidth={2}
             />
             <h3 className="font-heading text-3xl uppercase tracking-wide mb-4">
@@ -201,16 +201,16 @@ function TrainingFocusSection() {
               return (
                 <div
                   key={index}
-                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all"
                 >
                   <Icon
-                    className="w-12 h-12 text-[#DC143C] mb-4"
+                    className="w-12 h-12 text-white mb-4"
                     strokeWidth={2}
                   />
                   <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                     {focus.title}
                   </h3>
-                  <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+                  <div className="h-[2px] bg-white mb-4 w-12" />
                   <p className="font-sans text-muted-foreground leading-relaxed">
                     {focus.description}
                   </p>
@@ -268,16 +268,16 @@ function WhyTrainHereSection() {
               return (
                 <div
                   key={index}
-                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all"
                 >
                   <Icon
-                    className="w-12 h-12 text-[#DC143C] mb-4"
+                    className="w-12 h-12 text-white mb-4"
                     strokeWidth={2}
                   />
                   <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                     {benefit.title}
                   </h3>
-                  <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+                  <div className="h-[2px] bg-white mb-4 w-12" />
                   <p className="font-sans text-muted-foreground leading-relaxed">
                     {benefit.description}
                   </p>
@@ -301,7 +301,7 @@ function ReadyToStartSection() {
           <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-white mb-6">
             Ready to Start Training?
           </h2>
-          <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+          <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
           <p className="font-sans text-xl text-white/90 leading-relaxed mb-8">
             Join our Hyrox-focused training sessions and prepare for your first
             (or next) competition. Our programming integrates seamlessly with
@@ -315,7 +315,7 @@ function ReadyToStartSection() {
           <Button
             asChild
             size="lg"
-            className="w-full sm:w-auto bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-6 sm:px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)]"
+            className="w-full sm:w-auto bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-6 sm:px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
           >
             <a
               href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
@@ -340,7 +340,6 @@ export default function HyroxPage() {
       <TrainingFocusSection />
       <WhyTrainHereSection />
       <ReadyToStartSection />
-      <FinalCTA />
     </main>
   );
 }

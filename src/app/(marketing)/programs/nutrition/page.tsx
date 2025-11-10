@@ -32,7 +32,7 @@ function ProgramHero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
             size="lg"
-            className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)] min-w-[200px]"
+            className="bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px]"
             asChild
           >
             <a
@@ -47,7 +47,7 @@ function ProgramHero() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
-        <ChevronDown className="w-8 h-8 text-[#DC143C]" strokeWidth={3} />
+        <ChevronDown className="w-8 h-8 text-white/80" strokeWidth={3} />
       </div>
     </section>
   );
@@ -62,7 +62,7 @@ function PersonalizedApproachSection() {
             <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Comprehensive Diet Planning
             </h2>
-            <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+            <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
             <p className="font-sans text-xl text-muted-foreground leading-relaxed">
               We will pin-point a comprehensive diet plan, custom to your
               lifestyle, that helps you feel you are at your peak potential in
@@ -71,43 +71,43 @@ function PersonalizedApproachSection() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <Activity
-                className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
+                className="w-12 h-12 text-white mb-4 mx-auto"
                 strokeWidth={2}
               />
               <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Peak Fitness
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
+              <div className="h-[2px] bg-white mb-4 w-12 mx-auto" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Fuel your workouts and recovery with proper nutrition
               </p>
             </div>
 
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <TrendingUp
-                className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
+                className="w-12 h-12 text-white mb-4 mx-auto"
                 strokeWidth={2}
               />
               <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Energy Levels
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
+              <div className="h-[2px] bg-white mb-4 w-12 mx-auto" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Maintain consistent energy throughout the day
               </p>
             </div>
 
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all text-center">
               <Heart
-                className="w-12 h-12 text-[#DC143C] mb-4 mx-auto"
+                className="w-12 h-12 text-white mb-4 mx-auto"
                 strokeWidth={2}
               />
               <h3 className="font-heading text-xl uppercase tracking-wide text-foreground mb-3">
                 Better Mood
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12 mx-auto" />
+              <div className="h-[2px] bg-white mb-4 w-12 mx-auto" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Feel your best mentally and emotionally
               </p>
@@ -157,20 +157,17 @@ function WhatYouGetSection() {
               return (
                 <div
                   key={index}
-                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-sm p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
                 >
                   <div className="flex flex-col md:flex-row gap-6 items-start">
                     <div className="flex-shrink-0">
-                      <Icon
-                        className="w-16 h-16 text-[#DC143C]"
-                        strokeWidth={2}
-                      />
+                      <Icon className="w-16 h-16 text-white" strokeWidth={2} />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-heading text-2xl md:text-3xl uppercase tracking-wide text-foreground mb-3">
                         {item.title}
                       </h3>
-                      <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+                      <div className="h-[2px] bg-white mb-4 w-12" />
                       <p className="font-sans text-lg text-muted-foreground leading-relaxed">
                         {item.description}
                       </p>
@@ -196,21 +193,21 @@ function LifestyleIntegrationSection() {
           <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-white mb-6">
             Built For Your Lifestyle
           </h2>
-          <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+          <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
           <p className="font-sans text-xl text-white/90 leading-relaxed mb-8">
-            Our nutrition coaching isn&apos;t about restrictive diets or complicated
-            meal plans. We create sustainable, practical approaches that fit
-            your real life.
+            Our nutrition coaching isn&apos;t about restrictive diets or
+            complicated meal plans. We create sustainable, practical approaches
+            that fit your real life.
           </p>
           <p className="font-sans text-lg text-white/80 leading-relaxed mb-12">
-            Whether you&apos;re a busy parent, working professional, or competitive
-            athlete, we&apos;ll design a nutrition strategy that works for your
-            schedule, preferences, and goals.
+            Whether you&apos;re a busy parent, working professional, or
+            competitive athlete, we&apos;ll design a nutrition strategy that
+            works for your schedule, preferences, and goals.
           </p>
 
           <Button
             size="lg"
-            className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)]"
+            className="bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
             asChild
           >
             <a
@@ -234,7 +231,6 @@ export default function NutritionPage() {
       <PersonalizedApproachSection />
       <WhatYouGetSection />
       <LifestyleIntegrationSection />
-      <AccessibleLocation />
     </main>
   );
 }

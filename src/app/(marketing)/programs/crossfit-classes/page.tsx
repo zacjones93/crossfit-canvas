@@ -33,7 +33,7 @@ function ProgramHero() {
           <Button
             asChild
             size="lg"
-            className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)] min-w-[200px]"
+            className="bg-black hover:bg-white hover:text-black border-2 border-white text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 min-w-[200px]"
           >
             <a
               href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
@@ -47,7 +47,7 @@ function ProgramHero() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
-        <ChevronDown className="w-8 h-8 text-[#DC143C]" strokeWidth={3} />
+        <ChevronDown className="w-8 h-8 text-white" strokeWidth={3} />
       </div>
     </section>
   );
@@ -107,16 +107,13 @@ function MethodologySection() {
               return (
                 <div
                   key={index}
-                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-sm p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
                 >
-                  <Icon
-                    className="w-12 h-12 text-[#DC143C] mb-4"
-                    strokeWidth={2}
-                  />
+                  <Icon className="w-12 h-12 text-white mb-4" strokeWidth={2} />
                   <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                     {item.title}
                   </h3>
-                  <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+                  <div className="h-[2px] bg-white/80 mb-4 w-12" />
                   <p className="font-sans text-muted-foreground leading-relaxed">
                     {item.description}
                   </p>
@@ -140,15 +137,15 @@ function ScalabilitySection() {
           <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-white mb-6">
             Scalable to Your Level
           </h2>
-          <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+          <div className="h-[3px] bg-white/80 w-24 mx-auto mb-8" />
           <p className="font-sans text-xl text-white/90 leading-relaxed mb-8">
             Workouts can be adjusted in weight, intensity, and certain mechanics
             to scale to the experience and fitness levels of any individual.
           </p>
           <p className="font-sans text-lg text-white/80 leading-relaxed">
-            Whether you&apos;re just starting your fitness journey or you&apos;re a
-            seasoned athlete, our coaches will help you find the right variation
-            to challenge yourself safely and effectively.
+            Whether you&apos;re just starting your fitness journey or
+            you&apos;re a seasoned athlete, our coaches will help you find the
+            right variation to challenge yourself safely and effectively.
           </p>
         </div>
       </div>

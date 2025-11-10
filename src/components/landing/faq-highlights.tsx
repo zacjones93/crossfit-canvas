@@ -77,13 +77,13 @@ export function FAQHighlights() {
           </h3>
           <a
             href={SITE_PHONE_HREF}
-            className="bg-white text-black font-heading text-lg px-8 py-3 hover:bg-[#DC143C] hover:text-white transition-colors"
+            className="bg-white text-black font-heading text-lg px-8 py-3 hover:bg-black border-2 border-transparent hover:border-2 hover:border-white hover:text-white transition-colors rounded-sm"
           >
             {SITE_PHONE}
           </a>
           <a
             href="/contact"
-            className="bg-white text-black font-heading text-lg px-8 py-3 hover:bg-[#DC143C] hover:text-white transition-colors"
+            className="bg-white text-black font-heading text-lg px-8 py-3 hover:bg-black border-2 border-transparent hover:border-2 hover:border-white hover:text-white transition-colors rounded-sm"
           >
             CONTACT US
           </a>
@@ -97,7 +97,7 @@ export function FAQHighlights() {
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
                 className="w-full py-6 flex items-start justify-between gap-4 text-left group"
               >
-                <h3 className="font-heading text-lg md:text-xl text-white tracking-wide group-hover:text-[#DC143C] transition-colors">
+                <h3 className="font-heading text-lg md:text-xl text-white tracking-wide group-hover:underline transition-colors">
                   {faq.question}
                 </h3>
                 <Plus

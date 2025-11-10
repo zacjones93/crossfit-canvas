@@ -27,8 +27,6 @@ export default function Home() {
       <AccessibleLocation />
       <Facility />
       {/* <ValuePillars /> */}
-      <Pricing />
-      <FAQHighlights />
       <FinalCTA />
     </main>
   );

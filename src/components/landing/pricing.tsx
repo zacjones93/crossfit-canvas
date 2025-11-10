@@ -8,11 +8,7 @@ export function Pricing() {
       price: "$169",
       period: "one-time",
       description: "10-Class Pack",
-      features: [
-        "10 classes",
-        "All class types included",
-        "Open gym access",
-      ],
+      features: ["10 classes", "All class types included", "Open gym access"],
       cta: "GET STARTED",
       featured: false,
       href: "https://canvas.pushpress.com/landing/plans/plan_91a3a83ae76cf7",
@@ -41,7 +37,7 @@ export function Pricing() {
         "12 classes per month",
         "All class types included",
         "Open gym access",
-        "Member app & tracking"
+        "Member app & tracking",
       ],
       cta: "CHOOSE THIS PLAN",
       featured: false,
@@ -67,23 +63,20 @@ export function Pricing() {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`bg-white overflow-hidden ${
+              className={`bg-white overflow-hidden rounded-sm ${
                 plan.featured
-                  ? "shadow-[0_0_0_4px_#DC143C] md:scale-105 relative order-first md:order-none"
-                  : "shadow-[0_8px_24px_rgba(255,255,255,0.1)]"
-              } transition-all hover:shadow-[0_12px_32px_rgba(220,20,60,0.4)] hover:-translate-y-1`}
+                  ? "md:scale-110 relative order-first md:order-none"
+                  : ""
+              } transition-all hover:-translate-y-[2px]`}
             >
-              {/* Featured indicator */}
-              {plan.featured && (
-                <div className="absolute top-0 left-0 right-0 h-2 bg-[#DC143C]" />
-              )}
-
               <div className="p-8">
                 {/* Plan name */}
                 <div className="text-center mb-6">
-                  <span className={`font-subheading text-sm font-bold tracking-wider ${
-                    plan.featured ? "text-[#DC143C]" : "text-charcoal-medium"
-                  }`}>
+                  <span
+                    className={`font-subheading text-sm font-bold tracking-wider ${
+                      plan.featured ? "text-black" : "text-charcoal-medium"
+                    }`}
+                  >
                     {plan.name}
                   </span>
                 </div>
@@ -91,7 +84,9 @@ export function Pricing() {
                 {/* Price */}
                 <div className="text-center mb-2">
                   <div className="flex items-baseline justify-center gap-1">
-                    <span className="font-heading text-6xl text-black">{plan.price}</span>
+                    <span className="font-heading text-6xl text-black">
+                      {plan.price}
+                    </span>
                     <span className="font-sans text-lg text-charcoal-medium">
                       {plan.period}
                     </span>
@@ -102,14 +97,14 @@ export function Pricing() {
                 </div>
 
                 {/* Red brush stroke divider */}
-                <div className="h-[2px] bg-[#DC143C] my-6 mx-auto w-16" />
+                <div className="h-[2px] bg-black my-6 mx-auto w-16" />
 
                 {/* Features */}
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check
-                        className="w-5 h-5 mt-0.5 flex-shrink-0 text-[#DC143C]"
+                        className="w-5 h-5 mt-0.5 flex-shrink-0 text-black"
                         strokeWidth={3}
                       />
                       <span className="font-sans text-sm text-charcoal-medium">
@@ -122,9 +117,9 @@ export function Pricing() {
                 {/* CTA Button */}
                 <Button
                   asChild
-                  className={`w-full py-6 text-base font-bold uppercase rounded-[4px] ${
+                  className={`w-full py-6 text-base font-bold uppercase rounded-sm ${
                     plan.featured
-                      ? "bg-[#DC143C] hover:bg-[#B01030] text-white shadow-[0_4px_12px_rgba(220,20,60,0.4)]"
+                      ? "bg-black hover:bg-white hover:text-black hover:border-black border border-transparent text-white"
                       : "bg-black hover:bg-charcoal-dark text-white"
                   } transition-all`}
                   size="lg"
@@ -144,14 +139,14 @@ export function Pricing() {
             Additional Options Available:
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-white/80 font-sans">
-            <a href="/schedule" className="hover:text-[#DC143C] transition-colors">
+            <a href="/schedule" className="hover:text-white transition-colors">
               • Drop-in: $20/class
             </a>
             <a
               href="https://canvas.pushpress.com/landing/plans/plan_3f8d7b94131578"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#DC143C] transition-colors"
+              className="hover:text-white transition-colors"
             >
               • 1 Week Drop-In: $45
             </a>
@@ -159,17 +154,22 @@ export function Pricing() {
               href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#DC143C] transition-colors"
+              className="hover:text-white transition-colors"
             >
               • Free No Sweat Intro Consultation
             </a>
           </div>
-          <a href="/contact" className="group mt-6 text-[#DC143C] hover:text-[#B01030] font-medium inline-block">
+          <a
+            href="/contact"
+            className="group mt-6 text-white/80 hover:text-white font-medium inline-block"
+          >
             <span className="relative">
               Questions about pricing? Contact us
-              <span className="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-[#DC143C] transform origin-left transition-transform group-hover:scale-x-110" />
+              <span className="absolute left-0 right-0 -bottom-0.5 h-[2px] bg-white/80 group-hover:bg-white transform origin-left transition-transform group-hover:scale-x-110" />
             </span>
-            <span className="ml-1 transition-transform group-hover:translate-x-1 inline-block">→</span>
+            <span className="ml-1 transition-transform group-hover:translate-x-1 inline-block">
+              →
+            </span>
           </a>
         </div>
       </div>

@@ -16,16 +16,20 @@ export default function SchedulePage() {
             Class Schedule
           </h1>
           <p className="font-sans text-lg md:text-xl text-white/80 max-w-2xl mx-auto">
-            Book your spot in our small group classes. All fitness levels welcome.
+            Book your spot in our small group classes. All fitness levels
+            welcome.
           </p>
         </div>
 
         {/* Embedded PushPress Calendar */}
-        <div className="relative w-full overflow-hidden rounded-lg shadow-2xl bg-white" style={{ minHeight: '800px' }}>
+        <div
+          className="relative w-full overflow-hidden rounded-lg shadow-2xl bg-white"
+          style={{ minHeight: "800px" }}
+        >
           <iframe
             src="https://canvas.pushpress.com/landing/calendar"
             className="w-full h-full absolute inset-0"
-            style={{ minHeight: '800px', border: 'none' }}
+            style={{ minHeight: "800px", border: "none" }}
             title="Class Schedule"
             loading="lazy"
           />
@@ -40,7 +44,7 @@ export default function SchedulePage() {
             href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-[#DC143C] hover:bg-[#B01030] text-white font-bold uppercase text-lg px-8 py-4 rounded-[4px] transition-all hover:scale-105 shadow-lg"
+            className="inline-block bg-white text-black font-bold uppercase text-lg px-8 py-4 rounded-sm transition-all hover:scale-105 shadow-lg"
           >
             Book Your Free No Sweat Intro
           </Link>

@@ -33,7 +33,7 @@ function ProgramHero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
             size="lg"
-            className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)] min-w-[200px]"
+            className="bg-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px]"
             asChild
           >
             <a
@@ -48,7 +48,7 @@ function ProgramHero() {
       </div>
 
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
-        <ChevronDown className="w-8 h-8 text-[#DC143C]" strokeWidth={3} />
+        <ChevronDown className="w-8 h-8 text-white/80" strokeWidth={3} />
       </div>
     </section>
   );
@@ -63,7 +63,7 @@ function WhyPersonalTrainingSection() {
             <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-foreground mb-4">
               Personalized for Your Success
             </h2>
-            <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+            <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
             <p className="font-sans text-xl text-muted-foreground leading-relaxed">
               Experience exciting, quick, and new workout routines designed
               specifically for you by our experienced coaches.
@@ -71,60 +71,48 @@ function WhyPersonalTrainingSection() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
-              <Users
-                className="w-12 h-12 text-[#DC143C] mb-4"
-                strokeWidth={2}
-              />
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all">
+              <Users className="w-12 h-12 text-white mb-4" strokeWidth={2} />
               <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                 Expert Coaches
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+              <div className="h-[2px] bg-white mb-4 w-12" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Work one-on-one with experienced trainers who understand your
                 goals and how to help you achieve them.
               </p>
             </div>
 
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
-              <Target
-                className="w-12 h-12 text-[#DC143C] mb-4"
-                strokeWidth={2}
-              />
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all">
+              <Target className="w-12 h-12 text-white mb-4" strokeWidth={2} />
               <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                 Custom Programming
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+              <div className="h-[2px] bg-white mb-4 w-12" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Exciting, quick, and new workout routines tailored to your
                 fitness level, goals, and schedule.
               </p>
             </div>
 
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
-              <Apple
-                className="w-12 h-12 text-[#DC143C] mb-4"
-                strokeWidth={2}
-              />
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all">
+              <Apple className="w-12 h-12 text-white mb-4" strokeWidth={2} />
               <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                 Nutrition Support
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+              <div className="h-[2px] bg-white mb-4 w-12" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 Support and accountability in your nutrition program to help
                 promote weight loss and better health.
               </p>
             </div>
 
-            <div className="bg-card border-2 border-charcoal-light rounded-[4px] p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
-              <Heart
-                className="w-12 h-12 text-[#DC143C] mb-4"
-                strokeWidth={2}
-              />
+            <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 transition-all">
+              <Heart className="w-12 h-12 text-white mb-4" strokeWidth={2} />
               <h3 className="font-heading text-2xl uppercase tracking-wide text-foreground mb-3">
                 All Levels Welcome
               </h3>
-              <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+              <div className="h-[2px] bg-white mb-4 w-12" />
               <p className="font-sans text-muted-foreground leading-relaxed">
                 No prior fitness experience necessary. We meet you wherever you
                 are in your fitness journey.
@@ -175,20 +163,17 @@ function BenefitsSection() {
               return (
                 <div
                   key={index}
-                  className="bg-card border-2 border-charcoal-light rounded-[4px] p-8 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all"
+                  className="bg-card border-2 border-charcoal-light rounded-sm p-8 transition-all"
                 >
                   <div className="flex flex-col md:flex-row gap-6 items-start">
                     <div className="flex-shrink-0">
-                      <Icon
-                        className="w-16 h-16 text-[#DC143C]"
-                        strokeWidth={2}
-                      />
+                      <Icon className="w-16 h-16 text-white" strokeWidth={2} />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-heading text-2xl md:text-3xl uppercase tracking-wide text-foreground mb-3">
                         {benefit.title}
                       </h3>
-                      <div className="h-[2px] bg-[#DC143C] mb-4 w-12" />
+                      <div className="h-[2px] bg-white mb-4 w-12" />
                       <p className="font-sans text-lg text-muted-foreground leading-relaxed">
                         {benefit.description}
                       </p>
@@ -214,19 +199,19 @@ function GetStartedSection() {
           <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-white mb-6">
             Ready to Start?
           </h2>
-          <div className="h-[3px] bg-[#DC143C] w-24 mx-auto mb-8" />
+          <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
           <p className="font-sans text-xl text-white/90 leading-relaxed mb-8">
             Schedule a free consultation to discuss your goals and create a
             personalized training plan.
           </p>
           <p className="font-sans text-lg text-white/80 leading-relaxed mb-12">
-            No experience required. Just bring your commitment, and we&apos;ll handle
-            the rest.
+            No experience required. Just bring your commitment, and we&apos;ll
+            handle the rest.
           </p>
 
           <Button
             size="lg"
-            className="w-full sm:w-auto bg-[#DC143C] hover:bg-[#B01030] text-white text-base md:text-lg font-bold uppercase px-6 sm:px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 hover:shadow-[0_12px_24px_rgba(220,20,60,0.5)]"
+            className="w-full sm:w-auto bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-6 sm:px-8 py-6 h-auto rounded-sm transition-all hover:scale-105"
             asChild
           >
             <a

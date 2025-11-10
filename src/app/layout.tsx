@@ -48,8 +48,8 @@ export const metadata: Metadata = {
     "Cloudflare Workers",
     "Edge Computing",
   ],
-  authors: [{ name: "Lubomir Georgiev" }],
-  creator: "Lubomir Georgiev",
+  authors: [{ name: "CrossFit Canvas" }],
+  creator: "CrossFit Canvas",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    creator: "@LubomirGeorg",
+    creator: "@crossfitcanvas",
     images: ["/assets/og-image.png"],
   },
   robots: {

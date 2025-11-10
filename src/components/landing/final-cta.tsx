@@ -25,7 +25,7 @@ export function FinalCTA() {
         <Button
           asChild
           size="lg"
-          className="bg-white text-[#DC143C] hover:bg-gray-100 text-base md:text-xl px-6 md:px-12 py-6 md:py-8 h-auto rounded-[4px] shadow-[0_8px_24px_rgba(0,0,0,0.3)] font-bold uppercase hover:scale-105 transition-all w-full md:w-auto md:min-w-[300px] max-w-[500px]"
+          className="bg-white text-black hover:bg-gray-100 text-base md:text-xl px-6 md:px-12 py-6 md:py-8 h-auto rounded-sm shadow-[0_8px_24px_rgba(0,0,0,0.3)] font-bold uppercase hover:scale-105 transition-all w-full md:w-auto md:min-w-[300px] max-w-[500px]"
         >
           <a
             href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"

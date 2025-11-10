@@ -30,8 +30,14 @@ export default function ContactPage() {
 
     // For now, use mailto
     const subject = `Contact Form Submission from ${formData.name}`;
-    const body = `Name: ${formData.name}%0D%0AEmail: ${formData.email}%0D%0APhone: ${formData.phone || 'Not provided'}%0D%0A%0D%0AMessage:%0D%0A${formData.message}`;
-    window.location.href = `mailto:info@crossfitcanvas.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+    const body = `Name: ${formData.name}%0D%0AEmail: ${
+      formData.email
+    }%0D%0APhone: ${
+      formData.phone || "Not provided"
+    }%0D%0A%0D%0AMessage:%0D%0A${formData.message}`;
+    window.location.href = `mailto:info@crossfitcanvas.com?subject=${encodeURIComponent(
+      subject
+    )}&body=${body}`;
 
     setTimeout(() => {
       toast.success("Opening your email client...");
@@ -67,7 +73,8 @@ export default function ContactPage() {
                   Get In Touch
                 </h2>
                 <p className="text-lg text-muted-foreground mb-8">
-                  Have questions? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
+                  Have questions? We&apos;d love to hear from you. Send us a
+                  message and we&apos;ll respond as soon as possible.
                 </p>
               </div>
 
@@ -77,7 +84,9 @@ export default function ContactPage() {
                   <div className="flex items-start gap-4">
                     <Phone className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                     <div>
-                      <h3 className="font-heading text-xl font-bold mb-2">Phone</h3>
+                      <h3 className="font-heading text-xl font-bold mb-2">
+                        Phone
+                      </h3>
                       <a
                         href={SITE_PHONE_HREF}
                         className="text-base hover:text-primary transition-colors"
@@ -92,7 +101,9 @@ export default function ContactPage() {
                   <div className="flex items-start gap-4">
                     <Mail className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                     <div>
-                      <h3 className="font-heading text-xl font-bold mb-2">Email</h3>
+                      <h3 className="font-heading text-xl font-bold mb-2">
+                        Email
+                      </h3>
                       <a
                         href="mailto:info@crossfitcanvas.com"
                         className="text-base hover:text-primary transition-colors"
@@ -107,13 +118,17 @@ export default function ContactPage() {
                   <div className="flex items-start gap-4">
                     <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                     <div>
-                      <h3 className="font-heading text-xl font-bold mb-2">Location</h3>
+                      <h3 className="font-heading text-xl font-bold mb-2">
+                        Location
+                      </h3>
                       <p className="text-base leading-relaxed">
-                        4611 Enterprise Way<br />
+                        4611 Enterprise Way
+                        <br />
                         Caldwell, Idaho 83605
                       </p>
                       <p className="text-sm text-muted-foreground mt-2">
-                        Off Franklin on the east side of the freeway near Crunch Fitness
+                        Off Franklin on the east side of the freeway near Crunch
+                        Fitness
                       </p>
                     </div>
                   </div>
@@ -123,14 +138,16 @@ export default function ContactPage() {
                   <div className="flex items-start gap-4">
                     <Clock className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                     <div>
-                      <h3 className="font-heading text-xl font-bold mb-2">Hours</h3>
+                      <h3 className="font-heading text-xl font-bold mb-2">
+                        Hours
+                      </h3>
                       <p className="text-base leading-relaxed">
-                        <span className="font-semibold">Monday-Friday:</span><br />
-                        5 AM - 8 PM
+                        <span className="font-semibold">Monday-Friday:</span>
+                        <br />5 AM - 8 PM
                       </p>
                       <p className="text-base leading-relaxed mt-2">
-                        <span className="font-semibold">Weekends:</span><br />
-                        8 AM - 3 PM
+                        <span className="font-semibold">Weekends:</span>
+                        <br />8 AM - 3 PM
                       </p>
                     </div>
                   </div>
@@ -140,10 +157,15 @@ export default function ContactPage() {
 
             {/* Contact Form */}
             <div className="bg-card rounded-lg border p-8 shadow-lg">
-              <h2 className="font-heading text-2xl font-bold mb-6">Send Us a Message</h2>
+              <h2 className="font-heading text-2xl font-bold mb-6">
+                Send Us a Message
+              </h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <Label htmlFor="name" className="text-base font-medium mb-2 block">
+                  <Label
+                    htmlFor="name"
+                    className="text-base font-medium mb-2 block"
+                  >
                     Name *
                   </Label>
                   <Input
@@ -151,14 +173,19 @@ export default function ContactPage() {
                     type="text"
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="w-full"
                     placeholder="Your name"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="email" className="text-base font-medium mb-2 block">
+                  <Label
+                    htmlFor="email"
+                    className="text-base font-medium mb-2 block"
+                  >
                     Email *
                   </Label>
                   <Input
@@ -166,35 +193,47 @@ export default function ContactPage() {
                     type="email"
                     required
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className="w-full"
                     placeholder="your.email@example.com"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="phone" className="text-base font-medium mb-2 block">
+                  <Label
+                    htmlFor="phone"
+                    className="text-base font-medium mb-2 block"
+                  >
                     Phone
                   </Label>
                   <Input
                     id="phone"
                     type="tel"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
                     className="w-full"
                     placeholder="(208) 555-1234"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="message" className="text-base font-medium mb-2 block">
+                  <Label
+                    htmlFor="message"
+                    className="text-base font-medium mb-2 block"
+                  >
                     Message *
                   </Label>
                   <Textarea
                     id="message"
                     required
                     value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, message: e.target.value })
+                    }
                     className="w-full min-h-[150px]"
                     placeholder="Tell us how we can help you..."
                   />
@@ -203,7 +242,7 @@ export default function ContactPage() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#DC143C] hover:bg-[#B01030] text-white text-base font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-black hover:bg-white hover:text-black border border-white text-white text-base font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
                 >
                   {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
@@ -241,12 +280,13 @@ export default function ContactPage() {
               Ready to Get Started?
             </h2>
             <p className="text-lg md:text-xl mb-8 text-white/80">
-              Book a free intro session and experience CrossFit Canvas for yourself
+              Book a free intro session and experience CrossFit Canvas for
+              yourself
             </p>
             <Button
               asChild
               size="lg"
-              className="bg-[#DC143C] hover:bg-[#B01030] text-white text-base font-bold uppercase px-8 py-6 h-auto rounded-[4px] shadow-[0_8px_16px_rgba(220,20,60,0.4)] transition-all hover:scale-105"
+              className="bg-black hover:bg-white hover:text-black border border-white text-white text-base font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
             >
               <a
                 href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
