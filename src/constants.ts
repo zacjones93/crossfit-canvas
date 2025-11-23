@@ -3,8 +3,9 @@ import type { Route } from "next"
 export const SITE_NAME = "CrossFit Canvas"
 export const SITE_DESCRIPTION = "CrossFit Canvas is a premier CrossFit gym in Caldwell, Idaho. We offer a welcoming community, expert coaches, and a variety of classes for all fitness levels."
 export const SITE_URL = process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://crossfitcanvas.com"
-export const SITE_PHONE = "(208) 877-5588"
-export const SITE_PHONE_HREF = "tel:+12088775588"
+export const SITE_PHONE = "+1 (208) 609-9803"
+export const SITE_PHONE_HREF = "tel:+12086099803"
+export const SITE_EMAIL = "crossfitcanvas@gmail.com"
 
 export const SITE_DOMAIN = new URL(SITE_URL).hostname
 export const PASSWORD_RESET_TOKEN_EXPIRATION_SECONDS = 24 * 60 * 60 // 24 hours

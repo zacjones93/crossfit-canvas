@@ -256,10 +256,10 @@ $165/month
 **Card 3: Flexible Option**
 ```
 "Flexible Schedule"
-12 Classes/Month
+13 Classes/Month
 $135/month
 ---
-• 12 classes per month
+• 13 classes per month
 • All class types included
 • Roll over unused classes
 • Open gym access

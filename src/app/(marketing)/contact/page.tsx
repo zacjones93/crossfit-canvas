@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { SITE_PHONE, SITE_PHONE_HREF } from "@/constants";
 import { useState } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -288,13 +289,9 @@ export default function ContactPage() {
               size="lg"
               className="bg-black hover:bg-white hover:text-black border border-white text-white text-base font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
             >
-              <a
-                href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Book Free Intro
-              </a>
+              <Link href="/tour">
+                Schedule a Tour
+              </Link>
             </Button>
           </div>
         </div>

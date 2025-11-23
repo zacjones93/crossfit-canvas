@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { MapPin, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CoachCard } from "@/components/coach-card";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About Us - CrossFit Canvas Caldwell",
@@ -291,13 +292,9 @@ export default function AboutPage() {
                 size="lg"
                 className="bg-black hover:bg-white hover:text-black border-2 border-white text-white text-base font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105"
               >
-                <a
-                  href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Book Free Intro
-                </a>
+                <Link href="/tour">
+                  Schedule a Tour
+                </Link>
               </Button>
               <Button
                 asChild
