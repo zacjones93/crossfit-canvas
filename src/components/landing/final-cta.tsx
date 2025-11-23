@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SITE_PHONE } from "@/constants";
+import Link from "next/link";
 
 export function FinalCTA() {
   return (
@@ -27,13 +28,9 @@ export function FinalCTA() {
           size="lg"
           className="bg-white text-black hover:bg-gray-100 text-base md:text-xl px-6 md:px-12 py-6 md:py-8 h-auto rounded-sm shadow-[0_8px_24px_rgba(0,0,0,0.3)] font-bold uppercase hover:scale-105 transition-all w-full md:w-auto md:min-w-[300px] max-w-[500px]"
         >
-          <a
-            href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Book Your Free No Sweat Intro
-          </a>
+          <Link href="/tour">
+            Schedule a Tour
+          </Link>
         </Button>
 
         <p className="font-sans text-white text-base mt-6">

@@ -1,3 +1,5 @@
+import { WorkoutLevels } from "./workout-levels";
+
 export function ClassBreakdown() {
   const phases = [
     {
@@ -18,6 +20,7 @@ export function ClassBreakdown() {
 5 DB Goblet Squats
 6 Back Rack Lunges (PVC/Empty Bar)
 5 Hand Release Push Ups`,
+      isWorkout: false,
     },
     {
       time: "10-30 min",
@@ -32,6 +35,7 @@ export function ClassBreakdown() {
 16 DB Goblet Squats (Light/Moderate)
 +
 8 Back Rack Reverse Lunges (per leg), build across sets based on feel`,
+      isWorkout: false,
     },
     {
       time: "30-55 min",
@@ -41,18 +45,7 @@ export function ClassBreakdown() {
         "Scaled to your fitness level",
         "Push yourself with group motivation",
       ],
-      example: `Black Cat (4 scaling levels provided)
-For Time:
-25/20 Calories
-25 Chest To Bar Pull Ups
-25/20 Calories
-15 Ring Muscle Ups
-25/20 Calories
-25 Chest To Bar Pull Ups
-25/20 Calories
-
-Target time: 14:00-16:00
-Time cap: 18:00`,
+      isWorkout: true,
     },
     {
       time: "55-60 min",
@@ -66,6 +59,7 @@ Time cap: 18:00`,
 1 Minute Couch Stretch
 15x Bootstrappers
 1 Minute Biceps Stretch on Rig`,
+      isWorkout: false,
     },
   ];
 
@@ -103,7 +97,7 @@ Time cap: 18:00`,
                 {/* Content */}
                 <div className="flex-1 pb-4 md:pb-8">
                   <div className="bg-card border-2 border-charcoal-light rounded-sm p-6 shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_8px_24px_rgba(220,20,60,0.15)] transition-all">
-                    <div className="flex items-baseline gap-3 mb-3">
+                    <div className="flex flex-col md:flex-row md:items-baseline gap-1 md:gap-3 mb-3">
                       <span className="font-subheading text-sm font-bold text-white tracking-wider">
                         {phase.time}
                       </span>
@@ -131,15 +125,24 @@ Time cap: 18:00`,
                         ))}
                       </ul>
 
-                      {/* Example section */}
-                      <div className="bg-muted border-l-4 border-white/80 rounded-sm p-4">
-                        <p className="font-subheading text-xs font-bold text-white tracking-wider uppercase mb-2">
-                          Example
-                        </p>
-                        <pre className="font-sans text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                          {phase.example}
-                        </pre>
-                      </div>
+                      {/* Example section or Workout Levels */}
+                      {phase.isWorkout ? (
+                        <div>
+                          <p className="font-subheading text-xs font-bold text-white tracking-wider uppercase mb-3">
+                            Example - 4 Scaling Levels
+                          </p>
+                          <WorkoutLevels />
+                        </div>
+                      ) : (
+                        <div className="bg-muted border-l-4 border-white/80 rounded-sm p-4">
+                          <p className="font-subheading text-xs font-bold text-white tracking-wider uppercase mb-2">
+                            Example
+                          </p>
+                          <pre className="font-sans text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                            {phase.example}
+                          </pre>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

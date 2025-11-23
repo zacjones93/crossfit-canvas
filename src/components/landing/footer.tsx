@@ -1,5 +1,4 @@
-import ThemeSwitch from "../theme-switch";
-import { SITE_PHONE } from "@/constants";
+import { SITE_EMAIL, SITE_PHONE, SITE_PHONE_HREF } from "@/constants";
 import Link from "next/link";
 import { Facebook, Instagram } from "lucide-react";
 
@@ -48,6 +47,24 @@ export function Footer() {
               Quick Links
             </h4>
             <ul className="space-y-2.5">
+              <li>
+                <Link href="/drop-in" className="group font-sans text-gray-400 hover:text-white transition-colors relative">
+                  Drop-In
+                  <span className="absolute left-0 -bottom-0.5 w-0 h-[2px] bg-white transition-all group-hover:w-full" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/tour" className="group font-sans text-gray-400 hover:text-white transition-colors relative">
+                  Schedule Tour
+                  <span className="absolute left-0 -bottom-0.5 w-0 h-[2px] bg-white transition-all group-hover:w-full" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/intro-class" className="group font-sans text-gray-400 hover:text-white transition-colors relative">
+                  Intro Class
+                  <span className="absolute left-0 -bottom-0.5 w-0 h-[2px] bg-white transition-all group-hover:w-full" />
+                </Link>
+              </li>
               <li>
                 <Link href="/about" className="group font-sans text-gray-400 hover:text-white transition-colors relative">
                   About Us
@@ -133,13 +150,13 @@ export function Footer() {
             </h4>
             <ul className="space-y-2.5 font-sans text-gray-400 text-sm">
               <li>Caldwell, Idaho 83605</li>
-              <li>{SITE_PHONE}</li>
-              <li>info@crossfitcanvas.com</li>
+              <li><Link href={SITE_PHONE_HREF} className="group font-sans text-gray-400 hover:text-white transition-colors relative">{SITE_PHONE}</Link></li>
+              <li><Link href={`mailto:${SITE_EMAIL}`} className="group font-sans text-gray-400 hover:text-white transition-colors relative">{SITE_EMAIL}</Link></li>
               <li className="mt-4 pt-2">
                 <p className="font-semibold text-white mb-2">Hours:</p>
                 <p>Mon-Fri: 5am-8pm</p>
-                <p>Sat: 7am-12pm</p>
-                <p>Sun: 9am-11am</p>
+                <p>Sat: 8am-1pm</p>
+                <p>Sun: 9am-1pm</p>
               </li>
             </ul>
           </div>

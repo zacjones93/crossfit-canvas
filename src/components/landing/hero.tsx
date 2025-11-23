@@ -37,29 +37,24 @@ export function Hero() {
       {/* Content - Asymmetric layout */}
       <div className="relative z-20 container mx-auto px-6 text-center max-w-5xl">
         {/* Headline: Bebas Neue, UPPERCASE, White, 72px */}
-        <h1 className="font-heading text-4xl md:text-7xl lg:text-[72px] uppercase tracking-wide text-white mb-6 drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] leading-tight text-balance">
-          Build strength, lose fat, boost endurance, and gain confidence.
+        <h1 className="font-heading text-4xl md:text-7xl lg:text-[72px] uppercase tracking-wide text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] leading-tight text-balance">
+          Forging Elite Fitness, Fighting Chronic Disease
         </h1>
 
         {/* Subheadline: Work Sans, White, 20px */}
-        <p className="font-sans text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto font-normal leading-relaxed">
-          Small classes (10-15 people). Expert coaching. Every fitness level
-          welcome.
+        <p className="font-sans text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto font-normal leading-relaxed uppercase">
+          Faith • Family • Fitness • Freedom
         </p>
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           {/* Primary CTA: Crimson Red, White Text, UPPERCASE */}
-          <Link
-            href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Link href="/tour">
             <Button
               size="lg"
-              className="bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px]"
+              className="bg-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px] hover:bg-white"
             >
-              Book Your Free No Sweat Intro
+              Schedule a Tour
             </Button>
           </Link>
 

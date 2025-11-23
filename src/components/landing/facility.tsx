@@ -46,11 +46,7 @@ export function Facility() {
                   ))}
                 </div>
 
-                <Link
-                  href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <Link href="/tour">
                   <Button
                     size="lg"
                     className="bg-white text-black text-base font-bold uppercase px-8 py-6 rounded-sm transition-all hover:scale-105 hover:cursor-pointer"

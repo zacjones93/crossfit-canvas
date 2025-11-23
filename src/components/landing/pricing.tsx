@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import Link from "next/link";
 
 export function Pricing() {
   const plans = [
@@ -150,14 +151,12 @@ export function Pricing() {
             >
               • 1 Week Drop-In: $45
             </a>
-            <a
-              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/tour"
               className="hover:text-white transition-colors"
             >
               • Free No Sweat Intro Consultation
-            </a>
+            </Link>
           </div>
           <a
             href="/contact"
