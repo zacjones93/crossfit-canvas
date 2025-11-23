@@ -30,13 +30,31 @@ const ActionButtons = () => {
   const { setIsOpen } = useNavStore();
 
   return (
-    <Button
-      asChild
-      onClick={() => setIsOpen(false)}
-      className="bg-white text-black font-bold uppercase text-sm px-6 rounded-sm transition-all hover:scale-105"
-    >
-      <Link href="/pricing">Join Now</Link>
-    </Button>
+    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+      <Button
+        asChild
+        onClick={() => setIsOpen(false)}
+        variant="outline"
+        className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-black font-bold uppercase text-sm px-6 rounded-sm transition-all hover:scale-105 w-full md:w-auto"
+      >
+        <Link href="/drop-in">Drop-In</Link>
+      </Button>
+      <Button
+        asChild
+        onClick={() => setIsOpen(false)}
+        variant="outline"
+        className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-black font-bold uppercase text-sm px-6 rounded-sm transition-all hover:scale-105 w-full md:w-auto"
+      >
+        <Link href="/tour">Schedule Tour</Link>
+      </Button>
+      <Button
+        asChild
+        onClick={() => setIsOpen(false)}
+        className="bg-white text-black font-bold uppercase text-sm px-6 rounded-sm transition-all hover:scale-105 w-full md:w-auto"
+      >
+        <Link href="/intro-class">Intro Class</Link>
+      </Button>
+    </div>
   );
 };
 
@@ -54,11 +72,9 @@ export function Navigation() {
   ];
 
   const navItems: NavItem[] = [
-    { name: "Home", href: "/" },
-    { name: "What is CrossFit?", href: "/what-is-crossfit" },
     { name: "About", href: "/about" },
-    { name: "Schedule", href: "/schedule" },
     { name: "Pricing", href: "/pricing" },
+    { name: "What is CrossFit?", href: "/what-is-crossfit" },
   ];
 
   const isActiveLink = (itemHref: string) => {
