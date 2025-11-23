@@ -41,12 +41,10 @@ export default function SchedulePage() {
             New to CrossFit Canvas? Start with a free intro session.
           </p>
           <Link
-            href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/tour"
             className="inline-block bg-white text-black font-bold uppercase text-lg px-8 py-4 rounded-sm transition-all hover:scale-105 shadow-lg"
           >
-            Book Your Free No Sweat Intro
+            Schedule a Tour
           </Link>
         </div>
       </div>

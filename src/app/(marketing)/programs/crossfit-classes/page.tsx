@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { ClassBreakdown } from "@/components/landing/class-breakdown";
 import { FinalCTA } from "@/components/landing/final-cta";
+import Link from "next/link";
 
 function ProgramHero() {
   return (
@@ -35,13 +36,9 @@ function ProgramHero() {
             size="lg"
             className="bg-black hover:bg-white hover:text-black border-2 border-white text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 min-w-[200px]"
           >
-            <a
-              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Book Your Free No Sweat Intro
-            </a>
+            <Link href="/tour">
+              Schedule a Tour
+            </Link>
           </Button>
         </div>
       </div>

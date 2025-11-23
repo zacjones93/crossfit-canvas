@@ -2,8 +2,6 @@ import { Metadata } from "next";
 import { Hero } from "@/components/landing/hero";
 import { SocialProof } from "@/components/landing/social-proof";
 import { GettingStarted } from "@/components/landing/getting-started";
-import { FAQHighlights } from "@/components/landing/faq-highlights";
-import { Pricing } from "@/components/landing/pricing";
 import { GoogleReviews } from "@/components/landing/google-reviews";
 import { Community } from "@/components/landing/community";
 import { AccessibleLocation } from "@/components/landing/accessible-location";

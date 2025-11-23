@@ -8,7 +8,7 @@ import {
   Users,
   Calendar,
 } from "lucide-react";
-import { AccessibleLocation } from "@/components/landing/accessible-location";
+import Link from "next/link";
 
 function ProgramHero() {
   return (
@@ -35,13 +35,9 @@ function ProgramHero() {
             className="bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px]"
             asChild
           >
-            <a
-              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Schedule a Consultation
-            </a>
+            <Link href="/tour">
+              Schedule a Tour
+            </Link>
           </Button>
         </div>
       </div>
@@ -210,13 +206,9 @@ function LifestyleIntegrationSection() {
             className="bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
             asChild
           >
-            <a
-              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Start Your Nutrition Journey
-            </a>
+            <Link href="/tour">
+              Schedule a Tour
+            </Link>
           </Button>
         </div>
       </div>

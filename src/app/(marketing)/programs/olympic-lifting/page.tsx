@@ -9,6 +9,7 @@ import {
   Award,
 } from "lucide-react";
 import { FinalCTA } from "@/components/landing/final-cta";
+import Link from "next/link";
 
 function ProgramHero() {
   return (
@@ -30,12 +31,16 @@ function ProgramHero() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+
           <Button
             size="lg"
-            className="bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px]"
+            className="border-2 border-white text-black bg-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px] hover:bg-white"
+            asChild
           >
-            Schedule a Consultation
-          </Button>
+            <Link href="/tour">
+              Schedule a Tour
+            </Link>
+            </Button>
         </div>
       </div>
 

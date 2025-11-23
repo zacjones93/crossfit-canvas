@@ -11,7 +11,7 @@ import {
   Heart,
   Clock,
 } from "lucide-react";
-import { FinalCTA } from "@/components/landing/final-cta";
+import Link from "next/link";
 
 function ProgramHero() {
   return (
@@ -38,13 +38,9 @@ function ProgramHero() {
             size="lg"
             className="bg-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px]"
           >
-            <a
-              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Book Your Free No Sweat Intro
-            </a>
+            <Link href="/tour">
+              Schedule a Tour
+            </Link>
           </Button>
         </div>
       </div>
@@ -317,13 +313,9 @@ function ReadyToStartSection() {
             size="lg"
             className="w-full sm:w-auto bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-6 sm:px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
           >
-            <a
-              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Schedule Your Free Consultation
-            </a>
+            <Link href="/tour">
+              Schedule a Tour
+            </Link>
           </Button>
         </div>
       </div>

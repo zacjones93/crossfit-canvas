@@ -9,7 +9,7 @@ import {
   DollarSign,
   Target,
 } from "lucide-react";
-import { AccessibleLocation } from "@/components/landing/accessible-location";
+import Link from "next/link";
 
 function ProgramHero() {
   return (
@@ -36,13 +36,9 @@ function ProgramHero() {
             className="bg-white hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 min-w-[200px]"
             asChild
           >
-            <a
-              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Book Free Trial Class
-            </a>
+            <Link href="/tour">
+              Schedule a Tour
+            </Link>
           </Button>
         </div>
       </div>
@@ -367,13 +363,9 @@ function WhyKidsFitnessSection() {
             className="bg-white hover:bg-black hover:text-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer"
             asChild
           >
-            <a
-              href="https://canvas.pushpress.com/landing/appointments/apptpkg_63f8d1d720bba8b2a72920b11cdc"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Book Free Trial Class
-            </a>
+            <Link href="/tour">
+              Schedule a Tour
+            </Link>
           </Button>
         </div>
       </div>
