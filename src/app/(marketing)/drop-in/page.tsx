@@ -2,6 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 
+const ONE_WEEK_PLAN_URL = "https://canvas.pushpress.com/landing/plans/plan_3f8d7b94131578"
+const ONE_CLASS_PLAN_URL = "https://canvas.pushpress.com/landing/plans/plan_c40d80e9590849"
+const ONE_OPEN_GYM_PLAN_URL = "https://canvas.pushpress.com/landing/plans/plan_190f923fb53540"
+
 export const metadata: Metadata = {
   title: "Drop-In | CrossFit Canvas",
   description:
@@ -33,8 +37,10 @@ export default function DropInPage() {
             <div className="grid md:grid-cols-3 gap-8">
               {/* 1-Week Option */}
               <Link
-                href="#"
+                href={ONE_WEEK_PLAN_URL}
                 className="group bg-charcoal-dark border-2 border-white/10 hover:border-white/30 rounded-lg p-8 transition-all hover:scale-105 flex flex-col items-center text-center"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <h3 className="font-heading text-3xl uppercase text-white mb-4 tracking-wide">
                   1-Week
@@ -45,15 +51,17 @@ export default function DropInPage() {
                 <p className="font-sans text-white/70 mb-6">
                   Full access to all classes and facility for one week
                 </p>
-                <Button className="w-full bg-white text-black font-bold uppercase hover:bg-white/90 transition-all">
-                  Get Started
+                <Button className="w-full bg-white text-black font-bold uppercase hover:bg-white/90 transition-all hover:cursor-pointer">
+                  Buy Now
                 </Button>
               </Link>
 
               {/* 1-Class Option */}
               <Link
-                href="#"
+                href={ONE_CLASS_PLAN_URL}
                 className="group bg-charcoal-dark border-2 border-white/10 hover:border-white/30 rounded-lg p-8 transition-all hover:scale-105 flex flex-col items-center text-center"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <h3 className="font-heading text-3xl uppercase text-white mb-4 tracking-wide">
                   1-Class
@@ -64,15 +72,17 @@ export default function DropInPage() {
                 <p className="font-sans text-white/70 mb-6">
                   Drop in for a single class and experience our coaching
                 </p>
-                <Button className="w-full bg-white text-black font-bold uppercase hover:bg-white/90 transition-all">
-                  Get Started
+                <Button className="w-full bg-white text-black font-bold uppercase hover:bg-white/90 transition-all hover:cursor-pointer">
+                  Buy Now
                 </Button>
               </Link>
 
               {/* 1-Open Gym Option */}
               <Link
-                href="#"
+                href={ONE_OPEN_GYM_PLAN_URL}
                 className="group bg-charcoal-dark border-2 border-white/10 hover:border-white/30 rounded-lg p-8 transition-all hover:scale-105 flex flex-col items-center text-center"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <h3 className="font-heading text-3xl uppercase text-white mb-4 tracking-wide">
                   1-Open Gym
@@ -83,8 +93,8 @@ export default function DropInPage() {
                 <p className="font-sans text-white/70 mb-6">
                   Use our facility during open gym for your own workout
                 </p>
-                <Button className="w-full bg-white text-black font-bold uppercase hover:bg-white/90 transition-all">
-                  Get Started
+                <Button className="w-full bg-white text-black font-bold uppercase hover:bg-white/90 transition-all hover:cursor-pointer">
+                  Buy Now
                 </Button>
               </Link>
             </div>
