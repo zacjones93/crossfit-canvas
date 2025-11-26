@@ -39,9 +39,9 @@
      * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
      */
     "vars": {
-        "EMAIL_FROM": "info@crossfitcanvas.com",
+        "EMAIL_FROM": "noreply@contact.crossfitcanvas.com",
         "EMAIL_FROM_NAME": "CrossFit Canvas",
-        "EMAIL_REPLY_TO": "info@crossfitcanvas.com"
+        "EMAIL_REPLY_TO": "crossfitcanvas@gmail.com"
     },
     /**
      * Note: Use secrets to store sensitive data.

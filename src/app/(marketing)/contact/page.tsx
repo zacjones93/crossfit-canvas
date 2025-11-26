@@ -9,42 +9,47 @@ import { SITE_EMAIL, SITE_PHONE, SITE_PHONE_HREF } from "@/constants";
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { Captcha } from "@/components/captcha";
+import { submitContactFormAction } from "./contact.action";
+import { useServerAction } from "zsa-react";
+import { useConfigStore } from "@/state/config";
 
 export default function ContactPage() {
+  const { isTurnstileEnabled } = useConfigStore();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>();
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const { execute: submitForm, isPending } = useServerAction(submitContactFormAction, {
+    onError: (error) => {
+      toast.dismiss();
+      toast.error(error.err?.message || "Failed to send message");
+    },
+    onStart: () => {
+      toast.loading("Sending your message...");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Message sent successfully!");
+      setIsSuccess(true);
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    // TODO: Future implementation - save to Cloudflare D1 database
-    // const response = await fetch('/api/contact', {
-    //   method: 'POST',
-    //   body: JSON.stringify(formData),
-    // });
-
-    // For now, use mailto
-    const subject = `Contact Form Submission from ${formData.name}`;
-    const body = `Name: ${formData.name}%0D%0AEmail: ${
-      formData.email
-    }%0D%0APhone: ${
-      formData.phone || "Not provided"
-    }%0D%0A%0D%0AMessage:%0D%0A${formData.message}`;
-    window.location.href = `mailto:info@crossfitcanvas.com?subject=${encodeURIComponent(
-      subject
-    )}&body=${body}`;
-
-    setTimeout(() => {
-      toast.success("Opening your email client...");
-      setFormData({ name: "", email: "", phone: "", message: "" });
-      setIsSubmitting(false);
-    }, 500);
+    await submitForm({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || undefined,
+      message: formData.message,
+      captchaToken,
+    });
   };
 
   return (
@@ -162,10 +167,40 @@ export default function ContactPage() {
 
             {/* Contact Form */}
             <div className="bg-card rounded-lg border p-8 shadow-lg">
-              <h2 className="font-heading text-2xl font-bold mb-6">
-                Send Us a Message
-              </h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              {isSuccess ? (
+                <div className="text-center py-8">
+                  <div className="mb-6">
+                    <div className="mx-auto w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-4">
+                      <Mail className="w-8 h-8 text-green-600 dark:text-green-400" />
+                    </div>
+                    <h2 className="font-heading text-2xl font-bold mb-3">
+                      Message Sent Successfully!
+                    </h2>
+                    <p className="text-lg text-muted-foreground mb-4">
+                      Thank you for reaching out to us.
+                    </p>
+                    <p className="text-base text-muted-foreground">
+                      We&apos;ll get back to you by email or phone as soon as
+                      possible, typically within 24 hours.
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      setIsSuccess(false);
+                      setFormData({ name: "", email: "", phone: "", message: "" });
+                      setCaptchaToken(undefined);
+                    }}
+                    className="bg-black hover:bg-white hover:text-black border border-white text-white text-base font-bold uppercase px-8 py-3 h-auto rounded-sm transition-all hover:scale-105"
+                  >
+                    Send Another Message
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <h2 className="font-heading text-2xl font-bold mb-6">
+                    Send Us a Message
+                  </h2>
+                  <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <Label
                     htmlFor="name"
@@ -244,14 +279,27 @@ export default function ContactPage() {
                   />
                 </div>
 
+                {isTurnstileEnabled && (
+                  <div className="flex justify-center">
+                    <Captcha
+                      onSuccess={(token) => setCaptchaToken(token)}
+                      options={{
+                        theme: "dark",
+                      }}
+                    />
+                  </div>
+                )}
+
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isPending || (isTurnstileEnabled && !captchaToken)}
                   className="w-full bg-black hover:bg-white hover:text-black border border-white text-white text-base font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isPending ? "Sending..." : "Send Message"}
                 </Button>
               </form>
+                </>
+              )}
             </div>
           </div>
         </div>

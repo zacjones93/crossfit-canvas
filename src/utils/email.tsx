@@ -5,6 +5,7 @@ import { render } from '@react-email/render'
 import { ResetPasswordEmail } from "@/react-email/reset-password";
 import { VerifyEmail } from "@/react-email/verify-email";
 import { TeamInviteEmail } from "@/react-email/team-invite";
+import { ContactFormEmail } from "@/react-email/contact-form";
 import isProd from "./is-prod";
 
 interface BrevoEmailOptions {
@@ -59,7 +60,18 @@ async function sendResendEmail({
     throw new Error("RESEND_API_KEY is not set");
   }
 
+  if (!process.env.EMAIL_FROM) {
+    throw new Error("EMAIL_FROM environment variable is not set");
+  }
+
   const replyTo = originalReplyTo ?? process.env.EMAIL_REPLY_TO;
+
+  // Construct the from address
+  const fromAddress = from ?? (
+    process.env.EMAIL_FROM_NAME
+      ? `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM}>`
+      : process.env.EMAIL_FROM
+  );
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -68,7 +80,7 @@ async function sendResendEmail({
       "Content-Type": "application/json",
     } as const,
     body: JSON.stringify({
-      from: from ?? `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM}>`,
+      from: fromAddress,
       to,
       subject,
       html,
@@ -267,6 +279,61 @@ export async function sendTeamInvitationEmail({
       subject: `You've been invited to join a team on ${SITE_DOMAIN}`,
       htmlContent: html,
       tags: ["team-invitation"],
+    });
+  }
+}
+
+export async function sendContactEmail({
+  name,
+  email,
+  phone,
+  message,
+  recipientEmail,
+}: {
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+  recipientEmail: string;
+}) {
+  if (!isProd) {
+    console.warn('\n\n=== CONTACT FORM SUBMISSION (Development) ===');
+    console.warn('From:', name, `<${email}>`);
+    if (phone) console.warn('Phone:', phone);
+    console.warn('To:', recipientEmail);
+    console.warn('Message:', message);
+    console.warn('===========================================\n');
+    return;
+  }
+
+  const html = await render(ContactFormEmail({
+    name,
+    email,
+    phone,
+    message,
+  }));
+
+  const provider = await getEmailProvider();
+
+  if (!provider && isProd) {
+    throw new Error("No email provider configured. Set either RESEND_API_KEY or BREVO_API_KEY in your environment.");
+  }
+
+  if (provider === "resend") {
+    await sendResendEmail({
+      to: [recipientEmail],
+      subject: `Form Submission from ${name} on ${SITE_DOMAIN}`,
+      html,
+      replyTo: email,
+      tags: [{ name: "type", value: "contact-form" }],
+    });
+  } else {
+    await sendBrevoEmail({
+      to: [{ email: recipientEmail }],
+      subject: `Form Submission from ${name} on ${SITE_DOMAIN}`,
+      htmlContent: html,
+      replyTo: email,
+      tags: ["contact-form"],
     });
   }
 }
