@@ -6,6 +6,7 @@ import { GoogleReviews } from "@/components/landing/google-reviews";
 import { Community } from "@/components/landing/community";
 import { AccessibleLocation } from "@/components/landing/accessible-location";
 import { Facility } from "@/components/landing/facility";
+import { MayhemAffiliate } from "@/components/landing/mayhem-affiliate";
 import { FinalCTA } from "@/components/landing/final-cta";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function Home() {
       <AccessibleLocation />
       <Facility />
       {/* <ValuePillars /> */}
+      <MayhemAffiliate />
       <FinalCTA />
     </main>
   );
