@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { SITE_PHONE, SITE_PHONE_HREF } from "@/constants";
+import { SITE_EMAIL, SITE_PHONE, SITE_PHONE_HREF } from "@/constants";
 import { useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -106,10 +106,10 @@ export default function ContactPage() {
                         Email
                       </h3>
                       <a
-                        href="mailto:info@crossfitcanvas.com"
+                        href={`mailto:${SITE_EMAIL}`}
                         className="text-base hover:text-primary transition-colors"
                       >
-                        info@crossfitcanvas.com
+                        {SITE_EMAIL}
                       </a>
                     </div>
                   </div>
@@ -144,11 +144,15 @@ export default function ContactPage() {
                       </h3>
                       <p className="text-base leading-relaxed">
                         <span className="font-semibold">Monday-Friday:</span>
-                        <br />5 AM - 8 PM
+                        <br />5am - 8pm
                       </p>
                       <p className="text-base leading-relaxed mt-2">
-                        <span className="font-semibold">Weekends:</span>
-                        <br />8 AM - 3 PM
+                        <span className="font-semibold">Saturday:</span>
+                        <br />8am - 1pm
+                      </p>
+                      <p className="text-base leading-relaxed mt-2">
+                        <span className="font-semibold">Sunday:</span>
+                        <br />9am - 1pm
                       </p>
                     </div>
                   </div>

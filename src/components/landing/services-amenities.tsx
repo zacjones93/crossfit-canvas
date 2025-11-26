@@ -13,11 +13,14 @@ const servicesAmenitiesData: ServiceAmenity[] = [
       <div className="space-y-3">
         <div>
           <p className="font-bold text-white">Month-To-Month: $250/Month</p>
-          <p className="text-xs text-white/80">*CF Canvas Members: $25/off</p>
+          <p className="font-bold text-white">3-Month Commitment: $200/Month</p>
+          <p className="text-xs text-white/80">*CF Canvas Members: $50/off</p>
         </div>
         <div>
-          <p className="font-bold text-white">3-Month Commitment: $200/Month</p>
-          <p className="text-xs text-white/80">*CF Canvas Members: $25/off</p>
+          <p className="font-bold text-white">
+            Nutrition Consult &amp; Goals Meeting with Coach follow up.
+          </p>
+          <p>Cost: $99</p>
         </div>
       </div>
     ),
@@ -33,8 +36,9 @@ const servicesAmenitiesData: ServiceAmenity[] = [
         </div>
         <div>
           <p className="font-bold text-white">Kids Class (10) Punch Card:</p>
-          <p>Cost: $100</p>
+          <p>Cost: $99</p>
         </div>
+        <p className="text-xs text-white/80">*Single Kids Class: $15</p>
       </div>
     ),
   },
@@ -42,22 +46,15 @@ const servicesAmenitiesData: ServiceAmenity[] = [
     title: "Punch Card & Drop Ins",
     content: (
       <>
-        <p>
-          1 Class Drop In: <span className="text-white font-bold">$20</span>
-        </p>
-        <p>
-          10 Class Punch Card:{" "}
-          <span className="text-white font-bold">$169</span>
-        </p>
-        <p>
-          1 Week Drop in: <span className="text-white font-bold">$50</span>
-        </p>
+        <p>Single - Open Gym $10</p>
+        <p>10 Open Gym Punch Card $79</p>
+        <p>Single Class - Drop In $20</p>
+        <p>10 Class Punch Card $169</p>
+        <p>1 Week Drop in $45</p>
         <p className="text-xs text-white/80 pt-2">
           *(Punch Cards Expire in 6 Months)
         </p>
-        <p className="text-xs text-white/80">
-          **CF Canvas Members receive 25% off Punch Cards for additional classes
-        </p>
+        <p className="text-xs text-white/80">Add: T-Shirt for $15!</p>
       </>
     ),
   },
@@ -77,24 +74,9 @@ const servicesAmenitiesData: ServiceAmenity[] = [
     title: "Kids Room Supervision:",
     content: (
       <>
-        <p>
-          Monthly: <span className="text-white font-bold">$40/month</span>
-        </p>
-        <p className="text-xs text-white/80">**$10/Month for each additional</p>
-        <p className="text-xs text-white/80">*Daily: $5/per child</p>
+        <p className="font-bold text-white">Free Included with memberships.</p>
         <p className="text-xs text-white/80 pt-2">
           *See Schedule for Current Hours
-        </p>
-      </>
-    ),
-  },
-  {
-    title: "Personal Training",
-    content: (
-      <>
-        <p className="text-white font-bold text-lg">$50/Session</p>
-        <p className="text-xs text-white/80 pt-2">
-          *Discounts available for pre-paying for packages of 5+ sessions
         </p>
       </>
     ),
@@ -106,12 +88,12 @@ const servicesAmenitiesData: ServiceAmenity[] = [
         <p className="mb-2">
           Unlimited Access to Infrared Sauna &amp; Normatec Recovery Boots
         </p>
-        <p className="text-xs text-white/60">(30min Sessions)</p>
+        <p className="text-xs text-white/60">(30-min Sessions)</p>
         <div className="pt-2 space-y-1">
           <p className="font-bold text-white">Cost:</p>
-          <p>$15/30min Session</p>
+          <p>$15 for 30-min Session</p>
           <p>$25/Month</p>
-          <p>$199/1-Year</p>
+          <p>$199/1-Year - Pre-Paid</p>
         </div>
       </>
     ),
@@ -122,27 +104,44 @@ const servicesAmenitiesData: ServiceAmenity[] = [
       <>
         <p>
           Military / Police / Firefighter:{" "}
-          <span className="text-white font-bold">15%</span>
+          <span className="text-white font-bold">15% off</span>
         </p>
-        <p>
-          Couples / Family: <span className="text-white font-bold">10%</span>
+        <p className="text-xs text-white/80">*Active Duty or retired.</p>
+        <p className="pt-2">
+          Couples / Family: <span className="text-white font-bold">10% off</span>
         </p>
-        <p>
+        <p className="text-xs text-white/80">*Same Household only.</p>
+        <p className="pt-2">
           Healthcare / Teacher / Student:{" "}
-          <span className="text-white font-bold">10%</span>
+          <span className="text-white font-bold">10% off</span>
         </p>
-        <div className="pt-3 border-t border-white/10">
-          <p className="font-bold text-white mb-2">
-            Additional Pre-Paid Discount
-          </p>
-          <p>
-            Prepaid 6 Months - <span className="text-white font-bold">5%</span>
-          </p>
-          <p>
-            Prepaid 12 Months -{" "}
-            <span className="text-white font-bold">10%</span>
-          </p>
-        </div>
+      </>
+    ),
+  },
+  {
+    title: "Pre-Paid Pricing:",
+    content: (
+      <>
+        <p>
+          <span className="font-bold text-white">1-Year Unlimited</span> =
+          $2,145 (Saves: $195)
+        </p>
+        <p>
+          <span className="font-bold text-white">6-Month Unlimited</span> =
+          $1,111 (Saves: $59)
+        </p>
+        <p className="pt-2">
+          <span className="font-bold text-white">1-Year (13 Classes/Month)</span>{" "}
+          = $1,669 (Saves: $151)
+        </p>
+        <p>
+          <span className="font-bold text-white">6-Month (13 Classes/Month)</span>{" "}
+          = $864 (Saves: $46)
+        </p>
+        <p className="text-xs text-white/80 pt-2">
+          *Receive discount on top of above pricing.
+        </p>
+        <p className="text-xs text-white/80">*None Refundable after purchase.</p>
       </>
     ),
   },
