@@ -82,7 +82,7 @@ export default function AboutPage() {
       name: "Katirah Vangaasbeck",
       credentials: "CrossFit L1",
       image: "/assets/coaches/kat.png",
-      bio: "TBD",
+      bio: "I started CrossFit in December 2021, and it quickly became my favorite part of the day. I love how it pushes you out of your comfort zone in the best way both mentally and physically.\n\nOutside of the gym, I love hanging out with my dogs, fostering animals, thrifting, and traveling.\n\nI’m all about creating a space where people feel safe to mess up, try again, laugh, grow, and do things that might scare them. I want everyone to feel welcome, supported, and capable.",
     },
   ];
 
