@@ -129,10 +129,11 @@ export default function WellnessPage() {
     {
       icon: CircleDollarSign,
       title: "Wellness Membership",
-      price: "$99",
-      period: "/month",
-      description: "8 sessions per month",
+      price: "$199",
+      period: "/year",
+      description: "unlimited sessions",
       highlight: true,
+      href: null,
     },
     {
       icon: Ticket,
@@ -141,6 +142,7 @@ export default function WellnessPage() {
       period: "",
       description: "Never expires",
       highlight: false,
+      href: "https://app.acuityscheduling.com/schedule/0cb40a58",
     },
   ];
 
@@ -321,60 +323,77 @@ export default function WellnessPage() {
 
             {/* Pricing Cards */}
             <div className="grid md:grid-cols-2 gap-8 mb-12">
-              {pricingOptions.map((option) => (
-                <div
-                  key={option.title}
-                  className={`rounded-lg p-8 border text-center ${
-                    option.highlight
-                      ? "bg-white text-black border-white"
-                      : "bg-charcoal-dark/50 text-white border-white/10"
-                  }`}
-                >
-                  <div className="flex justify-center mb-4">
-                    <div
-                      className={`p-3 rounded-full ${
-                        option.highlight ? "bg-black/10" : "bg-white/10"
-                      }`}
-                    >
-                      <option.icon
-                        className={`w-8 h-8 ${
-                          option.highlight ? "text-black" : "text-white"
+              {pricingOptions.map((option) => {
+                const cardContent = (
+                  <>
+                    <div className="flex justify-center mb-4">
+                      <div
+                        className={`p-3 rounded-full ${
+                          option.highlight ? "bg-black/10" : "bg-white/10"
                         }`}
-                      />
+                      >
+                        <option.icon
+                          className={`w-8 h-8 ${
+                            option.highlight ? "text-black" : "text-white"
+                          }`}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <h3
-                    className={`font-heading text-xl font-bold mb-4 ${
-                      option.highlight ? "text-black" : "text-white"
-                    }`}
-                  >
-                    {option.title}
-                  </h3>
-                  <div className="mb-4">
-                    <span
-                      className={`text-4xl font-bold ${
+                    <h3
+                      className={`font-heading text-xl font-bold mb-4 ${
                         option.highlight ? "text-black" : "text-white"
                       }`}
                     >
-                      {option.price}
-                    </span>
-                    <span
-                      className={`text-lg ${
-                        option.highlight ? "text-black/60" : "text-white/60"
-                      }`}
+                      {option.title}
+                    </h3>
+                    <div className="mb-4">
+                      <span
+                        className={`text-4xl font-bold ${
+                          option.highlight ? "text-black" : "text-white"
+                        }`}
+                      >
+                        {option.price}
+                      </span>
+                      <span
+                        className={`text-lg ${
+                          option.highlight ? "text-black/60" : "text-white/60"
+                        }`}
+                      >
+                        {option.period}
+                      </span>
+                    </div>
+                    <p
+                      className={
+                        option.highlight ? "text-black/70" : "text-white/70"
+                      }
                     >
-                      {option.period}
-                    </span>
-                  </div>
-                  <p
-                    className={
-                      option.highlight ? "text-black/70" : "text-white/70"
-                    }
+                      {option.description}
+                    </p>
+                  </>
+                );
+
+                const cardClassName = `rounded-lg p-8 border text-center ${
+                  option.highlight
+                    ? "bg-white text-black border-white"
+                    : "bg-charcoal-dark/50 text-white border-white/10"
+                } ${option.href ? "hover:border-white/30 transition-colors" : ""}`;
+
+                return option.href ? (
+                  <Link
+                    key={option.title}
+                    href={option.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cardClassName}
                   >
-                    {option.description}
-                  </p>
-                </div>
-              ))}
+                    {cardContent}
+                  </Link>
+                ) : (
+                  <div key={option.title} className={cardClassName}>
+                    {cardContent}
+                  </div>
+                );
+              })}
             </div>
 
             {/* Contact Note */}

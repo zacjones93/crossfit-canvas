@@ -104,7 +104,7 @@ export function Navigation() {
               />
             </Link>
           </div>
-          <div className="hidden md:flex md:items-center md:space-x-6">
+          <div className="hidden lg:flex lg:items-center lg:space-x-6">
             <div className="flex items-baseline space-x-1">
               {navItems.map((item) => (
                 <Link
@@ -160,7 +160,7 @@ export function Navigation() {
             </div>
             <ActionButtons />
           </div>
-          <div className="md:hidden flex items-center">
+          <div className="lg:hidden flex items-center">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button
