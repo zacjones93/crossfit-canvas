@@ -14,7 +14,10 @@
       "WebFetch(domain:www.prvnnashville.com)",
       "mcp__playwright__browser_navigate",
       "Bash(pnpm lint:*)",
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:www.mayhemnation.com)",
+      "WebFetch(domain:resend.com)"
     ],
     "deny": [],
     "ask": []

@@ -74,6 +74,7 @@ export function Navigation() {
   const navItems: NavItem[] = [
     { name: "About", href: "/about" },
     { name: "Pricing", href: "/pricing" },
+    { name: "Wellness", href: "/wellness" as Route },
     { name: "What is CrossFit?", href: "/what-is-crossfit" },
   ];
 
