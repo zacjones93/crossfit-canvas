@@ -381,7 +381,7 @@ export default function WellnessPage() {
                 return option.href ? (
                   <Link
                     key={option.title}
-                    href={option.href}
+                    href={option.href as `https://${string}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cardClassName}
