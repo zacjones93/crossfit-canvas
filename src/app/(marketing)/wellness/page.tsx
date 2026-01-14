@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Recovery & Wellness | CrossFit Canvas Caldwell",
@@ -133,7 +134,7 @@ export default function WellnessPage() {
       period: "/year",
       description: "unlimited sessions",
       highlight: true,
-      href: null,
+      href: "https://canvas.pushpress.com/landing/plans/plan_cbf89448af0d46",
     },
     {
       icon: Ticket,
@@ -166,15 +167,27 @@ export default function WellnessPage() {
       <section className="bg-black py-16 md:py-24">
         <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4 text-white uppercase tracking-wide">
-                Infrared Sauna
-              </h2>
-              <p className="text-lg text-white/80 max-w-2xl mx-auto">
-                Experience the healing power of infrared heat therapy. Our
-                full-spectrum infrared sauna penetrates deep into tissues for
-                maximum therapeutic benefits.
-              </p>
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-12">
+              <div className="relative aspect-[4/5] rounded-lg overflow-hidden border border-white/10">
+                <Image
+                  src="/assets/sauna.webp"
+                  alt="Full-spectrum infrared sauna at CrossFit Canvas"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                />
+              </div>
+              <div className="text-center md:text-left">
+                <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4 text-white uppercase tracking-wide">
+                  Infrared Sauna
+                </h2>
+                <p className="text-lg text-white/80">
+                  Experience the healing power of infrared heat therapy. Our
+                  full-spectrum infrared sauna penetrates deep into tissues for
+                  maximum therapeutic benefits.
+                </p>
+              </div>
             </div>
 
             {/* Benefits Grid */}
@@ -398,6 +411,8 @@ export default function WellnessPage() {
 
             {/* Contact Note */}
             <div className="text-center">
+              <Link href="https://canvas.pushpress.com/landing/plans/plan_058e1b07367043" target="_blank" rel="noopener noreferrer" className="text-white/60 text-base underline">Monthly Membership Option Available</Link>
+
               <p className="text-white/60 text-base">
                 Contact us at the gym to discuss membership options
               </p>

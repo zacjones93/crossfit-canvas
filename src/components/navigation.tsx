@@ -24,6 +24,12 @@ type NavItem = {
 type ProgramItem = {
   name: string;
   href: Route;
+  newUntil?: Date; // Show "NEW" badge until this date
+};
+
+const isNewProgram = (program: ProgramItem) => {
+  if (!program.newUntil) return false;
+  return new Date() < program.newUntil;
 };
 
 const ActionButtons = () => {
@@ -63,6 +69,9 @@ export function Navigation() {
   const pathname = usePathname();
 
   const programItems: ProgramItem[] = [
+    { name: "Mayhem Hunt", href: "/programs/mayhem-hunt", newUntil: new Date("2026-01-27") },
+    { name: "Spin Classes", href: "/programs/spin-classes", newUntil: new Date("2026-01-27") },
+    { name: "Mayhem Life 50+", href: "/programs/mayhem-life-50", newUntil: new Date("2026-01-27") },
     { name: "CrossFit Classes", href: "/programs/crossfit-classes" },
     { name: "Olympic Lifting", href: "/programs/olympic-lifting" },
     { name: "Nutrition", href: "/programs/nutrition" },
@@ -149,9 +158,14 @@ export function Navigation() {
                     <DropdownMenuItem key={program.name} asChild>
                       <Link
                         href={program.href!}
-                        className="font-subheading text-white/80 hover:text-white focus:text-white uppercase text-xs cursor-pointer focus:bg-white/10 focus-visible:outline-none"
+                        className="font-subheading text-white/80 hover:text-white focus:text-white uppercase text-xs cursor-pointer focus:bg-white/10 focus-visible:outline-none flex items-center gap-2"
                       >
                         {program.name}
+                        {isNewProgram(program) && (
+                          <span className="bg-white text-black text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+                            NEW
+                          </span>
+                        )}
                       </Link>
                     </DropdownMenuItem>
                   ))}
@@ -203,13 +217,18 @@ export function Navigation() {
                           key={program.name}
                           href={program.href!}
                           className={cn(
-                            "group block px-3 py-3 text-base font-subheading font-bold uppercase tracking-wide text-white/80 hover:text-white focus:text-white hover:bg-white/5 focus:bg-white/5 no-underline transition-colors relative rounded focus-visible:outline-none",
+                            "group flex items-center gap-2 px-3 py-3 text-base font-subheading font-bold uppercase tracking-wide text-white/80 hover:text-white focus:text-white hover:bg-white/5 focus:bg-white/5 no-underline transition-colors relative rounded focus-visible:outline-none",
                             pathname === program.href &&
                               "text-white bg-white/5 border-l-4 border-white"
                           )}
                           onClick={() => setIsOpen(false)}
                         >
                           {program.name}
+                          {isNewProgram(program) && (
+                            <span className="bg-white text-black text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
+                              NEW
+                            </span>
+                          )}
                         </Link>
                       ))}
                     </div>

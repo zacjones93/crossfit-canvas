@@ -17,7 +17,13 @@
       "Bash(pnpm build:*)",
       "Bash(ls:*)",
       "WebFetch(domain:www.mayhemnation.com)",
-      "WebFetch(domain:resend.com)"
+      "WebFetch(domain:resend.com)",
+      "mcp__plugin_swarm_swarm-tools__swarmmail_init",
+      "mcp__plugin_swarm_swarm-tools__hivemind_find",
+      "mcp__plugin_swarm_swarm-tools__swarmmail_reserve",
+      "mcp__plugin_swarm_swarm-tools__swarm_complete",
+      "mcp__plugin_swarm_swarm-tools__hivemind_store",
+      "WebFetch(domain:www.mayhemhunt.com)"
     ],
     "deny": [],
     "ask": []
