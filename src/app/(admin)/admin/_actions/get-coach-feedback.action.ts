@@ -30,7 +30,7 @@ const getCoachFeedbackHandler = async ({ input }: { input: { coachSlug: string }
   const feedbackRows = await db.query.coachFeedbackTable.findMany({
     where: eq(coachFeedbackTable.reviewedCoachId, coach.id),
     with: {
-      items: true,
+      items: { with: { annotation: true } },
       reviewer: true,
     },
     orderBy: (feedback, { desc }) => [desc(feedback.createdAt)],
@@ -43,12 +43,26 @@ const getCoachFeedbackHandler = async ({ input }: { input: { coachSlug: string }
   const questions = await getAllFeedbackQuestions()
 
   const feedbackEntries = feedbackRows.map((row) => {
-    const categories: Record<string, string[]> = {}
+    const categories: Record<string, Array<{
+      id: string
+      content: string
+      revisedContent: string | null
+      excluded: boolean
+      adminNote: string | null
+      hasAnnotation: boolean
+    }>> = {}
     for (const q of questions) {
       categories[q.category] = row.items
         .filter((item) => item.category === q.category)
         .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map((item) => item.content)
+        .map((item) => ({
+          id: item.id,
+          content: item.content,
+          revisedContent: item.annotation?.revisedContent ?? null,
+          excluded: item.annotation?.excluded ?? false,
+          adminNote: item.annotation?.adminNote ?? null,
+          hasAnnotation: !!item.annotation,
+        }))
     }
     return {
       id: row.id,

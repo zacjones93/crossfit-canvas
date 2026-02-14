@@ -1,11 +1,11 @@
 import { getCoachFeedbackData } from "../../_actions/get-coach-feedback.action"
 import { PageHeader } from "@/components/page-header"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { CoachFeedbackActions } from "../../_components/coaches-feedback/coach-feedback-actions"
+import { FeedbackViewToggle } from "../../_components/coaches-feedback/feedback-view-toggle"
 import { User, Calendar } from "lucide-react"
 
 interface CoachFeedbackDetailPageProps {
@@ -71,54 +71,17 @@ export default async function CoachFeedbackDetailPage({ params }: CoachFeedbackD
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <CoachFeedbackActions
-              coachName={data.coachName}
-              questions={data.questions}
-              feedbackEntries={data.feedbackEntries.map((e) => ({
-                categories: e.categories,
-                createdAt: new Date(e.createdAt),
-              }))}
-            />
-          </CardContent>
         </Card>
 
-        {/* Feedback Cards */}
-        {data.feedbackEntries.map((entry) => (
-          <Card key={entry.id}>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{entry.reviewerCoachName}</CardTitle>
-                <span className="text-sm text-muted-foreground">
-                  {format(new Date(entry.createdAt), "PPP")}
-                </span>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                {data.questions.map((question) => {
-                  const items = entry.categories[question.category] ?? []
-                  if (items.length === 0) return null
-                  return (
-                    <div key={question.category}>
-                      <h4 className="text-sm font-semibold flex items-center gap-1.5 mb-2">
-                        {question.label}
-                      </h4>
-                      <ul className="space-y-1.5">
-                        {items.map((item, i) => (
-                          <li key={i} className="text-sm text-muted-foreground flex gap-2">
-                            <span className="shrink-0">&bull;</span>
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {/* Feedback View with Toggle + Cards */}
+        <FeedbackViewToggle
+          coachName={data.coachName}
+          questions={data.questions}
+          feedbackEntries={data.feedbackEntries.map((e) => ({
+            ...e,
+            createdAt: e.createdAt.toISOString(),
+          }))}
+        />
       </div>
     </div>
   )

@@ -27,10 +27,22 @@ export const sendCoachFeedbackEmailAction = createServerAction()
       throw new Error("No feedback found for this coach")
     }
 
+    // Curate feedback: filter excluded items, use revisedContent where set
+    const curatedEntries = data.feedbackEntries.map((entry) => ({
+      categories: Object.fromEntries(
+        data.questions.map((q) => [
+          q.category,
+          (entry.categories[q.category] ?? [])
+            .filter((item) => !item.excluded)
+            .map((item) => item.revisedContent ?? item.content),
+        ])
+      ),
+    }))
+
     await sendCoachFeedbackEmail({
       coachName: data.coachName,
       questions: data.questions,
-      feedbackEntries: data.feedbackEntries,
+      feedbackEntries: curatedEntries,
       recipientEmail,
     })
 
