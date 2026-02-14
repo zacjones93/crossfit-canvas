@@ -7,12 +7,7 @@ import { signUpSchema } from "@/schemas/signup.schema";
 import { hashPassword } from "@/utils/password-hasher";
 import { createSession, generateSessionToken, setSessionTokenCookie, canSignUp } from "@/utils/auth";
 import { eq } from "drizzle-orm";
-import { createId } from "@paralleldrive/cuid2";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { getVerificationTokenKey } from "@/utils/auth-utils";
-import { sendVerificationEmail } from "@/utils/email";
 import { withRateLimit, RATE_LIMITS } from "@/utils/with-rate-limit";
-import { EMAIL_VERIFICATION_TOKEN_EXPIRATION_SECONDS } from "@/constants";
 import { getIP } from "@/utils/get-IP";
 import { validateTurnstileToken } from "@/utils/validate-captcha";
 import { isTurnstileEnabled } from "@/flags";
@@ -23,7 +18,6 @@ export const signUpAction = createServerAction()
     return withRateLimit(
       async () => {
         const db = getDB();
-        const { env } = getCloudflareContext();
 
         if (await isTurnstileEnabled() && input.captchaToken) {
           const success = await validateTurnstileToken(input.captchaToken)
@@ -54,7 +48,7 @@ export const signUpAction = createServerAction()
         // Hash the password
         const hashedPassword = await hashPassword({ password: input.password });
 
-        // Create the user
+        // Create the user (auto-verify email since we don't require verification)
         const [user] = await db.insert(userTable)
           .values({
             email: input.email,
@@ -62,6 +56,7 @@ export const signUpAction = createServerAction()
             lastName: input.lastName,
             passwordHash: hashedPassword,
             signUpIpAddress: await getIP(),
+            emailVerified: new Date(),
           })
           .returning();
 
@@ -86,33 +81,6 @@ export const signUpAction = createServerAction()
             token: sessionToken,
             userId: user.id,
             expiresAt: new Date(session.expiresAt)
-          });
-
-          // Generate verification token
-          const verificationToken = createId();
-          const expiresAt = new Date(Date.now() + EMAIL_VERIFICATION_TOKEN_EXPIRATION_SECONDS * 1000);
-
-          if (!env?.NEXT_INC_CACHE_KV) {
-            throw new Error("Can't connect to KV store");
-          }
-
-          // Save verification token in KV with expiration
-          await env.NEXT_INC_CACHE_KV.put(
-            getVerificationTokenKey(verificationToken),
-            JSON.stringify({
-              userId: user.id,
-              expiresAt: expiresAt.toISOString(),
-            }),
-            {
-              expirationTtl: Math.floor((expiresAt.getTime() - Date.now()) / 1000),
-            }
-          );
-
-          // Send verification email
-          await sendVerificationEmail({
-            email: user.email,
-            verificationToken,
-            username: user.firstName || user.email,
           });
         } catch (error) {
           console.error(error)

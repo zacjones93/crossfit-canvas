@@ -19,7 +19,7 @@ import { getIP } from "@/utils/get-IP";
 import { withRateLimit, RATE_LIMITS } from "@/utils/with-rate-limit";
 
 const generateRegistrationOptionsSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().transform(v => v.toLowerCase()),
 });
 
 export const generateRegistrationOptionsAction = createServerAction()
@@ -62,7 +62,7 @@ export const generateRegistrationOptionsAction = createServerAction()
   });
 
 const verifyRegistrationSchema = z.object({
-  email: z.string().email(),
+  email: z.string().email().transform(v => v.toLowerCase()),
   response: z.custom<RegistrationResponseJSON>(),
   challenge: z.string(),
 });

@@ -40,7 +40,7 @@ export const forgotPasswordAction = createServerAction()
         try {
           // Find user by email
           const user = await db.query.userTable.findFirst({
-            where: eq(userTable.email, input.email.toLowerCase()),
+            where: eq(userTable.email, input.email),
           });
 
           // Even if user is not found, return success to prevent email enumeration

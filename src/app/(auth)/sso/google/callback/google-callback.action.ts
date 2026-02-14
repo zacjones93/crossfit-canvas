@@ -95,7 +95,7 @@ export const googleSSOCallbackAction = createServerAction()
 
       const googleAccountId = claims.sub;
       const avatarUrl = claims.picture;
-      const email = claims.email;
+      const email = claims.email.toLowerCase();
 
       await canSignUp({ email, skipDisposableEmailCheck: true });
 
