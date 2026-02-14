@@ -69,8 +69,6 @@ export const submitCoachFeedbackAction = createServerAction()
 
           return { success: true }
         } catch (error) {
-          console.error("Coach feedback submission error:", error)
-
           if (error instanceof ZSAError) {
             throw error
           }

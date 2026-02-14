@@ -5,6 +5,7 @@ import { requireAdmin } from "@/utils/auth"
 import { z } from "zod"
 import { getCoachFeedbackData } from "./get-coach-feedback.action"
 import { sendCoachFeedbackEmail } from "@/utils/email"
+import { toSlug } from "@/utils/slug"
 
 const sendCoachFeedbackEmailSchema = z.object({
   coachName: z.string().min(1),
@@ -18,8 +19,7 @@ export const sendCoachFeedbackEmailAction = createServerAction()
 
     const { coachName, recipientEmail } = input
 
-    // Convert name to slug for the lookup
-    const coachSlug = coachName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+    const coachSlug = toSlug(coachName)
 
     const data = await getCoachFeedbackData({ input: { coachSlug } })
 

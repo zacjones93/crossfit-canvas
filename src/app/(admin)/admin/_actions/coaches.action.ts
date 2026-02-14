@@ -7,15 +7,7 @@ import { z } from "zod"
 import { eq, sql, like, or } from "drizzle-orm"
 import { coachTable, coachFeedbackTable } from "@/db/schema"
 import { PAGE_SIZE_OPTIONS } from "../admin-constants"
-
-function toSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-}
+import { toSlug } from "@/utils/slug"
 
 const getCoachesSchema = z.object({
   page: z.number().min(1).default(1),

@@ -10,5 +10,3 @@ CREATE TABLE `feedback_item_annotation` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `feedback_item_annotation_feedbackItemId_unique` ON `feedback_item_annotation` (`feedbackItemId`);
---> statement-breakpoint
-CREATE INDEX `feedback_item_annotation_item_idx` ON `feedback_item_annotation` (`feedbackItemId`);

@@ -425,9 +425,7 @@ export const feedbackItemAnnotationTable = sqliteTable("feedback_item_annotation
   revisedContent: text(),
   excluded: integer({ mode: "boolean" }).notNull().default(false),
   adminNote: text(),
-}, (table) => ([
-  index('feedback_item_annotation_item_idx').on(table.feedbackItemId),
-]));
+});
 
 export const feedbackItemAnnotationRelations = relations(feedbackItemAnnotationTable, ({ one }) => ({
   feedbackItem: one(feedbackItemTable, {
