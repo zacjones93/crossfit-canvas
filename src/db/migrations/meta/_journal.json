@@ -85,6 +85,13 @@
       "when": 1771109100000,
       "tag": "0011_add-feedback-questions-table",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1771112940000,
+      "tag": "0012_add-feedback-item-annotations",
+      "breakpoints": true
     }
   ]
 }

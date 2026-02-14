@@ -414,6 +414,26 @@ export const feedbackItemRelations = relations(feedbackItemTable, ({ one }) => (
     fields: [feedbackItemTable.feedbackId],
     references: [coachFeedbackTable.id],
   }),
+  annotation: one(feedbackItemAnnotationTable),
+}));
+
+// Admin annotations overlay for feedback items (keeps originals pure)
+export const feedbackItemAnnotationTable = sqliteTable("feedback_item_annotation", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `fba_${createId()}`).notNull(),
+  feedbackItemId: text().notNull().references(() => feedbackItemTable.id).unique(),
+  revisedContent: text(),
+  excluded: integer({ mode: "boolean" }).notNull().default(false),
+  adminNote: text(),
+}, (table) => ([
+  index('feedback_item_annotation_item_idx').on(table.feedbackItemId),
+]));
+
+export const feedbackItemAnnotationRelations = relations(feedbackItemAnnotationTable, ({ one }) => ({
+  feedbackItem: one(feedbackItemTable, {
+    fields: [feedbackItemAnnotationTable.feedbackItemId],
+    references: [feedbackItemTable.id],
+  }),
 }));
 
 // Feedback question configuration (admin-managed)
@@ -444,3 +464,4 @@ export type Coach = InferSelectModel<typeof coachTable>;
 export type CoachFeedback = InferSelectModel<typeof coachFeedbackTable>;
 export type FeedbackItem = InferSelectModel<typeof feedbackItemTable>;
 export type FeedbackQuestion = InferSelectModel<typeof feedbackQuestionTable>;
+export type FeedbackItemAnnotation = InferSelectModel<typeof feedbackItemAnnotationTable>;
