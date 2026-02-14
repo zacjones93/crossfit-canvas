@@ -1,14 +1,16 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { DataTable } from "@/components/data-table"
-import { columns, type User } from "./columns"
+import { getColumns, type User } from "./columns"
 import { getUsersAction } from "../../_actions/get-users.action"
+import { updateUserRoleAction } from "../../_actions/update-user-role.action"
 import { useServerAction } from "zsa-react"
 import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import { PAGE_SIZE_OPTIONS } from "../../admin-constants"
 import { useQueryState } from "nuqs"
+import { ROLES_ENUM } from "@/db/schema"
 
 export function UsersTable() {
   const [page, setPage] = useQueryState("page", { defaultValue: "1" })
@@ -21,22 +23,39 @@ export function UsersTable() {
     },
   })
 
+  const { execute: updateRole } = useServerAction(updateUserRoleAction, {
+    onError: (error) => {
+      toast.error(error.err?.message || "Failed to update role")
+    },
+    onSuccess: () => {
+      toast.success("Role updated")
+      fetchUsers({ page: parseInt(page), pageSize: parseInt(pageSize), emailFilter })
+    },
+  })
+
   useEffect(() => {
     fetchUsers({ page: parseInt(page), pageSize: parseInt(pageSize), emailFilter })
   }, [fetchUsers, page, pageSize, emailFilter])
 
+  const handleToggleRole = (user: User) => {
+    const newRole = user.role === ROLES_ENUM.ADMIN ? ROLES_ENUM.USER : ROLES_ENUM.ADMIN
+    updateRole({ userId: user.id, role: newRole })
+  }
+
+  const columns = useMemo(() => getColumns({ onToggleRole: handleToggleRole }), [])
+
   const handlePageChange = (newPage: number) => {
-    setPage((newPage + 1).toString()) // Convert from 0-based to 1-based and store as string
+    setPage((newPage + 1).toString())
   }
 
   const handlePageSizeChange = (newPageSize: number) => {
     setPageSize(newPageSize.toString())
-    setPage("1") // Reset to first page when changing page size
+    setPage("1")
   }
 
   const handleEmailFilterChange = (value: string) => {
     setEmailFilter(value)
-    setPage("1") // Reset to first page when filtering
+    setPage("1")
   }
 
   const getRowHref = (user: User) => {
