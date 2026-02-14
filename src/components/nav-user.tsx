@@ -97,7 +97,7 @@ export function NavUser() {
                 {!DISABLE_CREDIT_BILLING_SYSTEM && (
                   <Badge variant="secondary" className="w-fit text-[10px]" onClick={() => {
                     setOpenMobile(false)
-                    router.push('/dashboard/billing')
+                    router.push('/admin')
                   }}>
                     {user.currentCredits} credits
                   </Badge>
@@ -139,7 +139,7 @@ export function NavUser() {
               </DropdownMenuItem>
               <DropdownMenuItem className="cursor-pointer" onClick={() => {
                 setOpenMobile(false)
-                router.push('/dashboard/billing')
+                router.push('/admin')
               }}>
                 <CreditCard />
                 Billing
