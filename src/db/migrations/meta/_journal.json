@@ -71,6 +71,13 @@
       "when": 1771103622216,
       "tag": "0009_add_coach_feedback",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1771107233705,
+      "tag": "0010_add-coach-table-and-feedback-fks",
+      "breakpoints": true
     }
   ]
 }

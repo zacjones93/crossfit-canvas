@@ -23,29 +23,37 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { coaches } from "@/constants/coaches"
 import {
-  coachFeedbackSchema,
+  createCoachFeedbackSchema,
   type CoachFeedbackFormData,
   ITEMS_PER_CATEGORY,
 } from "@/schemas/coach-feedback.schema"
 import { submitCoachFeedbackAction } from "./feedback.action"
 import { CheckCircle2 } from "lucide-react"
 
-export function FeedbackForm() {
+interface CoachOption {
+  id: string
+  name: string
+}
+
+export function FeedbackForm({ coaches }: { coaches: CoachOption[] }) {
   const [isSuccess, setIsSuccess] = useState(false)
+
+  const coachFeedbackSchema = createCoachFeedbackSchema({
+    coachIds: coaches.map((c) => c.id),
+  })
 
   const form = useForm<CoachFeedbackFormData>({
     resolver: zodResolver(coachFeedbackSchema),
     defaultValues: {
-      reviewerCoachName: "",
-      reviewedCoachName: "",
+      reviewerCoachId: "",
+      reviewedCoachId: "",
       liked: Array(ITEMS_PER_CATEGORY).fill(""),
       improvements: Array(ITEMS_PER_CATEGORY).fill(""),
     },
   })
 
-  const selectedReviewer = form.watch("reviewerCoachName")
+  const selectedReviewer = form.watch("reviewerCoachId")
 
   const { execute: submitFeedback, isPending } = useServerAction(
     submitCoachFeedbackAction,
@@ -106,7 +114,7 @@ export function FeedbackForm() {
             <div className="grid gap-6 sm:grid-cols-2">
               <FormField
                 control={form.control}
-                name="reviewerCoachName"
+                name="reviewerCoachId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Your Name</FormLabel>
@@ -121,7 +129,7 @@ export function FeedbackForm() {
                       </FormControl>
                       <SelectContent>
                         {coaches.map((coach) => (
-                          <SelectItem key={coach.name} value={coach.name}>
+                          <SelectItem key={coach.id} value={coach.id}>
                             {coach.name}
                           </SelectItem>
                         ))}
@@ -134,7 +142,7 @@ export function FeedbackForm() {
 
               <FormField
                 control={form.control}
-                name="reviewedCoachName"
+                name="reviewedCoachId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Coach Being Reviewed</FormLabel>
@@ -150,10 +158,10 @@ export function FeedbackForm() {
                       <SelectContent>
                         {coaches
                           .filter(
-                            (coach) => coach.name !== selectedReviewer
+                            (coach) => coach.id !== selectedReviewer
                           )
                           .map((coach) => (
-                            <SelectItem key={coach.name} value={coach.name}>
+                            <SelectItem key={coach.id} value={coach.id}>
                               {coach.name}
                             </SelectItem>
                           ))}

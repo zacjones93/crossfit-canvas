@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { formatDistanceToNow, format } from "date-fns"
+import Link from "next/link"
 import {
   Tooltip,
   TooltipContent,
@@ -12,6 +13,7 @@ export interface FeedbackRow {
   id: string
   reviewerCoachName: string
   reviewedCoachName: string
+  reviewedCoachSlug: string
   createdAt: Date
   liked: string[]
   improvements: string[]
@@ -25,6 +27,19 @@ export const columns: ColumnDef<FeedbackRow>[] = [
   {
     accessorKey: "reviewedCoachName",
     header: "Reviewed Coach",
+    cell: ({ row }) => {
+      const name = row.original.reviewedCoachName
+      const slug = row.original.reviewedCoachSlug
+      return (
+        <Link
+          href={`/admin/coaches-feedback/${slug}`}
+          className="text-primary hover:underline font-medium"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {name}
+        </Link>
+      )
+    },
   },
   {
     accessorKey: "liked",

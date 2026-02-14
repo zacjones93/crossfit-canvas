@@ -73,6 +73,7 @@ export function FeedbackTable() {
                 itemNameSingular="submission"
                 itemNamePlural="submissions"
                 pageSizeOptions={PAGE_SIZE_OPTIONS}
+                getRowHref={(row) => `/admin/coaches-feedback/${row.reviewedCoachSlug}`}
               />
             </div>
           )}

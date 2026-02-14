@@ -5,7 +5,7 @@ import { getDB } from "@/db"
 import { requireAdmin } from "@/utils/auth"
 import { z } from "zod"
 import { sql } from "drizzle-orm"
-import { coachFeedbackTable, feedbackItemTable } from "@/db/schema"
+import { coachFeedbackTable, coachTable } from "@/db/schema"
 import { PAGE_SIZE_OPTIONS } from "../admin-constants"
 
 const getFeedbackSchema = z.object({
@@ -26,31 +26,49 @@ export const getFeedbackAction = createServerAction()
 
     // Build where clause for filtering by reviewed coach name
     const whereClause = coachFilter
-      ? sql`${coachFeedbackTable.reviewedCoachName} LIKE ${`%${coachFilter}%`}`
+      ? sql`${coachTable.name} LIKE ${`%${coachFilter}%`}`
       : undefined
 
-    // Fetch total count
-    const [{ count }] = await db
-      .select({ count: sql<number>`count(*)` })
-      .from(coachFeedbackTable)
-      .where(whereClause)
-
-    // Fetch paginated feedback with their items
+    // Fetch paginated feedback with their items and coach relations
     const feedbackRows = await db.query.coachFeedbackTable.findMany({
-      where: whereClause,
+      where: whereClause
+        ? (feedback, { exists }) =>
+            exists(
+              db.select().from(coachTable).where(
+                sql`${coachTable.id} = ${feedback.reviewedCoachId} AND ${coachTable.name} LIKE ${`%${coachFilter}%`}`
+              )
+            )
+        : undefined,
       with: {
         items: true,
+        reviewer: true,
+        reviewed: true,
       },
       orderBy: (feedback, { desc }) => [desc(feedback.createdAt)],
       limit: pageSize,
       offset,
     })
 
+    // Fetch total count
+    const allFeedback = await db.query.coachFeedbackTable.findMany({
+      where: whereClause
+        ? (feedback, { exists }) =>
+            exists(
+              db.select().from(coachTable).where(
+                sql`${coachTable.id} = ${feedback.reviewedCoachId} AND ${coachTable.name} LIKE ${`%${coachFilter}%`}`
+              )
+            )
+        : undefined,
+      columns: { id: true },
+    })
+    const count = allFeedback.length
+
     // Transform to group items by category
     const feedback = feedbackRows.map((row) => ({
       id: row.id,
-      reviewerCoachName: row.reviewerCoachName,
-      reviewedCoachName: row.reviewedCoachName,
+      reviewerCoachName: row.reviewer?.name ?? "Unknown",
+      reviewedCoachName: row.reviewed?.name ?? "Unknown",
+      reviewedCoachSlug: row.reviewed?.slug ?? "",
       createdAt: row.createdAt,
       liked: row.items
         .filter((item) => item.category === "liked")

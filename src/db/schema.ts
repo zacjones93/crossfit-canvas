@@ -353,15 +353,28 @@ export const passKeyCredentialRelations = relations(passKeyCredentialTable, ({ o
   }),
 }));
 
+// Coach table
+export const coachTable = sqliteTable("coach", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `coach_${createId()}`).notNull(),
+  name: text({ length: 255 }).notNull(),
+  slug: text({ length: 255 }).notNull().unique(),
+  credentials: text({ length: 255 }),
+  bio: text(),
+}, (table) => ([
+  index('coach_slug_idx').on(table.slug),
+  index('coach_name_idx').on(table.name),
+]));
+
 // Coach feedback tables
 export const coachFeedbackTable = sqliteTable("coach_feedback", {
   ...commonColumns,
   id: text().primaryKey().$defaultFn(() => `cfb_${createId()}`).notNull(),
-  reviewerCoachName: text({ length: 255 }).notNull(),
-  reviewedCoachName: text({ length: 255 }).notNull(),
+  reviewerCoachId: text().notNull().references(() => coachTable.id),
+  reviewedCoachId: text().notNull().references(() => coachTable.id),
 }, (table) => ([
-  index('coach_feedback_reviewer_idx').on(table.reviewerCoachName),
-  index('coach_feedback_reviewed_idx').on(table.reviewedCoachName),
+  index('coach_feedback_reviewer_idx').on(table.reviewerCoachId),
+  index('coach_feedback_reviewed_idx').on(table.reviewedCoachId),
   index('coach_feedback_created_at_idx').on(table.createdAt),
 ]));
 
@@ -377,7 +390,22 @@ export const feedbackItemTable = sqliteTable("feedback_item", {
   index('feedback_item_category_idx').on(table.category),
 ]));
 
-export const coachFeedbackRelations = relations(coachFeedbackTable, ({ many }) => ({
+export const coachRelations = relations(coachTable, ({ many }) => ({
+  feedbackGiven: many(coachFeedbackTable, { relationName: 'reviewer' }),
+  feedbackReceived: many(coachFeedbackTable, { relationName: 'reviewed' }),
+}));
+
+export const coachFeedbackRelations = relations(coachFeedbackTable, ({ one, many }) => ({
+  reviewer: one(coachTable, {
+    fields: [coachFeedbackTable.reviewerCoachId],
+    references: [coachTable.id],
+    relationName: 'reviewer',
+  }),
+  reviewed: one(coachTable, {
+    fields: [coachFeedbackTable.reviewedCoachId],
+    references: [coachTable.id],
+    relationName: 'reviewed',
+  }),
   items: many(feedbackItemTable),
 }));
 
@@ -396,5 +424,6 @@ export type Team = InferSelectModel<typeof teamTable>;
 export type TeamMembership = InferSelectModel<typeof teamMembershipTable>;
 export type TeamRole = InferSelectModel<typeof teamRoleTable>;
 export type TeamInvitation = InferSelectModel<typeof teamInvitationTable>;
+export type Coach = InferSelectModel<typeof coachTable>;
 export type CoachFeedback = InferSelectModel<typeof coachFeedbackTable>;
 export type FeedbackItem = InferSelectModel<typeof feedbackItemTable>;

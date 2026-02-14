@@ -1,7 +1,4 @@
 import { z } from "zod"
-import { coaches } from "@/constants/coaches"
-
-const coachNames = coaches.map((c) => c.name)
 
 export const FEEDBACK_CATEGORIES = {
   LIKED: "liked",
@@ -10,18 +7,20 @@ export const FEEDBACK_CATEGORIES = {
 
 export const ITEMS_PER_CATEGORY = 3
 
-export const coachFeedbackSchema = z.object({
-  reviewerCoachName: z.string().refine((val) => coachNames.includes(val), {
-    message: "Please select a valid coach",
-  }),
-  reviewedCoachName: z.string().refine((val) => coachNames.includes(val), {
-    message: "Please select a valid coach",
-  }),
-  liked: z.array(z.string().min(1, "This field is required")).length(ITEMS_PER_CATEGORY),
-  improvements: z.array(z.string().min(1, "This field is required")).length(ITEMS_PER_CATEGORY),
-}).refine((data) => data.reviewerCoachName !== data.reviewedCoachName, {
-  message: "You cannot review yourself",
-  path: ["reviewedCoachName"],
-})
+export function createCoachFeedbackSchema({ coachIds }: { coachIds: string[] }) {
+  return z.object({
+    reviewerCoachId: z.string().refine((val) => coachIds.includes(val), {
+      message: "Please select a valid coach",
+    }),
+    reviewedCoachId: z.string().refine((val) => coachIds.includes(val), {
+      message: "Please select a valid coach",
+    }),
+    liked: z.array(z.string().min(1, "This field is required")).length(ITEMS_PER_CATEGORY),
+    improvements: z.array(z.string().min(1, "This field is required")).length(ITEMS_PER_CATEGORY),
+  }).refine((data) => data.reviewerCoachId !== data.reviewedCoachId, {
+    message: "You cannot review yourself",
+    path: ["reviewedCoachId"],
+  })
+}
 
-export type CoachFeedbackFormData = z.infer<typeof coachFeedbackSchema>
+export type CoachFeedbackFormData = z.infer<ReturnType<typeof createCoachFeedbackSchema>>
