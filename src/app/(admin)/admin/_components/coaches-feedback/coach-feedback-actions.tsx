@@ -19,17 +19,17 @@ import { useServerAction } from "zsa-react"
 import { sendCoachFeedbackEmailAction } from "../../_actions/send-coach-feedback-email.action"
 
 interface FeedbackEntry {
-  liked: string[]
-  improvements: string[]
+  categories: Record<string, string[]>
   createdAt: Date
 }
 
 interface CoachFeedbackActionsProps {
   coachName: string
+  questions: { category: string; label: string }[]
   feedbackEntries: FeedbackEntry[]
 }
 
-export function CoachFeedbackActions({ coachName, feedbackEntries }: CoachFeedbackActionsProps) {
+export function CoachFeedbackActions({ coachName, questions, feedbackEntries }: CoachFeedbackActionsProps) {
   const [emailDialogOpen, setEmailDialogOpen] = useState(false)
   const [recipientEmail, setRecipientEmail] = useState("")
 
@@ -78,34 +78,19 @@ export function CoachFeedbackActions({ coachName, feedbackEntries }: CoachFeedba
       doc.text(`Review #${i + 1}`, margin, y)
       y += 8
 
-      if (entry.liked.length > 0) {
-        checkPageBreak(10 + entry.liked.length * 7)
+      for (const question of questions) {
+        const items = entry.categories[question.category] ?? []
+        if (items.length === 0) continue
+
+        checkPageBreak(10 + items.length * 7)
         doc.setFontSize(11)
         doc.setFont("helvetica", "bold")
-        doc.text("What they liked:", margin, y)
+        doc.text(`${question.label}:`, margin, y)
         y += 6
 
         doc.setFont("helvetica", "normal")
         doc.setFontSize(10)
-        for (const item of entry.liked) {
-          const lines = doc.splitTextToSize(`- ${item}`, maxWidth - 5)
-          checkPageBreak(lines.length * 5 + 2)
-          doc.text(lines, margin + 5, y)
-          y += lines.length * 5 + 2
-        }
-        y += 2
-      }
-
-      if (entry.improvements.length > 0) {
-        checkPageBreak(10 + entry.improvements.length * 7)
-        doc.setFontSize(11)
-        doc.setFont("helvetica", "bold")
-        doc.text("Areas for improvement:", margin, y)
-        y += 6
-
-        doc.setFont("helvetica", "normal")
-        doc.setFontSize(10)
-        for (const item of entry.improvements) {
+        for (const item of items) {
           const lines = doc.splitTextToSize(`- ${item}`, maxWidth - 5)
           checkPageBreak(lines.length * 5 + 2)
           doc.text(lines, margin + 5, y)

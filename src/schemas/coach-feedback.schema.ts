@@ -1,13 +1,19 @@
 import { z } from "zod"
 
-export const FEEDBACK_CATEGORIES = {
-  LIKED: "liked",
-  IMPROVEMENT: "improvement",
-} as const
+export interface FeedbackQuestionConfig {
+  category: string
+  label: string
+  description: string
+  placeholder: string
+  itemCount: number
+}
 
-export const ITEMS_PER_CATEGORY = 3
+export function createCoachFeedbackSchema({ coachIds, questions }: { coachIds: string[]; questions: FeedbackQuestionConfig[] }) {
+  const categoryFields: Record<string, z.ZodArray<z.ZodString>> = {}
+  for (const q of questions) {
+    categoryFields[q.category] = z.array(z.string().min(1, "This field is required")).length(q.itemCount)
+  }
 
-export function createCoachFeedbackSchema({ coachIds }: { coachIds: string[] }) {
   return z.object({
     reviewerCoachId: z.string().refine((val) => coachIds.includes(val), {
       message: "Please select a valid coach",
@@ -15,8 +21,7 @@ export function createCoachFeedbackSchema({ coachIds }: { coachIds: string[] }) 
     reviewedCoachId: z.string().refine((val) => coachIds.includes(val), {
       message: "Please select a valid coach",
     }),
-    liked: z.array(z.string().min(1, "This field is required")).length(ITEMS_PER_CATEGORY),
-    improvements: z.array(z.string().min(1, "This field is required")).length(ITEMS_PER_CATEGORY),
+    ...categoryFields,
   }).refine((data) => data.reviewerCoachId !== data.reviewedCoachId, {
     message: "You cannot review yourself",
     path: ["reviewedCoachId"],

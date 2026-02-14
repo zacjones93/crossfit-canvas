@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { FeedbackForm } from "./feedback-form"
 import { getAllCoaches } from "@/server/coaches"
+import { getAllActiveFeedbackQuestions } from "@/server/feedback-questions"
 
 export const metadata: Metadata = {
   title: "Coach Feedback - CrossFit Canvas",
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
 
 export default async function CoachFeedbackPage() {
   const coaches = await getAllCoaches()
+  const questions = await getAllActiveFeedbackQuestions()
+
   return (
     <main className="py-16 md:py-24">
       <div className="container mx-auto px-4">
@@ -21,7 +24,16 @@ export default async function CoachFeedbackPage() {
               Share constructive feedback to help our coaching team grow
             </p>
           </div>
-          <FeedbackForm coaches={coaches.map(c => ({ id: c.id, name: c.name }))} />
+          <FeedbackForm
+            coaches={coaches.map(c => ({ id: c.id, name: c.name }))}
+            questions={questions.map(q => ({
+              category: q.category,
+              label: q.label,
+              description: q.description ?? "",
+              placeholder: q.placeholder ?? "",
+              itemCount: q.itemCount,
+            }))}
+          />
         </div>
       </div>
     </main>

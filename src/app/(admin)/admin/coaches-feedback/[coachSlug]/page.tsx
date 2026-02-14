@@ -6,7 +6,7 @@ import { format } from "date-fns"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { CoachFeedbackActions } from "../../_components/coaches-feedback/coach-feedback-actions"
-import { User, Calendar, ThumbsUp, Lightbulb } from "lucide-react"
+import { User, Calendar } from "lucide-react"
 
 interface CoachFeedbackDetailPageProps {
   params: Promise<{ coachSlug: string }>
@@ -74,9 +74,9 @@ export default async function CoachFeedbackDetailPage({ params }: CoachFeedbackD
           <CardContent>
             <CoachFeedbackActions
               coachName={data.coachName}
+              questions={data.questions}
               feedbackEntries={data.feedbackEntries.map((e) => ({
-                liked: e.liked,
-                improvements: e.improvements,
+                categories: e.categories,
                 createdAt: new Date(e.createdAt),
               }))}
             />
@@ -96,39 +96,25 @@ export default async function CoachFeedbackDetailPage({ params }: CoachFeedbackD
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
-                {entry.liked.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold flex items-center gap-1.5 mb-2">
-                      <ThumbsUp className="h-4 w-4 text-green-600" />
-                      What they liked
-                    </h4>
-                    <ul className="space-y-1.5">
-                      {entry.liked.map((item, i) => (
-                        <li key={i} className="text-sm text-muted-foreground flex gap-2">
-                          <span className="text-green-600 shrink-0">&bull;</span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {entry.improvements.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold flex items-center gap-1.5 mb-2">
-                      <Lightbulb className="h-4 w-4 text-amber-600" />
-                      Areas for improvement
-                    </h4>
-                    <ul className="space-y-1.5">
-                      {entry.improvements.map((item, i) => (
-                        <li key={i} className="text-sm text-muted-foreground flex gap-2">
-                          <span className="text-amber-600 shrink-0">&bull;</span>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {data.questions.map((question) => {
+                  const items = entry.categories[question.category] ?? []
+                  if (items.length === 0) return null
+                  return (
+                    <div key={question.category}>
+                      <h4 className="text-sm font-semibold flex items-center gap-1.5 mb-2">
+                        {question.label}
+                      </h4>
+                      <ul className="space-y-1.5">
+                        {items.map((item, i) => (
+                          <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                            <span className="shrink-0">&bull;</span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )
+                })}
               </div>
             </CardContent>
           </Card>

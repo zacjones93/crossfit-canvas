@@ -341,11 +341,13 @@ export async function sendContactEmail({
 
 export async function sendCoachFeedbackEmail({
   coachName,
+  questions,
   feedbackEntries,
   recipientEmail,
 }: {
   coachName: string;
-  feedbackEntries: { liked: string[]; improvements: string[] }[];
+  questions: { category: string; label: string }[];
+  feedbackEntries: { categories: Record<string, string[]> }[];
   recipientEmail: string;
 }) {
   if (!isProd) {
@@ -359,6 +361,7 @@ export async function sendCoachFeedbackEmail({
 
   const html = await render(CoachFeedbackSummaryEmail({
     coachName,
+    questions,
     feedbackEntries,
   }));
 

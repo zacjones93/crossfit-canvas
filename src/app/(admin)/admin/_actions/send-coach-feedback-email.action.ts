@@ -29,6 +29,7 @@ export const sendCoachFeedbackEmailAction = createServerAction()
 
     await sendCoachFeedbackEmail({
       coachName: data.coachName,
+      questions: data.questions,
       feedbackEntries: data.feedbackEntries,
       recipientEmail,
     })

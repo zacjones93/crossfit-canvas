@@ -12,17 +12,23 @@ import * as React from "react";
 import { SITE_DOMAIN } from "@/constants";
 
 interface FeedbackEntry {
-  liked: string[];
-  improvements: string[];
+  categories: Record<string, string[]>;
+}
+
+interface QuestionMeta {
+  category: string;
+  label: string;
 }
 
 interface CoachFeedbackSummaryEmailProps {
   coachName: string;
+  questions: QuestionMeta[];
   feedbackEntries: FeedbackEntry[];
 }
 
 export const CoachFeedbackSummaryEmail = ({
   coachName = "Coach Name",
+  questions = [],
   feedbackEntries = [],
 }: CoachFeedbackSummaryEmailProps) => {
   return (
@@ -45,27 +51,20 @@ export const CoachFeedbackSummaryEmail = ({
                   Review #{idx + 1}
                 </Text>
 
-                {entry.liked.length > 0 && (
-                  <>
-                    <Text style={infoLabel}>What they liked:</Text>
-                    {entry.liked.map((item, i) => (
-                      <Text key={i} style={listItem}>
-                        &bull; {item}
-                      </Text>
-                    ))}
-                  </>
-                )}
-
-                {entry.improvements.length > 0 && (
-                  <>
-                    <Text style={infoLabel}>Areas for improvement:</Text>
-                    {entry.improvements.map((item, i) => (
-                      <Text key={i} style={listItem}>
-                        &bull; {item}
-                      </Text>
-                    ))}
-                  </>
-                )}
+                {questions.map((q) => {
+                  const items = entry.categories[q.category] ?? [];
+                  if (items.length === 0) return null;
+                  return (
+                    <React.Fragment key={q.category}>
+                      <Text style={infoLabel}>{q.label}:</Text>
+                      {items.map((item, i) => (
+                        <Text key={i} style={listItem}>
+                          &bull; {item}
+                        </Text>
+                      ))}
+                    </React.Fragment>
+                  );
+                })}
               </Section>
             </React.Fragment>
           ))}
@@ -80,10 +79,16 @@ export const CoachFeedbackSummaryEmail = ({
 
 CoachFeedbackSummaryEmail.PreviewProps = {
   coachName: "Jon Williams",
+  questions: [
+    { category: "liked", label: "Things You Liked" },
+    { category: "improvement", label: "Areas for Improvement" },
+  ],
   feedbackEntries: [
     {
-      liked: ["Great energy", "Clear cues"],
-      improvements: ["More scaling options"],
+      categories: {
+        liked: ["Great energy", "Clear cues"],
+        improvement: ["More scaling options"],
+      },
     },
   ],
 } as CoachFeedbackSummaryEmailProps;

@@ -6,6 +6,7 @@ import { requireAdmin } from "@/utils/auth"
 import { z } from "zod"
 import { coachFeedbackTable, coachTable } from "@/db/schema"
 import { eq } from "drizzle-orm"
+import { getAllFeedbackQuestions } from "@/server/feedback-questions"
 
 const getCoachFeedbackSchema = z.object({
   coachSlug: z.string().min(1),
@@ -39,19 +40,23 @@ const getCoachFeedbackHandler = async ({ input }: { input: { coachSlug: string }
     return null
   }
 
-  const feedbackEntries = feedbackRows.map((row) => ({
-    id: row.id,
-    reviewerCoachName: row.reviewer?.name ?? "Unknown",
-    createdAt: row.createdAt,
-    liked: row.items
-      .filter((item) => item.category === "liked")
-      .sort((a, b) => a.sortOrder - b.sortOrder)
-      .map((item) => item.content),
-    improvements: row.items
-      .filter((item) => item.category === "improvement")
-      .sort((a, b) => a.sortOrder - b.sortOrder)
-      .map((item) => item.content),
-  }))
+  const questions = await getAllFeedbackQuestions()
+
+  const feedbackEntries = feedbackRows.map((row) => {
+    const categories: Record<string, string[]> = {}
+    for (const q of questions) {
+      categories[q.category] = row.items
+        .filter((item) => item.category === q.category)
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((item) => item.content)
+    }
+    return {
+      id: row.id,
+      reviewerCoachName: row.reviewer?.name ?? "Unknown",
+      createdAt: row.createdAt,
+      categories,
+    }
+  })
 
   const dates = feedbackRows.map((r) => r.createdAt)
   const earliestDate = new Date(Math.min(...dates.map((d) => d.getTime())))
@@ -63,6 +68,7 @@ const getCoachFeedbackHandler = async ({ input }: { input: { coachSlug: string }
     credentials: coach.credentials,
     totalCount: feedbackRows.length,
     feedbackEntries,
+    questions: questions.map((q) => ({ category: q.category, label: q.label })),
     dateRange: { from: earliestDate, to: latestDate },
   }
 }

@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { DataTable } from "@/components/data-table"
-import { columns, type FeedbackRow } from "./columns"
+import { createColumns, type FeedbackRow } from "./columns"
 import { getFeedbackAction } from "../../_actions/get-feedback.action"
 import { useServerAction } from "zsa-react"
 import { toast } from "sonner"
@@ -52,11 +52,20 @@ export function FeedbackTable() {
   const [coachFilter, setCoachFilter] = useQueryState("coach", { defaultValue: "" })
   const [month, setMonth] = useQueryState("month", { defaultValue: format(new Date(), "yyyy-MM") })
 
+  const [questions, setQuestions] = useState<{ category: string; label: string }[]>([])
+
   const monthOptions = useMemo(() => getMonthOptions(), [])
 
   const dateRange = useMemo(() => getMonthRangeInTimezone(month), [month])
 
+  const dynamicColumns = useMemo(() => createColumns(questions), [questions])
+
   const { execute: fetchFeedback, data, error, status } = useServerAction(getFeedbackAction, {
+    onSuccess: ({ data }) => {
+      if (data.questions) {
+        setQuestions(data.questions)
+      }
+    },
     onError: () => {
       toast.error("Failed to fetch feedback")
     },
@@ -128,7 +137,7 @@ export function FeedbackTable() {
           ) : (
             <div className="w-full min-w-0">
               <DataTable<FeedbackRow, unknown>
-                columns={columns}
+                columns={dynamicColumns}
                 data={data.feedback as FeedbackRow[]}
                 pageCount={data.totalPages}
                 pageIndex={parseInt(page) - 1}

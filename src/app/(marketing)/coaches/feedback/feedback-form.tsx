@@ -26,7 +26,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import {
   createCoachFeedbackSchema,
   type CoachFeedbackFormData,
-  ITEMS_PER_CATEGORY,
+  type FeedbackQuestionConfig,
 } from "@/schemas/coach-feedback.schema"
 import { submitCoachFeedbackAction } from "./feedback.action"
 import { CheckCircle2 } from "lucide-react"
@@ -36,11 +36,12 @@ interface CoachOption {
   name: string
 }
 
-export function FeedbackForm({ coaches }: { coaches: CoachOption[] }) {
+export function FeedbackForm({ coaches, questions }: { coaches: CoachOption[]; questions: FeedbackQuestionConfig[] }) {
   const [isSuccess, setIsSuccess] = useState(false)
 
   const coachFeedbackSchema = createCoachFeedbackSchema({
     coachIds: coaches.map((c) => c.id),
+    questions,
   })
 
   const form = useForm<CoachFeedbackFormData>({
@@ -48,8 +49,7 @@ export function FeedbackForm({ coaches }: { coaches: CoachOption[] }) {
     defaultValues: {
       reviewerCoachId: "",
       reviewedCoachId: "",
-      liked: Array(ITEMS_PER_CATEGORY).fill(""),
-      improvements: Array(ITEMS_PER_CATEGORY).fill(""),
+      ...Object.fromEntries(questions.map(q => [q.category, Array(q.itemCount).fill("")])),
     },
   })
 
@@ -173,67 +173,34 @@ export function FeedbackForm({ coaches }: { coaches: CoachOption[] }) {
               />
             </div>
 
-            {/* Things Liked */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">
-                Things You Liked
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Share {ITEMS_PER_CATEGORY} things this coach did well
-              </p>
-              {Array.from({ length: ITEMS_PER_CATEGORY }).map((_, index) => (
-                <FormField
-                  key={`liked-${index}`}
-                  control={form.control}
-                  name={`liked.${index}`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>#{index + 1}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={`Something you liked...`}
-                          className="resize-none"
-                          rows={2}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-            </div>
-
-            {/* Things to Improve */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">
-                Areas for Improvement
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Share {ITEMS_PER_CATEGORY} areas where this coach could improve
-              </p>
-              {Array.from({ length: ITEMS_PER_CATEGORY }).map((_, index) => (
-                <FormField
-                  key={`improvement-${index}`}
-                  control={form.control}
-                  name={`improvements.${index}`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>#{index + 1}</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder={`An area for improvement...`}
-                          className="resize-none"
-                          rows={2}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ))}
-            </div>
+            {/* Dynamic Feedback Sections */}
+            {questions.map((question) => (
+              <div key={question.category} className="space-y-4">
+                <h3 className="text-lg font-semibold">{question.label}</h3>
+                <p className="text-sm text-muted-foreground">{question.description}</p>
+                {Array.from({ length: question.itemCount }).map((_, index) => (
+                  <FormField
+                    key={`${question.category}-${index}`}
+                    control={form.control}
+                    name={`${question.category}.${index}` as any}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>#{index + 1}</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder={question.placeholder}
+                            className="resize-none"
+                            rows={2}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </div>
+            ))}
 
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? "Submitting..." : "Submit Feedback"}

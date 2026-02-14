@@ -416,6 +416,22 @@ export const feedbackItemRelations = relations(feedbackItemTable, ({ one }) => (
   }),
 }));
 
+// Feedback question configuration (admin-managed)
+export const feedbackQuestionTable = sqliteTable("feedback_question", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `fq_${createId()}`).notNull(),
+  category: text({ length: 100 }).notNull(),
+  label: text({ length: 255 }).notNull(),
+  description: text(),
+  placeholder: text(),
+  itemCount: integer().notNull().default(3),
+  sortOrder: integer().notNull().default(0),
+  isActive: integer({ mode: "boolean" }).notNull().default(true),
+}, (table) => ([
+  index('feedback_question_category_idx').on(table.category),
+  index('feedback_question_sort_order_idx').on(table.sortOrder),
+]));
+
 export type User = InferSelectModel<typeof userTable>;
 export type PassKeyCredential = InferSelectModel<typeof passKeyCredentialTable>;
 export type CreditTransaction = InferSelectModel<typeof creditTransactionTable>;
@@ -427,3 +443,4 @@ export type TeamInvitation = InferSelectModel<typeof teamInvitationTable>;
 export type Coach = InferSelectModel<typeof coachTable>;
 export type CoachFeedback = InferSelectModel<typeof coachFeedbackTable>;
 export type FeedbackItem = InferSelectModel<typeof feedbackItemTable>;
+export type FeedbackQuestion = InferSelectModel<typeof feedbackQuestionTable>;
