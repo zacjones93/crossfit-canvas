@@ -353,6 +353,41 @@ export const passKeyCredentialRelations = relations(passKeyCredentialTable, ({ o
   }),
 }));
 
+// Coach feedback tables
+export const coachFeedbackTable = sqliteTable("coach_feedback", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `cfb_${createId()}`).notNull(),
+  reviewerCoachName: text({ length: 255 }).notNull(),
+  reviewedCoachName: text({ length: 255 }).notNull(),
+}, (table) => ([
+  index('coach_feedback_reviewer_idx').on(table.reviewerCoachName),
+  index('coach_feedback_reviewed_idx').on(table.reviewedCoachName),
+  index('coach_feedback_created_at_idx').on(table.createdAt),
+]));
+
+export const feedbackItemTable = sqliteTable("feedback_item", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `fbi_${createId()}`).notNull(),
+  feedbackId: text().notNull().references(() => coachFeedbackTable.id),
+  category: text({ length: 100 }).notNull(),
+  content: text().notNull(),
+  sortOrder: integer().notNull(),
+}, (table) => ([
+  index('feedback_item_feedback_id_idx').on(table.feedbackId),
+  index('feedback_item_category_idx').on(table.category),
+]));
+
+export const coachFeedbackRelations = relations(coachFeedbackTable, ({ many }) => ({
+  items: many(feedbackItemTable),
+}));
+
+export const feedbackItemRelations = relations(feedbackItemTable, ({ one }) => ({
+  feedback: one(coachFeedbackTable, {
+    fields: [feedbackItemTable.feedbackId],
+    references: [coachFeedbackTable.id],
+  }),
+}));
+
 export type User = InferSelectModel<typeof userTable>;
 export type PassKeyCredential = InferSelectModel<typeof passKeyCredentialTable>;
 export type CreditTransaction = InferSelectModel<typeof creditTransactionTable>;
@@ -361,3 +396,5 @@ export type Team = InferSelectModel<typeof teamTable>;
 export type TeamMembership = InferSelectModel<typeof teamMembershipTable>;
 export type TeamRole = InferSelectModel<typeof teamRoleTable>;
 export type TeamInvitation = InferSelectModel<typeof teamInvitationTable>;
+export type CoachFeedback = InferSelectModel<typeof coachFeedbackTable>;
+export type FeedbackItem = InferSelectModel<typeof feedbackItemTable>;

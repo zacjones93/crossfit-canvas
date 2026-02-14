@@ -5,6 +5,7 @@ import type { Route } from 'next'
 import {
   Users,
   Shield,
+  MessageSquare,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -37,6 +38,11 @@ const adminNavItems: NavMainItem[] = [
     url: "/admin",
     icon: Users,
     isActive: true,
+  },
+  {
+    title: "Coaches Feedback",
+    url: "/admin/coaches-feedback",
+    icon: MessageSquare,
   },
 ]
 
