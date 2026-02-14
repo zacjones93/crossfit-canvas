@@ -2,7 +2,6 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { formatDistanceToNow, format } from "date-fns"
-import Link from "next/link"
 import {
   Tooltip,
   TooltipContent,
@@ -29,15 +28,10 @@ export function createColumns(questions: { category: string; label: string }[]):
       header: "Reviewed Coach",
       cell: ({ row }) => {
         const name = row.original.reviewedCoachName
-        const slug = row.original.reviewedCoachSlug
         return (
-          <Link
-            href={`/admin/coaches-feedback/${slug}`}
-            className="text-primary hover:underline font-medium"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <span className="text-primary font-medium">
             {name}
-          </Link>
+          </span>
         )
       },
     },
