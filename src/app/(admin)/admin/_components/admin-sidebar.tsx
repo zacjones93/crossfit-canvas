@@ -7,6 +7,7 @@ import {
   Shield,
   MessageSquare,
   Settings,
+  UserCog,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -39,6 +40,11 @@ const adminNavItems: NavMainItem[] = [
     url: "/admin",
     icon: Users,
     isActive: true,
+  },
+  {
+    title: "Coaches",
+    url: "/admin/coaches",
+    icon: UserCog,
   },
   {
     title: "Coaches Feedback",
