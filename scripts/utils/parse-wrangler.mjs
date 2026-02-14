@@ -33,7 +33,7 @@ export function parseWranglerConfig() {
  */
 export function getD1Database() {
   const config = parseWranglerConfig();
-  const d1Config = config.d1_databases?.[0];
+  const d1Config = config.d1_databases?.find(db => db.binding === 'DB');
 
   if (!d1Config) {
     return null;
