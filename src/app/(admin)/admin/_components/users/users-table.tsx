@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { DataTable } from "@/components/data-table"
 import { getColumns, type User } from "./columns"
 import { getUsersAction } from "../../_actions/get-users.action"
@@ -37,12 +37,12 @@ export function UsersTable() {
     fetchUsers({ page: parseInt(page), pageSize: parseInt(pageSize), emailFilter })
   }, [fetchUsers, page, pageSize, emailFilter])
 
-  const handleToggleRole = (user: User) => {
+  const handleToggleRole = useCallback((user: User) => {
     const newRole = user.role === ROLES_ENUM.ADMIN ? ROLES_ENUM.USER : ROLES_ENUM.ADMIN
     updateRole({ userId: user.id, role: newRole })
-  }
+  }, [updateRole])
 
-  const columns = useMemo(() => getColumns({ onToggleRole: handleToggleRole }), [])
+  const columns = useMemo(() => getColumns({ onToggleRole: handleToggleRole }), [handleToggleRole])
 
   const handlePageChange = (newPage: number) => {
     setPage((newPage + 1).toString())

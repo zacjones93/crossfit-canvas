@@ -28,7 +28,8 @@ export const getFeedbackAction = createServerAction()
     const offset = (page - 1) * pageSize
 
     // Build where conditions
-    const buildWhere = (feedback: typeof coachFeedbackTable.$inferSelect, { exists, and, gte, lte }: { exists: Function, and: Function, gte: Function, lte: Function }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const buildWhere = (feedback: typeof coachFeedbackTable.$inferSelect, { exists, and, gte, lte }: { exists: (...args: any[]) => any, and: (...args: any[]) => any, gte: (...args: any[]) => any, lte: (...args: any[]) => any }) => {
       const conditions = []
 
       if (coachFilter) {
