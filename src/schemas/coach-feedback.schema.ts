@@ -28,4 +28,10 @@ export function createCoachFeedbackSchema({ coachIds, questions }: { coachIds: s
   })
 }
 
-export type CoachFeedbackFormData = z.infer<ReturnType<typeof createCoachFeedbackSchema>>
+// The dynamic category fields aren't inferrable at the type level since they
+// come from the DB at runtime, so we extend the base shape with an index sig.
+export type CoachFeedbackFormData = {
+  reviewerCoachId: string
+  reviewedCoachId: string
+  [category: string]: string | string[]
+}

@@ -182,7 +182,7 @@ export function FeedbackForm({ coaches, questions }: { coaches: CoachOption[]; q
                   <FormField
                     key={`${question.category}-${index}`}
                     control={form.control}
-                    name={`${question.category}.${index}` as any}
+                    name={`${question.category}.${index}`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>#{index + 1}</FormLabel>
