@@ -29,7 +29,7 @@ export const getFeedbackAction = createServerAction()
 
     // Build where conditions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const buildWhere = (feedback: typeof coachFeedbackTable.$inferSelect, { exists, and, gte, lte }: { exists: (...args: any[]) => any, and: (...args: any[]) => any, gte: (...args: any[]) => any, lte: (...args: any[]) => any }) => {
+    const buildWhere = (feedback: any, { exists, and, gte, lte }: { exists: (...args: any[]) => any, and: (...args: any[]) => any, gte: (...args: any[]) => any, lte: (...args: any[]) => any }) => {
       const conditions = []
 
       if (coachFilter) {
