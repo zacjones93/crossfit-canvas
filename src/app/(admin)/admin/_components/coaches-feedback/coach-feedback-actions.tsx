@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Download, Mail } from "lucide-react"
+import { ClipboardCopy, Download, Mail } from "lucide-react"
 import { toast } from "sonner"
 import { useServerAction } from "zsa-react"
 import { sendCoachFeedbackEmailAction } from "../../_actions/send-coach-feedback-email.action"
@@ -43,6 +43,32 @@ export function CoachFeedbackActions({ coachName, questions, feedbackEntries }: 
       toast.error("Failed to send email")
     },
   })
+
+  function handleCopyAsText() {
+    const lines: string[] = [`Feedback Summary: ${coachName}`, `${feedbackEntries.length} review${feedbackEntries.length !== 1 ? "s" : ""}`, ""]
+
+    for (let i = 0; i < feedbackEntries.length; i++) {
+      const entry = feedbackEntries[i]
+      lines.push(`Review #${i + 1}`)
+      lines.push("---")
+
+      for (const question of questions) {
+        const items = entry.categories[question.category] ?? []
+        if (items.length === 0) continue
+        lines.push(`${question.label}:`)
+        for (const item of items) {
+          lines.push(`  - ${item}`)
+        }
+        lines.push("")
+      }
+      lines.push("")
+    }
+
+    navigator.clipboard.writeText(lines.join("\n")).then(
+      () => toast.success("Copied to clipboard"),
+      () => toast.error("Failed to copy to clipboard")
+    )
+  }
 
   async function handleDownloadPdf() {
     const { jsPDF } = await import("jspdf")
@@ -107,6 +133,11 @@ export function CoachFeedbackActions({ coachName, questions, feedbackEntries }: 
 
   return (
     <div className="flex gap-3">
+      <Button variant="outline" onClick={handleCopyAsText}>
+        <ClipboardCopy className="h-4 w-4 mr-2" />
+        Copy as Text
+      </Button>
+
       <Button variant="outline" onClick={handleDownloadPdf}>
         <Download className="h-4 w-4 mr-2" />
         Download PDF
