@@ -64,6 +64,34 @@
       "when": 1747391678728,
       "tag": "0008_add_multi_tenancy",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1771103622216,
+      "tag": "0009_add_coach_feedback",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1771107233705,
+      "tag": "0010_add-coach-table-and-feedback-fks",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1771109100000,
+      "tag": "0011_add-feedback-questions-table",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1771112940000,
+      "tag": "0012_add-feedback-item-annotations",
+      "breakpoints": true
     }
   ]
 }

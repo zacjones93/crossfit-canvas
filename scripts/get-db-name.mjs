@@ -2,7 +2,7 @@ import { parseWranglerConfig } from './utils/parse-wrangler.mjs';
 
 try {
   const config = parseWranglerConfig();
-  const dbName = config.d1_databases?.[0]?.database_name;
+  const dbName = config.d1_databases?.find(db => db.binding === 'DB')?.database_name;
 
   if (!dbName) {
     console.error('Database name not found in wrangler.jsonc');

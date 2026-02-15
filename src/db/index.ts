@@ -7,9 +7,9 @@ import * as schema from "./schema";
 export const getDB = cache(() => {
   const { env } = getCloudflareContext();
 
-  if (!env.NEXT_TAG_CACHE_D1) {
+  if (!env.DB) {
     throw new Error("D1 database not found");
   }
 
-  return drizzle(env.NEXT_TAG_CACHE_D1, { schema, logger: true });
+  return drizzle(env.DB, { schema, logger: true });
 });

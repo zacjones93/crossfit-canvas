@@ -32,10 +32,10 @@ export function CreateTeamForm() {
     onStart: () => {
       toast.loading("Creating team...");
     },
-    onSuccess: (result) => {
+    onSuccess: () => {
       toast.dismiss();
       toast.success("Team created successfully");
-      router.push(`/dashboard/teams/${result.data.data.slug}` as Route);
+      router.push(`/admin` as Route);
       router.refresh();
     }
   });

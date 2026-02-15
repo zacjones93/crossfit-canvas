@@ -79,6 +79,12 @@
           "binding": "NEXT_TAG_CACHE_D1",
           "database_name": "NEXT_TAG_CACHE_D1",
           "database_id": "17b8b8c4-30da-4585-a76c-c44668658aa9"
+        },
+        {
+          "binding": "DB",
+          "database_name": "crossfit-canvas-db",
+          "database_id": "cd4be264-a9e7-44cf-892b-ba9028ca567c",
+          "migrations_dir": "src/db/migrations"
         }
       ],
     "kv_namespaces": [

@@ -9,10 +9,7 @@ import {
   Map,
   PieChart,
   Settings2,
-  ShoppingCart,
   SquareTerminal,
-  CreditCard,
-  Users,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -27,7 +24,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { useSessionStore } from "@/state/session"
-import { DISABLE_CREDIT_BILLING_SYSTEM } from "@/constants"
 
 export type NavItem = {
   title: string
@@ -85,25 +81,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     teams: formattedTeams,
     navMain: [
       {
-        title: "Dashboard",
-        url: "/dashboard",
+        title: "Admin",
+        url: "/admin",
         icon: SquareTerminal,
         isActive: true,
-      },
-      {
-        title: "Teams",
-        url: "/dashboard/teams" as Route,
-        icon: Users,
-      },
-      ...(!DISABLE_CREDIT_BILLING_SYSTEM ? [{
-        title: "Marketplace",
-        url: "/dashboard/marketplace" as Route,
-        icon: ShoppingCart,
-      }] : []),
-      {
-        title: "Billing",
-        url: "/dashboard/billing",
-        icon: CreditCard,
       },
       {
         title: "Settings",

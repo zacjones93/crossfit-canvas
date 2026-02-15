@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SiX as XIcon, SiGithub as GithubIcon } from '@icons-pack/react-simple-icons'
 import { SITE_NAME } from "@/constants";
+import { FooterLogoutButton } from "@/components/footer-logout-button";
 
 export function Footer() {
   return (
@@ -73,8 +74,7 @@ export function Footer() {
 
               <div className="flex flex-col md:flex-row items-center gap-4 md:space-x-4">
                 <div className="flex items-center gap-4">
-
-
+                  <FooterLogoutButton />
                 </div>
               </div>
             </div>

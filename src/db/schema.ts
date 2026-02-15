@@ -353,6 +353,103 @@ export const passKeyCredentialRelations = relations(passKeyCredentialTable, ({ o
   }),
 }));
 
+// Coach table
+export const coachTable = sqliteTable("coach", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `coach_${createId()}`).notNull(),
+  name: text({ length: 255 }).notNull(),
+  slug: text({ length: 255 }).notNull().unique(),
+  credentials: text({ length: 255 }),
+  bio: text(),
+}, (table) => ([
+  index('coach_slug_idx').on(table.slug),
+  index('coach_name_idx').on(table.name),
+]));
+
+// Coach feedback tables
+export const coachFeedbackTable = sqliteTable("coach_feedback", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `cfb_${createId()}`).notNull(),
+  reviewerCoachId: text().notNull().references(() => coachTable.id),
+  reviewedCoachId: text().notNull().references(() => coachTable.id),
+}, (table) => ([
+  index('coach_feedback_reviewer_idx').on(table.reviewerCoachId),
+  index('coach_feedback_reviewed_idx').on(table.reviewedCoachId),
+  index('coach_feedback_created_at_idx').on(table.createdAt),
+]));
+
+export const feedbackItemTable = sqliteTable("feedback_item", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `fbi_${createId()}`).notNull(),
+  feedbackId: text().notNull().references(() => coachFeedbackTable.id),
+  category: text({ length: 100 }).notNull(),
+  content: text().notNull(),
+  sortOrder: integer().notNull(),
+}, (table) => ([
+  index('feedback_item_feedback_id_idx').on(table.feedbackId),
+  index('feedback_item_category_idx').on(table.category),
+]));
+
+export const coachRelations = relations(coachTable, ({ many }) => ({
+  feedbackGiven: many(coachFeedbackTable, { relationName: 'reviewer' }),
+  feedbackReceived: many(coachFeedbackTable, { relationName: 'reviewed' }),
+}));
+
+export const coachFeedbackRelations = relations(coachFeedbackTable, ({ one, many }) => ({
+  reviewer: one(coachTable, {
+    fields: [coachFeedbackTable.reviewerCoachId],
+    references: [coachTable.id],
+    relationName: 'reviewer',
+  }),
+  reviewed: one(coachTable, {
+    fields: [coachFeedbackTable.reviewedCoachId],
+    references: [coachTable.id],
+    relationName: 'reviewed',
+  }),
+  items: many(feedbackItemTable),
+}));
+
+export const feedbackItemRelations = relations(feedbackItemTable, ({ one }) => ({
+  feedback: one(coachFeedbackTable, {
+    fields: [feedbackItemTable.feedbackId],
+    references: [coachFeedbackTable.id],
+  }),
+  annotation: one(feedbackItemAnnotationTable),
+}));
+
+// Admin annotations overlay for feedback items (keeps originals pure)
+export const feedbackItemAnnotationTable = sqliteTable("feedback_item_annotation", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `fba_${createId()}`).notNull(),
+  feedbackItemId: text().notNull().references(() => feedbackItemTable.id).unique(),
+  revisedContent: text(),
+  excluded: integer({ mode: "boolean" }).notNull().default(false),
+  adminNote: text(),
+});
+
+export const feedbackItemAnnotationRelations = relations(feedbackItemAnnotationTable, ({ one }) => ({
+  feedbackItem: one(feedbackItemTable, {
+    fields: [feedbackItemAnnotationTable.feedbackItemId],
+    references: [feedbackItemTable.id],
+  }),
+}));
+
+// Feedback question configuration (admin-managed)
+export const feedbackQuestionTable = sqliteTable("feedback_question", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `fq_${createId()}`).notNull(),
+  category: text({ length: 100 }).notNull(),
+  label: text({ length: 255 }).notNull(),
+  description: text(),
+  placeholder: text(),
+  itemCount: integer().notNull().default(3),
+  sortOrder: integer().notNull().default(0),
+  isActive: integer({ mode: "boolean" }).notNull().default(true),
+}, (table) => ([
+  index('feedback_question_category_idx').on(table.category),
+  index('feedback_question_sort_order_idx').on(table.sortOrder),
+]));
+
 export type User = InferSelectModel<typeof userTable>;
 export type PassKeyCredential = InferSelectModel<typeof passKeyCredentialTable>;
 export type CreditTransaction = InferSelectModel<typeof creditTransactionTable>;
@@ -361,3 +458,8 @@ export type Team = InferSelectModel<typeof teamTable>;
 export type TeamMembership = InferSelectModel<typeof teamMembershipTable>;
 export type TeamRole = InferSelectModel<typeof teamRoleTable>;
 export type TeamInvitation = InferSelectModel<typeof teamInvitationTable>;
+export type Coach = InferSelectModel<typeof coachTable>;
+export type CoachFeedback = InferSelectModel<typeof coachFeedbackTable>;
+export type FeedbackItem = InferSelectModel<typeof feedbackItemTable>;
+export type FeedbackQuestion = InferSelectModel<typeof feedbackQuestionTable>;
+export type FeedbackItemAnnotation = InferSelectModel<typeof feedbackItemAnnotationTable>;

@@ -6,6 +6,7 @@ import { ResetPasswordEmail } from "@/react-email/reset-password";
 import { VerifyEmail } from "@/react-email/verify-email";
 import { TeamInviteEmail } from "@/react-email/team-invite";
 import { ContactFormEmail } from "@/react-email/contact-form";
+import { CoachFeedbackSummaryEmail } from "@/react-email/coach-feedback-summary";
 import isProd from "./is-prod";
 
 interface BrevoEmailOptions {
@@ -334,6 +335,55 @@ export async function sendContactEmail({
       htmlContent: html,
       replyTo: email,
       tags: ["contact-form"],
+    });
+  }
+}
+
+export async function sendCoachFeedbackEmail({
+  coachName,
+  questions,
+  feedbackEntries,
+  recipientEmail,
+}: {
+  coachName: string;
+  questions: { category: string; label: string }[];
+  feedbackEntries: { categories: Record<string, string[]> }[];
+  recipientEmail: string;
+}) {
+  if (!isProd) {
+    console.warn('\n\n=== COACH FEEDBACK EMAIL (Development) ===');
+    console.warn('Coach:', coachName);
+    console.warn('To:', recipientEmail);
+    console.warn('Entries:', feedbackEntries.length);
+    console.warn('===========================================\n');
+    return;
+  }
+
+  const html = await render(CoachFeedbackSummaryEmail({
+    coachName,
+    questions,
+    feedbackEntries,
+  }));
+
+  const provider = await getEmailProvider();
+
+  if (!provider && isProd) {
+    throw new Error("No email provider configured. Set either RESEND_API_KEY or BREVO_API_KEY in your environment.");
+  }
+
+  if (provider === "resend") {
+    await sendResendEmail({
+      to: [recipientEmail],
+      subject: `Coach Feedback Summary: ${coachName} - ${SITE_DOMAIN}`,
+      html,
+      tags: [{ name: "type", value: "coach-feedback-summary" }],
+    });
+  } else {
+    await sendBrevoEmail({
+      to: [{ email: recipientEmail }],
+      subject: `Coach Feedback Summary: ${coachName} - ${SITE_DOMAIN}`,
+      htmlContent: html,
+      tags: ["coach-feedback-summary"],
     });
   }
 }
