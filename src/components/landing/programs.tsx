@@ -1,4 +1,4 @@
-import { Dumbbell, Trophy, Baby, User, Activity, Bike } from "lucide-react";
+import { Dumbbell, Baby, User, Activity } from "lucide-react";
 
 export function Programs() {
   const programs = [
@@ -7,12 +7,6 @@ export function Programs() {
       title: "CrossFit Classes",
       description:
         "Our signature program. Constantly varied functional movements for all fitness levels.",
-    },
-    {
-      icon: Trophy,
-      title: "HYROX Training",
-      description:
-        "Specific training for HYROX competitions. Build endurance and functional strength.",
     },
     {
       icon: Baby,
@@ -29,11 +23,6 @@ export function Programs() {
       icon: Activity,
       title: "Yoga Classes",
       description: "Flexibility, mobility, and recovery. Perfect complement to strength training.",
-    },
-    {
-      icon: Bike,
-      title: "Spin Classes",
-      description: "High-intensity cardio in our dedicated spin room.",
     },
   ];
 
