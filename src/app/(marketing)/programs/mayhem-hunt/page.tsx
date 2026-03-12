@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronDown, Dumbbell, Timer, Zap } from "lucide-react";
-import { FinalCTA } from "@/components/landing/final-cta";
 import Link from "next/link";
+import { SITE_PHONE, SITE_PHONE_HREF } from "@/constants";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -34,9 +34,14 @@ function ProgramHero() {
           warm-ups, strength work, and intense metcons.
         </p>
 
-        <p className="font-subheading text-sm font-bold text-white tracking-wider uppercase mb-10">
-          Monday / Wednesday / Friday @ 6:00am
-        </p>
+        <div className="bg-white/10 backdrop-blur-sm border-2 border-white/30 rounded-sm p-6 max-w-2xl mx-auto mb-10">
+          <p className="font-subheading text-base font-bold text-white tracking-wider uppercase mb-2">
+            This class is not currently offered
+          </p>
+          <p className="font-sans text-white/90 text-base">
+            Interested in this program? Reach out to learn more about our current class options.
+          </p>
+        </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
@@ -44,7 +49,7 @@ function ProgramHero() {
             size="lg"
             className="bg-black hover:bg-white hover:text-black border-2 border-white text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 min-w-[200px]"
           >
-            <Link href="/tour">Schedule a Tour</Link>
+            <Link href={SITE_PHONE_HREF}>Call Us</Link>
           </Button>
           <Button
             asChild
@@ -52,7 +57,7 @@ function ProgramHero() {
             variant="outline"
             className="bg-white hover:bg-black hover:text-white border-2 border-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 min-w-[200px]"
           >
-            <Link href="/intro-class">Intro Class</Link>
+            <Link href="/tour">Schedule a Tour</Link>
           </Button>
         </div>
       </div>
@@ -208,7 +213,36 @@ export default function MayhemHuntPage() {
     <main>
       <ProgramHero />
       <WorkoutBreakdown />
-      <FinalCTA />
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: "url('/assets/gym-fam.png')" }}
+          />
+          <div className="absolute inset-0 bg-black/70" />
+        </div>
+        <div className="container mx-auto px-6 text-center relative z-10">
+          <h2 className="font-heading text-5xl md:text-6xl uppercase text-white mb-4 tracking-wide">
+            Interested in This Program?
+          </h2>
+          <p className="font-sans text-xl md:text-2xl text-white mb-12 max-w-3xl mx-auto">
+            This class is not currently offered. Contact us to learn more about our available class options.
+          </p>
+          <Button
+            asChild
+            size="lg"
+            className="bg-white text-black hover:bg-gray-100 text-base md:text-xl px-6 md:px-12 py-6 md:py-8 h-auto rounded-sm shadow-[0_8px_24px_rgba(0,0,0,0.3)] font-bold uppercase hover:scale-105 transition-all w-full md:w-auto md:min-w-[300px] max-w-[500px]"
+          >
+            <Link href="/tour">Schedule a Tour</Link>
+          </Button>
+          <p className="font-sans text-white text-base mt-6">
+            Have questions? Call us at{" "}
+            <a href={SITE_PHONE_HREF} className="underline hover:text-white/80">
+              {SITE_PHONE}
+            </a>
+          </p>
+        </div>
+      </section>
     </main>
   );
 }

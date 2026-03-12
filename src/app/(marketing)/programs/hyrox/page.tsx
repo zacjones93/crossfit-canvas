@@ -12,6 +12,7 @@ import {
   Clock,
 } from "lucide-react";
 import Link from "next/link";
+import { SITE_PHONE, SITE_PHONE_HREF } from "@/constants";
 
 function ProgramHero() {
   return (
@@ -27,20 +28,35 @@ function ProgramHero() {
           Hyrox Training in Caldwell, ID
         </h1>
 
-        <p className="font-sans text-lg md:text-xl text-white mb-10 max-w-2xl mx-auto font-normal leading-relaxed">
+        <p className="font-sans text-lg md:text-xl text-white mb-6 max-w-2xl mx-auto font-normal leading-relaxed">
           Prepare for the world&apos;s fastest growing fitness race. Build
           strength, endurance, and mental toughness.
         </p>
+
+        <div className="bg-white/10 backdrop-blur-sm border-2 border-white/30 rounded-sm p-6 max-w-2xl mx-auto mb-10">
+          <p className="font-subheading text-base font-bold text-white tracking-wider uppercase mb-2">
+            This class is not currently offered
+          </p>
+          <p className="font-sans text-white/90 text-base">
+            Interested in this program? Reach out to learn more about our current class options.
+          </p>
+        </div>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
             asChild
             size="lg"
-            className="bg-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 hover:cursor-pointer min-w-[200px]"
+            className="bg-black hover:bg-white hover:text-black border-2 border-white text-white text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 min-w-[200px]"
           >
-            <Link href="/tour">
-              Schedule a Tour
-            </Link>
+            <Link href={SITE_PHONE_HREF}>Call Us</Link>
+          </Button>
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="bg-white hover:bg-black hover:text-white border-2 border-white text-black text-base md:text-lg font-bold uppercase px-8 py-6 h-auto rounded-sm transition-all hover:scale-105 min-w-[200px]"
+          >
+            <Link href="/tour">Schedule a Tour</Link>
           </Button>
         </div>
       </div>
@@ -295,17 +311,11 @@ function ReadyToStartSection() {
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-heading text-4xl md:text-5xl uppercase tracking-wide text-white mb-6">
-            Ready to Start Training?
+            Interested in This Program?
           </h2>
           <div className="h-[3px] bg-white w-24 mx-auto mb-8" />
-          <p className="font-sans text-xl text-white/90 leading-relaxed mb-8">
-            Join our Hyrox-focused training sessions and prepare for your first
-            (or next) competition. Our programming integrates seamlessly with
-            our regular CrossFit classes.
-          </p>
-          <p className="font-sans text-lg text-white/80 leading-relaxed mb-12">
-            Book a free consultation to discuss your goals and how we can help
-            you prepare.
+          <p className="font-sans text-xl text-white/90 leading-relaxed mb-12">
+            This class is not currently offered. Contact us to learn more about our available class options.
           </p>
 
           <Button
@@ -317,6 +327,12 @@ function ReadyToStartSection() {
               Schedule a Tour
             </Link>
           </Button>
+          <p className="font-sans text-white text-base mt-6">
+            Have questions? Call us at{" "}
+            <a href={SITE_PHONE_HREF} className="underline hover:text-white/80">
+              {SITE_PHONE}
+            </a>
+          </p>
         </div>
       </div>
     </section>

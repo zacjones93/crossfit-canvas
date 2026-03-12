@@ -69,15 +69,11 @@ export function Navigation() {
   const pathname = usePathname();
 
   const programItems: ProgramItem[] = [
-    { name: "Mayhem Hunt", href: "/programs/mayhem-hunt", newUntil: new Date("2026-01-27") },
-    { name: "Spin Classes", href: "/programs/spin-classes", newUntil: new Date("2026-01-27") },
-    { name: "Mayhem Life 50+", href: "/programs/mayhem-life-50", newUntil: new Date("2026-01-27") },
     { name: "CrossFit Classes", href: "/programs/crossfit-classes" },
     { name: "Olympic Lifting", href: "/programs/olympic-lifting" },
     { name: "Nutrition", href: "/programs/nutrition" },
     { name: "Personal Training", href: "/programs/personal-training" },
     { name: "Kids Fitness Classes", href: "/programs/kids-fitness-classes" },
-    { name: "Hyrox", href: "/programs/hyrox" },
   ];
 
   const navItems: NavItem[] = [
