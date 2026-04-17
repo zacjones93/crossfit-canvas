@@ -73,7 +73,11 @@ export function Navigation() {
     { name: "Olympic Lifting", href: "/programs/olympic-lifting" },
     { name: "Nutrition", href: "/programs/nutrition" },
     { name: "Personal Training", href: "/programs/personal-training" },
-    { name: "Kids Fitness Classes", href: "/programs/kids-fitness-classes" },
+    {
+      name: "Summer Kids CrossFit",
+      href: "/programs/summer-kids-crossfit" as Route,
+      newUntil: new Date("2026-07-31"),
+    },
   ];
 
   const navItems: NavItem[] = [
