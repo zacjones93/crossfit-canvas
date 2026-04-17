@@ -63,6 +63,17 @@ function ProgramHero() {
               </p>
             </div>
 
+            <div className="mb-8">
+              <p className="font-subheading text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-white/50 mb-1">
+                Runs
+              </p>
+              <p className="font-heading text-3xl md:text-4xl text-white leading-none tracking-wide">
+                06.01
+                <span className="text-white/40 mx-2">—</span>
+                07.31
+              </p>
+            </div>
+
             <p className="font-sans text-lg md:text-xl text-white/85 mb-10 max-w-xl leading-relaxed">
               Speed, agility, footwork, coordination, and basic strength training
               in a fun coach-led program. Built to turn summer into something
@@ -101,14 +112,6 @@ function ProgramHero() {
                 FRAME 001 · CROSSFIT CANVAS
               </p>
               <div className="h-16 w-px bg-white/30" />
-            </div>
-
-            {/* Frame number stamp top-right */}
-            <div className="absolute top-4 right-4 md:right-8 z-20 font-heading text-white/80 text-4xl md:text-5xl leading-none tracking-wide">
-              <span className="block text-right">06.01</span>
-              <span className="block text-right text-white/40 text-base md:text-lg font-subheading font-bold tracking-[0.2em] mt-1">
-                / 07.31
-              </span>
             </div>
 
             {/* Image container with intentional diagonal clip */}
