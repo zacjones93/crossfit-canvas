@@ -1,4 +1,6 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 export const alt =
   "Summer Kids CrossFit Program at CrossFit Canvas — Ages 6–12, June 1 through July 31";
@@ -6,11 +8,13 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function OpengraphImage() {
-  const photoData = await fetch(
-    new URL("./og-photo.png", import.meta.url)
-  ).then((res) => res.arrayBuffer());
-  const photoBase64 = Buffer.from(photoData).toString("base64");
-  const photoSrc = `data:image/png;base64,${photoBase64}`;
+  const photoData = await readFile(
+    join(
+      process.cwd(),
+      "src/app/(marketing)/programs/summer-kids-crossfit/og-photo.png"
+    )
+  );
+  const photoSrc = `data:image/png;base64,${photoData.toString("base64")}`;
 
   return new ImageResponse(
     (
@@ -41,7 +45,7 @@ export default async function OpengraphImage() {
             flexDirection: "column",
             justifyContent: "space-between",
             padding: "60px 56px",
-            width: "620px",
+            width: "680px",
             height: "100%",
             zIndex: 2,
           }}
@@ -91,11 +95,11 @@ export default async function OpengraphImage() {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                fontSize: "132px",
+                fontSize: "104px",
                 fontWeight: 900,
                 color: "#ffffff",
-                lineHeight: 0.88,
-                letterSpacing: "-4px",
+                lineHeight: 0.9,
+                letterSpacing: "-3px",
                 textTransform: "uppercase",
               }}
             >
@@ -233,7 +237,7 @@ export default async function OpengraphImage() {
             right: 0,
             top: 0,
             bottom: 0,
-            width: "640px",
+            width: "580px",
             overflow: "hidden",
             clipPath: "polygon(12% 0, 100% 0, 100% 100%, 0 100%, 0 20%)",
           }}
@@ -267,7 +271,7 @@ export default async function OpengraphImage() {
             position: "absolute",
             right: "-14px",
             top: "14px",
-            width: "640px",
+            width: "580px",
             height: "630px",
             border: "2px solid rgba(255,255,255,0.25)",
             clipPath: "polygon(12% 0, 100% 0, 100% 100%, 0 100%, 0 20%)",
