@@ -19,15 +19,9 @@ export const coaches: Coach[] = [
     bio: "Meet Coach Jon Williams!\nJon grew up in Emmett, ID and graduated from Vallivue High School before taking his basketball talents to the college level. He played at TVCC in Ontario, Oregon where he earned an Associate's Degree in Physical Education, then transferred to Grandview University in Des Moines, Iowa. There, he played another two years of college basketball while interning with the athletic department's strength & conditioning team during his senior year —graduating in 2016 with a Bachelor's in Kinesiology & Health Promotion.\n\nAfter college, Jon jumped straight into personal training & coaching CrossFit and never looked back. Two years later, in 2019, he and his wife Abi opened the doors to CrossFit Canvas!\n\nJon is going into his 9th year coaching and has his CrossFit Level 2 certification!\n\nFavorite thing about coaching CrossFit?\n\"Watching people do things they never thought they could. Seeing confidence and strength grow inside and outside the gym for our members means so much to us. There have been so many people come through the doors at CrossFit Canvas and to know we hopefully had a positive impact on their lives is why we love doing what we do.\"\n\nGoals for the future?\n\"To keep building a strong, encouraging community at CrossFit Canvas that helps push each other to be better every day—both fitness wise and as people. We don't know how long we're here for or how long we'll be doing this before life changes so we hope to make as much impactful change as possible.\"",
   },
   {
-    name: "Andrea Goff",
-    credentials: "CrossFit L1",
-    image: "/assets/coaches/andrea-goff.png",
-    bio: "I grew up in Caldwell, Idaho, and spent my childhood summers in South Texas, where I was born. I've been married to my husband, Ryan, for 23 years this June, and we have two awesome kiddos, Cash and Presley.\n\nI graduated from Vallivue High School and went on to attend Boise State University.\n\nI enjoy remodeling & home decorating projects in my \"spare\" time. Over the years, I have learned how to build things, knock down walls, remove cabinets hang shiplap, etc. I love it!!\n\nMy family and I are extremely active — you'll find us wakesurfing, hiking & enjoying our pool in the summer, and we love to travel. We're big fans of all things fitness and spend a lot of time cheering on our kids at their sporting events. It's truly the BEST!\n\nI've been a CrossFit coach for six years. When I'm not coaching, I run my own retail and custom t-shirt business, G4 Collective.\n\nWhat I love most about coaching is getting to be a part of someone's day for an hour & making those connections. It's an honor to show up, encourage them, and hopefully leave them feeling stronger and happier than when they walked in.\n\nLooking ahead, I'm currently working toward my CrossFit Level 2 certification. I'm also passionate about furthering my education in women's health/fitness — especially for women 40 and over. It's so important for women in this stage of life to continue building and maintaining muscle through weight training and nutrition.",
-  },
-  {
     name: "Dre Lucich",
     credentials: "CrossFit L2",
-    image: "/assets/coaches/dre-lucich.png",
+    image: "/assets/coaches/dre-luchich-2026.jpeg",
     bio: "💪 Where did you grow up?\nSunny San Diego, California 🌴\n\n🎓 Education:\nI swam for Boise State University from 2007–2011 while earning my Bachelor's in Elementary Education.\n\n🏊‍♀️ Sports, Hobbies & Activities:\nCrossFit (surprise!), dance parties with my daughter Kennedy, coaching Meridian High School's Swim Team, drinking way too much coffee, crafting, being outdoors, and doing anything in the water!\n\n🍎 Career:\nI spent 7 amazing years teaching elementary school before transitioning to my most rewarding role yet—stay-at-home mom to Kennedy.\n\n❤️ Favorite Thing About Coaching CrossFit:\nWatching people build confidence not just in the gym, but in life. I love connecting with each athlete and being a part of their journey—especially as they kick butt into their 90s!\n\n🎯 Goals:\n• Personal Goal: Improve my gymnastics and hit a 350 lb deadlift\n• Coaching Goal: Earn my Pregnancy & Postpartum Athleticism certification and eventually test for the Level 3 (L3) Coaching Credential",
   },
   {
@@ -45,7 +39,7 @@ export const coaches: Coach[] = [
   {
     name: "Liz Krmpotich",
     credentials: "CrossFit L2",
-    image: "/assets/coaches/liz-krmpotich.png",
+    image: "/assets/coaches/liz-krmpotich-2026.jpeg",
     bio: "Born and raised in Green River, Wyoming, Liz has been breaking barriers from the start—literally! She was one of the first female athletes in the state to compete in pole vaulting and also made waves as a competitive diver. She even turned down a scholarship to dive at UNLV to marry her high school sweetheart, Bobby, and begin their adventure together.\n\nNow living in Idaho, Liz wears many hats: mom to Cole and Lexi, licensed property appraiser, office manager of Balanced Electric (which she co-owns with Bobby), and of course, CrossFit coach extraordinaire!\n\nHer passion for movement and adventure knows no bounds—she's run multiple half marathons, hiked across Europe, swam in the Adriatic and Baltic Seas, and even backpacked the Nā Pali Coast. Paddleboarding, cliff diving, and CrossFit? She's all in. 🏃‍♀️🏞️🌊\n\nLiz found CrossFit in 2012 and began coaching in 2015. Helping others discover their strength—both inside and out—is the highlight of her day. 💥\n\nHer bucket list?\n🏕️ Hike the Appalachian Trail\n🔥 Compete on Survivor\n🏋️‍♀️ Do CrossFit until she's 100",
   },
   {
@@ -57,13 +51,19 @@ export const coaches: Coach[] = [
   {
     name: "Zac Jones",
     credentials: "CrossFit L2",
-    image: "/assets/coaches/zac-jones.jpeg",
+    image: "/assets/coaches/zac-jones-2026.jpeg",
     bio: "I started CrossFit back in 2013 and immediately fell in love with the constant challenge and variety that it gave my workout routine every day. The community that is built around suffering together is a highlight as well.\n\nAs I've learned the CrossFit methodology and refined my movement I really enjoy supporting others fitness journeys and teaching people what I've learned. I'm always happy to talk about methodology, nutrition, weightlifting or anything fitness related.",
   },
   {
-    name: "Katirah Vangaasbeck",
-    credentials: "CrossFit L1",
-    image: "/assets/coaches/kat.png",
-    bio: "I started CrossFit in December 2021, and it quickly became my favorite part of the day. I love how it pushes you out of your comfort zone in the best way both mentally and physically.\n\nOutside of the gym, I love hanging out with my dogs, fostering animals, thrifting, and traveling.\n\nI'm all about creating a space where people feel safe to mess up, try again, laugh, grow, and do things that might scare them. I want everyone to feel welcome, supported, and capable.",
+    name: "Andrea Medlin",
+    credentials: "CrossFit L2",
+    image: "/assets/coaches/andrea-medlin-2026.jpeg",
+    bio: "I was born & raised in Cleveland, Ohio. After college, I moved out to Southern California, where I found CrossFit & my husband, before moving to the great state of Idaho. 🩷\n\nI grew up playing softball year-round before I hung up my cleats to go to pharmacy school at The University of Toledo. I am a pharmacist by trade, but my most favorite “job” is “Mama”. 💛\n\nThroughout college I dabbled in teaching Pilates, yoga, cycling, and kickboxing, as well as running half marathons and completing Tough Mudders. I have been coaching CrossFit on and off for ~12 years. 🏋🏻‍♀️\n\nThings I love to do… anything & everything with my husband and our boys. We CrossFit, travel, adventure, camp, play all the sports, dance, craft, etc. I also love to garden, keep chickens, DIY my house, and try every coffee shop in the valley. 💚\n\nMy favorite thing about coaching CrossFit is helping people set (and achieve!) realistic goals for themselves. I love to emphasize the power of positive self-talk and optimism in reaching those goals. At CrossFit, we not only forge elite fitness, we forge an elite spirit that carries us in the gym and in life! 🙌🏼\n\nMy goals are to keep up with my kids and be the healthiest version of myself for them! I always relate a CrossFit movement to some sort of life skill to keep me motivated! At CrossFit Canvas, I hope to inspire others to keep moving toward their goals by being a great teacher, acknowledging achievements, and supporting the journey. ✨",
   },
+  {
+    name: "Alex Reynolds",
+    credentials: "CrossFit L1",
+    image: "/assets/coaches/alex-reynolds-2026.jpeg",
+    bio: "Alex grew up in Phoenix where working out outside was a terrible idea. He came to fitness later than most, beginning strength training at 30 and not stepping into running or competition until 35. While his brother and sister-in-law had walls full of race medals, his were empty; but that only fueled his drive. Since then, Alex has completed an Ironman, multiple triathlons, a Hyrox, a Spartan race, a 112m bike race, an ultramarathon and numerous half marathons.\n\nHe thrives on constantly varied fitness and is deeply connected to the CrossFit methodology and its community. Becoming a CrossFit coach was a natural next step. Alex is driven to share what he’s learned and help others push past their own starting lines to achieve more than they thought possible.",
+  }
 ]
