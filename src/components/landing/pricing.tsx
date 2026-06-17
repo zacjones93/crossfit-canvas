@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export const PLANS_URLS = {
+  "newMemberSpecial": "https://canvas.pushpress.com/landing/plans/plan_6718d75d80c546",
   "classPack": "https://canvas.pushpress.com/landing/plans/plan_91a3a83ae76cf7",
   "unlimitedMembership": "https://canvas.pushpress.com/landing/plans/plan_9e9a199f39f4f8",
   "flexibleSchedule13": "https://canvas.pushpress.com/landing/plans/plan_766d9a593e8a76",
