@@ -1,243 +1,314 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import type { Route } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ChevronDown, Menu } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useNavStore } from "@/state/nav";
 
-type NavItem = {
+type NavigationItem = {
   name: string;
   href: Route;
 };
 
-type ProgramItem = {
+type NavigationGroup = {
   name: string;
-  href: Route;
-  newUntil?: Date; // Show "NEW" badge until this date
+  basePath: string;
+  items: NavigationItem[];
 };
 
-const isNewProgram = (program: ProgramItem) => {
-  if (!program.newUntil) return false;
-  return new Date() < program.newUntil;
+const navigationGroups: NavigationGroup[] = [
+  {
+    name: "Programs",
+    basePath: "/programs",
+    items: [
+      { name: "CrossFit Classes", href: "/programs/crossfit-classes" },
+      { name: "HYROX Training", href: "/programs/hyrox" },
+      { name: "Olympic Lifting", href: "/programs/olympic-lifting" },
+      { name: "Personal Training", href: "/programs/personal-training" },
+      { name: "Nutrition", href: "/programs/nutrition" },
+      {
+        name: "Kids Fitness",
+        href: "/programs/kids-fitness-classes" as Route,
+      },
+    ],
+  },
+  {
+    name: "Services",
+    basePath: "/services",
+    items: [
+      { name: "On-Site Services", href: "/services" as Route },
+      { name: "Recovery & Wellness", href: "/wellness" as Route },
+    ],
+  },
+  {
+    name: "About",
+    basePath: "/about",
+    items: [
+      { name: "About CrossFit Canvas", href: "/about" },
+      { name: "Meet the Coaches", href: "/about#coaches" as Route },
+      { name: "What Is CrossFit?", href: "/what-is-crossfit" },
+    ],
+  },
+];
+
+const isPathActive = (pathname: string, href: string) => {
+  const path = href.split("#")[0];
+  return pathname === path || pathname.startsWith(`${path}/`);
 };
 
-const ActionButtons = () => {
-  const { setIsOpen } = useNavStore();
+function DesktopMenu({
+  group,
+  pathname,
+}: {
+  group: NavigationGroup;
+  pathname: string;
+}) {
+  const isActive = group.items.some((item) =>
+    isPathActive(pathname, item.href)
+  );
 
   return (
-    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
-      <Button
-        asChild
-        onClick={() => setIsOpen(false)}
-        variant="outline"
-        className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-black font-bold uppercase text-sm px-6 rounded-sm transition-all hover:scale-105 w-full md:w-auto"
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        className={cn(
+          "group relative flex h-[4.5rem] items-center gap-1.5 px-3 font-subheading text-xs font-bold uppercase tracking-[0.08em] text-white/70 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-inset",
+          isActive && "text-white"
+        )}
       >
-        <Link href="/drop-in">Drop-In</Link>
-      </Button>
-      <Button
-        asChild
-        onClick={() => setIsOpen(false)}
-        variant="outline"
-        className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-black font-bold uppercase text-sm px-6 rounded-sm transition-all hover:scale-105 w-full md:w-auto"
+        {group.name}
+        <ChevronDown
+          className="h-3.5 w-3.5 transition-transform duration-200 group-data-[state=open]:rotate-180"
+          aria-hidden="true"
+        />
+        <span
+          className={cn(
+            "absolute inset-x-3 bottom-0 h-0.5 origin-left scale-x-0 bg-crimson transition-transform duration-200 group-hover:scale-x-100",
+            isActive && "scale-x-100"
+          )}
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        sideOffset={0}
+        className="min-w-56 rounded-none border border-white/15 border-t-2 border-t-crimson bg-black p-2 shadow-xl"
       >
-        <Link href="/tour">Schedule Tour</Link>
-      </Button>
-      <Button
-        asChild
-        onClick={() => setIsOpen(false)}
-        className="bg-white text-black font-bold uppercase text-sm px-6 rounded-sm transition-all hover:scale-105 w-full md:w-auto"
-      >
-        <Link href="/intro-class">Intro Class</Link>
-      </Button>
-    </div>
+        {group.items.map((item) => (
+          <DropdownMenuItem key={item.name} asChild>
+            <Link
+              href={item.href}
+              className={cn(
+                "min-h-11 cursor-pointer rounded-none px-3 font-subheading text-xs font-bold uppercase tracking-wide text-white/65 transition-colors focus:bg-white/10 focus:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson",
+                isPathActive(pathname, item.href) && "bg-white/5 text-white"
+              )}
+            >
+              {item.name}
+            </Link>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
-};
+}
+
+function MobileMenuGroup({
+  group,
+  pathname,
+  closeMenu,
+}: {
+  group: NavigationGroup;
+  pathname: string;
+  closeMenu: () => void;
+}) {
+  const isActive = group.items.some((item) =>
+    isPathActive(pathname, item.href)
+  );
+
+  return (
+    <Collapsible defaultOpen={isActive} className="group/collapsible">
+      <CollapsibleTrigger
+        className={cn(
+          "flex min-h-13 w-full items-center justify-between border-b border-white/10 px-1 text-left font-subheading text-base font-bold uppercase tracking-wide text-white/75 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-inset",
+          isActive && "text-white"
+        )}
+      >
+        {group.name}
+        <ChevronDown
+          className="h-5 w-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180"
+          aria-hidden="true"
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="border-b border-white/10 pb-2">
+        {group.items.map((item) => (
+          <Link
+            key={item.name}
+            href={item.href}
+            onClick={closeMenu}
+            className={cn(
+              "flex min-h-11 items-center border-l border-transparent px-4 font-sans text-sm font-medium text-white/60 no-underline transition-colors hover:border-white/30 hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-inset",
+              isPathActive(pathname, item.href) &&
+                "border-crimson bg-white/5 text-white"
+            )}
+          >
+            {item.name}
+          </Link>
+        ))}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
 
 export function Navigation() {
   const { isOpen, setIsOpen } = useNavStore();
   const pathname = usePathname();
-
-  const programItems: ProgramItem[] = [
-    { name: "CrossFit Classes", href: "/programs/crossfit-classes" },
-    { name: "Olympic Lifting", href: "/programs/olympic-lifting" },
-    { name: "Nutrition", href: "/programs/nutrition" },
-    { name: "Personal Training", href: "/programs/personal-training" },
-    {
-      name: "Summer Kids CrossFit",
-      href: "/programs/summer-kids-crossfit" as Route,
-      newUntil: new Date("2026-07-31"),
-    },
-  ];
-
-  const navItems: NavItem[] = [
-    { name: "About", href: "/about" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "Wellness", href: "/wellness" as Route },
-    { name: "What is CrossFit?", href: "/what-is-crossfit" },
-  ];
-
-  const isActiveLink = (itemHref: string) => {
-    if (itemHref === "/") {
-      return pathname === "/";
-    }
-    return pathname === itemHref || pathname.startsWith(`${itemHref}/`);
-  };
+  const closeMenu = () => setIsOpen(false);
 
   return (
-    <nav className="bg-black shadow-lg sticky top-0 z-50 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <div className="flex items-center">
-            <Link
-              href="/"
-              className="flex items-center hover:opacity-90 transition-opacity"
-            >
-              <Image
-                src="/crossfit-canvas.jpg"
-                alt="CrossFit Canvas Logo"
-                width={240}
-                height={80}
-                className="h-20 w-auto"
-                priority
-              />
-            </Link>
-          </div>
-          <div className="hidden lg:flex lg:items-center lg:space-x-6">
-            <div className="flex items-baseline space-x-1">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={cn(
-                    "group font-subheading text-white/80 hover:text-white no-underline px-4 h-20 flex items-center text-sm font-bold uppercase tracking-wide transition-colors relative",
-                    isActiveLink(item.href) &&
-                      "text-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-white"
-                  )}
-                >
-                  {item.name}
-                  <span
-                    className={cn(
-                      "absolute left-0 bottom-0 h-[3px] w-0 bg-white transition-all group-hover:w-full",
-                      isActiveLink(item.href) && "w-full"
-                    )}
-                  />
-                </Link>
-              ))}
+    <nav
+      aria-label="Primary navigation"
+      className="sticky top-0 z-50 border-b border-white/10 bg-black"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-[4.5rem] items-center justify-between">
+          <Link
+            href="/"
+            aria-label="CrossFit Canvas home"
+            className="flex h-full items-center transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson"
+          >
+            <Image
+              src="/crossfit-canvas.jpg"
+              alt=""
+              width={240}
+              height={80}
+              className="h-16 w-auto"
+              priority
+            />
+          </Link>
 
-              {/* Programs Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger
+          <div className="hidden items-center lg:flex">
+            <div className="flex items-center">
+              {navigationGroups.map((group) => (
+                <DesktopMenu
+                  key={group.name}
+                  group={group}
+                  pathname={pathname}
+                />
+              ))}
+              <Link
+                href="/pricing"
+                className={cn(
+                  "group relative flex h-[4.5rem] items-center px-3 font-subheading text-xs font-bold uppercase tracking-[0.08em] text-white/70 no-underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-inset",
+                  isPathActive(pathname, "/pricing") && "text-white"
+                )}
+              >
+                Pricing
+                <span
                   className={cn(
-                    "group font-subheading text-white/80 hover:text-white no-underline px-4 h-20 flex items-center text-sm font-bold uppercase tracking-wide transition-colors relative outline-none",
-                    pathname.startsWith("/programs") &&
-                      "text-white after:absolute after:left-0 after:bottom-0 after:h-[3px] after:w-full after:bg-white"
+                    "absolute inset-x-3 bottom-0 h-0.5 origin-left scale-x-0 bg-crimson transition-transform duration-200 group-hover:scale-x-100",
+                    isPathActive(pathname, "/pricing") && "scale-x-100"
                   )}
-                >
-                  Programs
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                  <span
-                    className={cn(
-                      "absolute left-0 bottom-0 h-[3px] w-0 bg-white transition-all group-hover:w-full",
-                      pathname.startsWith("/programs") && "w-full"
-                    )}
-                  />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="bg-black border-white/10 mt-2">
-                  {programItems.map((program) => (
-                    <DropdownMenuItem key={program.name} asChild>
-                      <Link
-                        href={program.href!}
-                        className="font-subheading text-white/80 hover:text-white focus:text-white uppercase text-xs cursor-pointer focus:bg-white/10 focus-visible:outline-none flex items-center gap-2"
-                      >
-                        {program.name}
-                        {isNewProgram(program) && (
-                          <span className="bg-white text-black text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
-                            NEW
-                          </span>
-                        )}
-                      </Link>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                />
+              </Link>
             </div>
-            <ActionButtons />
+
+            <div className="ml-5 flex items-center gap-4 border-l border-white/15 pl-5">
+              <Link
+                href="/drop-in"
+                className="font-subheading text-xs font-bold uppercase tracking-[0.08em] text-white/65 no-underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson"
+              >
+                Drop-In
+              </Link>
+              <Link
+                href="/intro-class"
+                className="flex min-h-11 items-center bg-crimson px-5 font-subheading text-xs font-bold uppercase tracking-[0.08em] text-white no-underline transition-colors hover:bg-[#ef244a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+              >
+                Start Here
+              </Link>
+            </div>
           </div>
-          <div className="lg:hidden flex items-center">
+
+          <div className="flex items-center lg:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="p-6 text-white hover:bg-white/10"
+                <button
+                  type="button"
+                  className="flex h-11 w-11 items-center justify-center text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson"
+                  aria-label="Open menu"
                 >
-                  <Menu className="w-9 h-9" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
+                  <Menu className="h-6 w-6" aria-hidden="true" />
+                </button>
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-[240px] sm:w-[300px] bg-black border-l border-white/10"
+                className="h-dvh max-h-dvh w-[min(88vw,22rem)] gap-0 overflow-hidden border-l border-white/15 bg-black p-0 text-white"
               >
-                <div className="mt-6 flow-root">
-                  <div className="space-y-2">
-                    {navItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className={cn(
-                          "group block px-3 py-3 text-base font-subheading font-bold uppercase tracking-wide text-white/80 hover:text-white hover:bg-white/5 no-underline transition-colors relative rounded",
-                          isActiveLink(item.href) &&
-                            "text-white bg-white/5 border-l-4 border-white"
-                        )}
-                        onClick={() => setIsOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
+                <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6 pt-16">
+                  <SheetTitle className="font-heading text-4xl uppercase tracking-wide text-white">
+                    Explore Canvas
+                  </SheetTitle>
+                  <SheetDescription className="mt-1 text-sm text-white/50">
+                    Find your training, services, and next step.
+                  </SheetDescription>
+
+                  <div className="mt-7">
+                    {navigationGroups.map((group) => (
+                      <MobileMenuGroup
+                        key={group.name}
+                        group={group}
+                        pathname={pathname}
+                        closeMenu={closeMenu}
+                      />
                     ))}
-
-                    {/* Programs Section */}
-                    <div className="mt-4 pt-4 border-t border-white/10">
-                      <div className="px-3 py-2 text-xs font-subheading font-bold uppercase tracking-wider text-white/40">
-                        Programs
-                      </div>
-                      {programItems.map((program) => (
-                        <Link
-                          key={program.name}
-                          href={program.href!}
-                          className={cn(
-                            "group flex items-center gap-2 px-3 py-3 text-base font-subheading font-bold uppercase tracking-wide text-white/80 hover:text-white focus:text-white hover:bg-white/5 focus:bg-white/5 no-underline transition-colors relative rounded focus-visible:outline-none",
-                            pathname === program.href &&
-                              "text-white bg-white/5 border-l-4 border-white"
-                          )}
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {program.name}
-                          {isNewProgram(program) && (
-                            <span className="bg-white text-black text-[10px] font-bold px-1.5 py-0.5 rounded-sm">
-                              NEW
-                            </span>
-                          )}
-                        </Link>
-                      ))}
-                    </div>
-
-                    <div className="px-3 pt-4">
-                      <ActionButtons />
-                    </div>
+                    <Link
+                      href="/pricing"
+                      onClick={closeMenu}
+                      className={cn(
+                        "flex min-h-13 items-center border-b border-white/10 px-1 font-subheading text-base font-bold uppercase tracking-wide text-white/75 no-underline transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson focus-visible:ring-inset",
+                        isPathActive(pathname, "/pricing") && "text-white"
+                      )}
+                    >
+                      Pricing
+                    </Link>
                   </div>
                 </div>
+
+                <SheetFooter className="border-t border-white/15 bg-black px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4">
+                  <Link
+                    href="/drop-in"
+                    onClick={closeMenu}
+                    className="flex min-h-11 items-center justify-center border border-white/35 font-subheading text-sm font-bold uppercase tracking-wide text-white no-underline transition-colors hover:border-white hover:bg-white hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-crimson"
+                  >
+                    Drop-In
+                  </Link>
+                  <Link
+                    href="/intro-class"
+                    onClick={closeMenu}
+                    className="flex min-h-12 items-center justify-center bg-crimson font-subheading text-sm font-bold uppercase tracking-wide text-white no-underline transition-colors hover:bg-[#ef244a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                  >
+                    Start Here
+                  </Link>
+                </SheetFooter>
               </SheetContent>
             </Sheet>
           </div>

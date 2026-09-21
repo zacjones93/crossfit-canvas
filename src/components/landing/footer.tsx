@@ -78,6 +78,12 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/services" className="group font-sans text-gray-400 hover:text-white transition-colors relative">
+                  Services
+                  <span className="absolute left-0 -bottom-0.5 w-0 h-[2px] bg-white transition-all group-hover:w-full" />
+                </Link>
+              </li>
+              <li>
                 <Link href="/schedule" className="group font-sans text-gray-400 hover:text-white transition-colors relative">
                   Schedule
                   <span className="absolute left-0 -bottom-0.5 w-0 h-[2px] bg-white transition-all group-hover:w-full" />
