@@ -45,6 +45,11 @@ export const getCoachesAction = createServerAction()
         bio: true,
         createdAt: true,
         updatedAt: true,
+        userId: true,
+      },
+      with: {
+        // Login link for the Open coach workspace
+        user: { columns: { id: true, email: true, firstName: true, lastName: true } },
       },
       where: whereClause,
       orderBy: (coaches, { desc }) => [desc(coaches.createdAt)],

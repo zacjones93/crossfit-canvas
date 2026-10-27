@@ -146,7 +146,12 @@ export function CoachesTable() {
     }
   }
 
-  const columns = useMemo(() => getColumns({ onEdit: handleEdit, onDelete: handleDelete }), [])
+  function refetchCoaches() {
+    fetchCoaches({ page: parseInt(page), pageSize: parseInt(pageSize), filter: nameFilter || undefined })
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const columns = useMemo(() => getColumns({ onEdit: handleEdit, onDelete: handleDelete, onLinkChange: refetchCoaches }), [page, pageSize, nameFilter])
 
   const handlePageChange = (newPage: number) => {
     setPage((newPage + 1).toString())

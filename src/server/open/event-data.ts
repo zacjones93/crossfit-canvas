@@ -8,7 +8,7 @@ import {
   openWeekTable,
   openWorkoutTable,
 } from "@/db/schema";
-import { asc, eq } from "drizzle-orm";
+import { and, asc, count, eq, isNotNull } from "drizzle-orm";
 
 export async function getWeeks({ eventId }: { eventId: string }) {
   const db = getDB();
@@ -82,4 +82,15 @@ export async function getEntries({ eventId }: { eventId: string }) {
     },
   });
   return entries.sort((a, b) => a.participant.name.localeCompare(b.participant.name));
+}
+
+/** teamId → number of entries on that team (teams with none are absent). */
+export async function getTeamMemberCounts({ eventId }: { eventId: string }): Promise<Record<string, number>> {
+  const db = getDB();
+  const rows = await db
+    .select({ teamId: openEntryTable.teamId, total: count() })
+    .from(openEntryTable)
+    .where(and(eq(openEntryTable.eventId, eventId), isNotNull(openEntryTable.teamId)))
+    .groupBy(openEntryTable.teamId);
+  return Object.fromEntries(rows.flatMap((row) => (row.teamId ? [[row.teamId, row.total]] : [])));
 }

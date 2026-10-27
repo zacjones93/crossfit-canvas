@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { CoachUserLink, type CoachLinkedUser } from "./coach-user-link"
 import {
   Tooltip,
   TooltipContent,
@@ -27,9 +28,19 @@ export type Coach = {
   bio: string | null
   createdAt: Date
   updatedAt: Date | null
+  userId: string | null
+  user: CoachLinkedUser | null
 }
 
-export function getColumns({ onEdit, onDelete }: { onEdit: (coach: Coach) => void; onDelete: (coach: Coach) => void }): ColumnDef<Coach>[] {
+export function getColumns({
+  onEdit,
+  onDelete,
+  onLinkChange,
+}: {
+  onEdit: (coach: Coach) => void
+  onDelete: (coach: Coach) => void
+  onLinkChange: () => void
+}): ColumnDef<Coach>[] {
   return [
     {
       accessorKey: "name",
@@ -51,6 +62,13 @@ export function getColumns({ onEdit, onDelete }: { onEdit: (coach: Coach) => voi
         const val = row.getValue("credentials") as string | null
         return val || <span className="text-muted-foreground">--</span>
       },
+    },
+    {
+      id: "linkedUser",
+      header: "Linked user",
+      cell: ({ row }) => (
+        <CoachUserLink coachId={row.original.id} coachName={row.original.name} user={row.original.user} onChange={onLinkChange} />
+      ),
     },
     {
       accessorKey: "createdAt",

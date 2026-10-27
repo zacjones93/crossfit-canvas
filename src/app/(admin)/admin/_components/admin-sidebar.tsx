@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Settings,
   UserCog,
+  Trophy,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -45,6 +46,11 @@ const adminNavItems: NavMainItem[] = [
     title: "Coaches",
     url: "/admin/coaches",
     icon: UserCog,
+  },
+  {
+    title: "Open",
+    url: "/admin/open",
+    icon: Trophy,
   },
   {
     title: "Coaches Feedback",

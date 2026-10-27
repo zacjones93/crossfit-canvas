@@ -50,3 +50,6 @@ dist
 !.env*example
 *.log
 backups
+
+# Playwright MCP output
+.playwright-mcp/
