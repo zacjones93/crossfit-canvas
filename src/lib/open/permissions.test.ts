@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { decideManageContext, decideManageEntry, type ManageContext, type ManageDecision } from "./permissions";
+import { decideManageContext, decideManageEntry, decideManageTeam, type ManageContext, type ManageDecision } from "./permissions";
 
 const event = { id: "ev1", coachPointsEnabled: true, coachScoresEnabled: true };
 const weeklyRule = { eventId: "ev1", cadence: "per_week", coachAwardable: true, isActive: true };
@@ -125,5 +125,28 @@ describe("decideManageEntry", () => {
     expect(
       full({ context: { ...coachPoints, rule: { ...weeklyRule, coachAwardable: false, isActive: false }, isAdmin: true } }),
     ).toBe("OK");
+  });
+});
+
+describe("decideManageTeam (profile)", () => {
+  const team = { id: "t1", eventId: "ev1" };
+  const otherTeam = { id: "t2", eventId: "ev1" };
+  const base = { isAdmin: false, manageableTeamIds: teams, eventId: "ev1" };
+
+  it("lets coaches edit only teams they coach", () => {
+    expect(code(decideManageTeam({ ...base, team }))).toBe("OK");
+    expect(code(decideManageTeam({ ...base, team: otherTeam }))).toBe("FORBIDDEN");
+    expect(code(decideManageTeam({ ...base, manageableTeamIds: new Set(), team }))).toBe("FORBIDDEN");
+  });
+
+  it("lets admins edit any team in the event", () => {
+    expect(code(decideManageTeam({ ...base, isAdmin: true, manageableTeamIds: new Set(), team: otherTeam }))).toBe("OK");
+  });
+
+  it("treats missing or other-event teams as not found, even for admins", () => {
+    expect(code(decideManageTeam({ ...base, team: null }))).toBe("NOT_FOUND");
+    expect(code(decideManageTeam({ ...base, isAdmin: true, team: { id: "t1", eventId: "ev2" } }))).toBe("NOT_FOUND");
+    // Coaching the same team id doesn't help if the team is in another event
+    expect(code(decideManageTeam({ ...base, team: { id: "t1", eventId: "ev2" } }))).toBe("NOT_FOUND");
   });
 });

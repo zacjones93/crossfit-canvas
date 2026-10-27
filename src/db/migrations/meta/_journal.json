@@ -99,6 +99,13 @@
       "when": 1793072144181,
       "tag": "0013_add-open-event",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1793074339253,
+      "tag": "0014_add-open-team-profile",
+      "breakpoints": true
     }
   ]
 }

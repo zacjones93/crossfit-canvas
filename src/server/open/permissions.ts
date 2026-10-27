@@ -16,6 +16,7 @@ import {
 import {
   decideManageContext,
   decideManageEntry,
+  decideManageTeam,
   MANAGE_KIND,
   type ManageDecision,
   type ManageKind,
@@ -173,4 +174,36 @@ export async function assertCanManageEntry({
   const context = await loadManageContext({ session, eventId, ...refs });
   assertEntryInContext({ context, entry });
   return { ...context, entry };
+}
+
+/**
+ * Team profile edits: loads the team and, for non-admins, the coached team ids in one
+ * round trip. The team must be in `eventId` (otherwise "not found"). Not gated by coach event
+ * flags or week locks. Returns the loaded team row so actions don't re-query.
+ */
+export async function assertCanManageTeam({
+  session,
+  eventId,
+  teamId,
+}: {
+  session: OpenActorSession;
+  eventId: string;
+  teamId: string;
+}) {
+  const db = getDB();
+  const [teams, coachedTeams] = await db.batch([
+    db.select().from(openTeamTable).where(eq(openTeamTable.id, teamId)),
+    coachedTeamIdsQuery({ userId: session.userId, eventId }),
+  ]);
+  const team = teams[0] ?? null;
+
+  throwIfDenied(
+    decideManageTeam({
+      isAdmin: isOpenAdmin(session),
+      manageableTeamIds: new Set(coachedTeams.map((row) => row.teamId)),
+      eventId,
+      team,
+    }),
+  );
+  return team!; // decideManageTeam denies a null team
 }

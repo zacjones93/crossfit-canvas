@@ -12,6 +12,7 @@ import {
   updateOpenTeamSchema,
 } from "@/schemas/open.schema";
 import { auditStatement, auditStatements } from "@/server/open/audit-write";
+import { deleteOpenMediaKeys } from "@/server/open/media";
 import {
   auditedUpdate,
   loadEvent,
@@ -135,6 +136,7 @@ export const deleteOpenTeamAction = createServerAction()
       messages: { foreignKey: `"${team.name}" still has athletes; move them to another team first` },
     });
 
+    await deleteOpenMediaKeys([team.photoKey]);
     revalidateOpenEvent({ eventId: team.eventId });
     return { success: true };
   });

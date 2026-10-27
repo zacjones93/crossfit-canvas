@@ -94,11 +94,21 @@ Public (`src/app/(open)/open/...`):
 
 Shared components: `src/components/open/award-grid.tsx`, `score-grid.tsx` (props-driven, no knowledge of admin vs coach).
 
+## Team profiles (added after Stage 3)
+- Migration 0014: `open_team` gains `photoKey` (R2 object key, nullable), `motto` (nullable), `description` (nullable).
+- R2 binding `OPEN_MEDIA` → bucket `crossfit-canvas-open` (bucket creation pending: R2 must be enabled on the account; local dev uses miniflare R2).
+- Upload: route handler `POST /api/open/team-photo` (multipart `eventId`, `teamId`, `file`) — a route handler rather than a server action so the global server-action body limit (1 MB) stays untouched. Before reading the body it enforces same-origin (`Origin` host = `x-forwarded-host`/`host`; route handlers lack server-action CSRF protection) and a `Content-Length` cap (5 MB + 64 KB multipart overhead); then requires a session and calls the one shared `uploadTeamPhoto` (`src/server/open/team-photo.ts`): validates type (jpeg/png/webp, declared type must match magic bytes) and size (≤ 5 MB), `put`s the File (no buffering) to `open/teams/<teamId>/<random>.<ext>`, updates `photoKey` (audited, guarded on the previously loaded `photoKey`), deletes the old object after the DB write succeeds; if the DB write fails the new object is deleted. `updateTeamProfile` (motto ≤ 140, description) and `removeTeamPhoto` are zsa actions.
+- Served by `/open/media/[...key]` (only keys under `open/`) with immutable cache headers (keys are never overwritten), ETag/304, `nosniff`, and `Content-Security-Policy: default-src 'none'; sandbox`. `media` is a reserved event slug (`resolveEventSlug` in `src/lib/open/event-slug.ts` owns slug derivation + reserved slugs).
+- Photo cleanup on deletes: team delete and event delete collect the affected `photoKey`s before the batch and best-effort delete the R2 objects after it succeeds (failures logged; an orphaned object is harmless).
+- Profile permission (`decideManageTeam` / `assertCanManageTeam`, separate from entry-level points/scores): admins edit everything on any team in the event (name, slug, color via the admin-only teams action; photo, motto, description via the profile actions); coaches edit photo/motto/description of teams they coach only. A team outside the request's event is "not found". Profile edits are not gated by event flags or week locks.
+- Public: `/open/[slug]/teams` (grid: photo, name, motto, rank, total, member count) and `/open/[slug]/teams/[teamSlug]` (header with photo/name/motto/rank/total; coaches with existing coach photos/bios; roster with points and scores; week-by-week history).
+
 ## Stages
 1. Schema + migration + seeds
 2. Pure modules + server reads + permissions
 3. Actions
-4. Admin UI
+4a. Team profiles backend (migration 0014, R2 binding, upload + media route, profile permission)
+4b. Admin UI (incl. audit log view and team profile editor)
 5. Coach workspace (manage routes + shared grids)
 6. Public leaderboard
 Each stage ends with: `npx tsc --noEmit`, `pnpm lint`, an uncomplect review, fixes, commit.

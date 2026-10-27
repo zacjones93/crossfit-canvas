@@ -1,7 +1,7 @@
 "use server";
 
 import { createServerAction, ZSAError } from "zsa";
-import { and, desc, eq, ne, notExists } from "drizzle-orm";
+import { and, desc, eq, isNotNull, ne, notExists } from "drizzle-orm";
 import { getDB } from "@/db";
 import {
   newOpenId,
@@ -9,12 +9,15 @@ import {
   openEventTable,
   openPointRuleTable,
   openScalingTable,
+  openTeamTable,
   openWeekTable,
 } from "@/db/schema";
 import { OPEN_AUDIT_ENTITY, OPEN_AUDIT_VERB, OPEN_EVENT_STATUS, OPEN_WEIGHT_UNIT } from "@/lib/open/constants";
 import { DEFAULT_OPEN_RULES, DEFAULT_OPEN_SCALINGS } from "@/lib/open/defaults";
+import { resolveEventSlug } from "@/lib/open/event-slug";
 import { createOpenEventSchema, openEventIdSchema, updateOpenEventSchema } from "@/schemas/open.schema";
 import { auditStatements, type OpenAuditInput } from "@/server/open/audit-write";
+import { deleteOpenMediaKeys } from "@/server/open/media";
 import {
   auditedDelete,
   auditedUpdate,
@@ -24,7 +27,6 @@ import {
   revalidateOpenEvent,
   runOpenBatch,
 } from "@/server/open/write";
-import { toSlug } from "@/utils/slug";
 
 const SLUG_TAKEN = "An event with that slug already exists";
 
@@ -34,8 +36,9 @@ export const createOpenEventAction = createServerAction()
   .handler(async ({ input }) => {
     const session = await requireOpenAdmin();
     const db = getDB();
-    const slug = input.slug ?? toSlug(input.name);
-    if (!slug) throw new ZSAError("INPUT_PARSE_ERROR", "Name must contain letters or numbers");
+    const slugResult = resolveEventSlug({ slug: input.slug, name: input.name });
+    if (!slugResult.ok) throw new ZSAError("INPUT_PARSE_ERROR", slugResult.message);
+    const { slug } = slugResult;
 
     const [slugTaken, previousEvent] = await db.batch([
       db.select({ id: openEventTable.id }).from(openEventTable).where(eq(openEventTable.slug, slug)),
@@ -174,15 +177,20 @@ export const deleteOpenEventAction = createServerAction()
     const db = getDB();
     const { eventId } = input;
 
-    const [events, entries] = await db.batch([
+    const [events, entries, teamPhotos] = await db.batch([
       db.select().from(openEventTable).where(eq(openEventTable.id, eventId)),
       db.select({ id: openEntryTable.id }).from(openEntryTable).where(eq(openEntryTable.eventId, eventId)).limit(1),
+      // Team photos go with the cascade; their R2 objects are removed after the delete succeeds
+      db
+        .select({ photoKey: openTeamTable.photoKey })
+        .from(openTeamTable)
+        .where(and(eq(openTeamTable.eventId, eventId), isNotNull(openTeamTable.photoKey))),
     ]);
     const event = events[0];
     if (!event) throw new ZSAError("NOT_FOUND", "Event not found");
     if (event.status !== OPEN_EVENT_STATUS.DRAFT || entries.length > 0) throw new ZSAError("PRECONDITION_FAILED", NOT_EMPTY);
 
-    await auditedDelete({
+    const { deleted } = await auditedDelete({
       db,
       table: openEventTable,
       entityType: OPEN_AUDIT_ENTITY.EVENT,
@@ -201,6 +209,7 @@ export const deleteOpenEventAction = createServerAction()
       },
     });
 
+    if (deleted) await deleteOpenMediaKeys(teamPhotos.map((team) => team.photoKey));
     revalidateOpenEvent({ eventId });
     return { success: true };
   });

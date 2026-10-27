@@ -532,6 +532,10 @@ export const openTeamTable = sqliteTable("open_team", {
   slug: text({ length: 255 }).notNull(),
   color: text({ length: 50 }),
   sortOrder: integer().notNull().default(0),
+  // Team profile: R2 object key in OPEN_MEDIA (never overwritten; replaced keys are deleted)
+  photoKey: text({ length: 255 }),
+  motto: text({ length: 140 }),
+  description: text(),
 }, (table) => ([
   uniqueIndex('open_team_event_slug_unique_idx').on(table.eventId, table.slug),
 ]));

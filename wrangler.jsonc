@@ -87,6 +87,14 @@
           "migrations_dir": "src/db/migrations"
         }
       ],
+    // Open event media (team photos). Bucket creation pending: R2 must be enabled on the account.
+    // Local dev uses miniflare R2 (.wrangler/state).
+    "r2_buckets": [
+        {
+            "binding": "OPEN_MEDIA",
+            "bucket_name": "crossfit-canvas-open"
+        }
+    ],
     "kv_namespaces": [
         {
             "binding": "NEXT_INC_CACHE_KV",

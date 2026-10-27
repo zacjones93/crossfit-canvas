@@ -131,3 +131,35 @@ export function decideManageEntry({ context, entry }: { context: ManageContext; 
 
   return OK;
 }
+
+// --- team-level management (profiles) ----------------------------------------
+// Kept apart from entry-level points/scores: a team edit references no rule/workout/week and is
+// not gated by coach event flags or week locks. Name/slug/color/sortOrder stay admin-only config.
+
+export interface ManageTeam {
+  id: string;
+  eventId: string;
+}
+
+/**
+ * Who may edit a team's profile (photo, motto, description): admins any team in the event;
+ * coaches only teams they coach. `team` null = not found. `manageableTeamIds` is only consulted
+ * for non-admins.
+ */
+export function decideManageTeam({
+  isAdmin,
+  manageableTeamIds,
+  eventId,
+  team,
+}: {
+  isAdmin: boolean;
+  manageableTeamIds: ReadonlySet<string>;
+  eventId: string;
+  team: ManageTeam | null;
+}): ManageDecision {
+  // A team from another event is "not found": the caller's eventId pins the request
+  if (!team || team.eventId !== eventId) return deny({ code: MANAGE_DENIAL.NOT_FOUND, message: "Team not found in this event" });
+  if (isAdmin) return OK;
+  if (!manageableTeamIds.has(team.id)) return deny({ code: MANAGE_DENIAL.FORBIDDEN, message: "Not a coach of this team" });
+  return OK;
+}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { resolveEventSlug } from "@/lib/open/event-slug";
 import {
   OPEN_SCORE_TYPE,
   openEventStatusTuple,
@@ -18,6 +19,11 @@ const slug = z
   .min(1)
   .max(255)
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use lowercase letters, numbers, and dashes");
+/** Event slugs also become `/open/<slug>`; some segments are taken by static routes. */
+const eventSlug = slug.superRefine((value, ctx) => {
+  const result = resolveEventSlug({ slug: value });
+  if (!result.ok) ctx.addIssue({ code: z.ZodIssueCode.custom, message: result.message });
+});
 const sortOrder = z.number().int().min(-10_000).max(10_000);
 const MAX_WEEKS = 52;
 /**
@@ -34,7 +40,7 @@ const MAX_BULK = 1000;
 
 export const createOpenEventSchema = z.object({
   name,
-  slug: slug.optional(),
+  slug: eventSlug.optional(),
   year: z.number().int().min(2000).max(2100),
   weightUnit: z.enum(openWeightUnitTuple).optional(),
   weekCount: z.number().int().min(0).max(MAX_WEEKS).default(0),
@@ -43,7 +49,7 @@ export const createOpenEventSchema = z.object({
 export const updateOpenEventSchema = z.object({
   eventId: id,
   name: name.optional(),
-  slug: slug.optional(),
+  slug: eventSlug.optional(),
   year: z.number().int().min(2000).max(2100).optional(),
   status: z.enum(openEventStatusTuple).optional(),
   weightUnit: z.enum(openWeightUnitTuple).optional(),
@@ -95,6 +101,26 @@ export const updateOpenTeamSchema = z.object({
 export const openTeamIdSchema = z.object({ teamId: id });
 
 export const openTeamCoachSchema = z.object({ teamId: id, coachId: id });
+
+// --- team profiles (admin or the team's coach) -------------------------------
+
+export const OPEN_TEAM_MOTTO_MAX = 140;
+/** Blank clears the field. */
+const blankToNull = (value: string | null | undefined) => (value === "" ? null : value);
+
+export const updateTeamProfileSchema = z.object({
+  eventId: id,
+  teamId: id,
+  motto: z.string().trim().max(OPEN_TEAM_MOTTO_MAX, `Keep the motto to ${OPEN_TEAM_MOTTO_MAX} characters`).nullish().transform(blankToNull),
+  description: optionalText.transform(blankToNull),
+});
+
+export const openTeamProfileRefSchema = z.object({ eventId: id, teamId: id });
+
+/** Multipart fields of POST /api/open/team-photo; file type/size/contents are checked by `uploadTeamPhoto`. */
+export const uploadTeamPhotoSchema = openTeamProfileRefSchema.extend({
+  file: z.instanceof(File, { message: "Choose a photo to upload" }),
+});
 
 // --- rules ------------------------------------------------------------------
 
