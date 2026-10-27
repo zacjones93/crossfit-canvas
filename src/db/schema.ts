@@ -473,9 +473,29 @@ export const feedbackQuestionTable = sqliteTable("feedback_question", {
 // CrossFit Open intramural (namespaced `open_*`; `team` is the SaaS tenancy table)
 // ---------------------------------------------------------------------------
 
+/**
+ * Id generators for `open_*` tables — the single source of their prefixes. Used as `$defaultFn`,
+ * and by actions that must know a new row's id up front: the audit row in the same `db.batch`
+ * has to reference it, and `.returning()` results can't feed a sibling statement in a batch.
+ */
+export const newOpenId = {
+  event: () => `oev_${createId()}`,
+  week: () => `owk_${createId()}`,
+  team: () => `otm_${createId()}`,
+  teamCoach: () => `otc_${createId()}`,
+  participant: () => `opp_${createId()}`,
+  entry: () => `oen_${createId()}`,
+  rule: () => `opr_${createId()}`,
+  award: () => `oaw_${createId()}`,
+  scaling: () => `osl_${createId()}`,
+  workout: () => `owo_${createId()}`,
+  score: () => `osc_${createId()}`,
+  auditLog: () => `oal_${createId()}`,
+} as const;
+
 export const openEventTable = sqliteTable("open_event", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `oev_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.event).notNull(),
   name: text({ length: 255 }).notNull(),
   slug: text({ length: 255 }).notNull().unique(),
   year: integer().notNull(),
@@ -494,7 +514,7 @@ export const openEventTable = sqliteTable("open_event", {
 
 export const openWeekTable = sqliteTable("open_week", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `owk_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.week).notNull(),
   eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
   number: integer().notNull(),
   label: text({ length: 255 }).notNull(),
@@ -506,7 +526,7 @@ export const openWeekTable = sqliteTable("open_week", {
 
 export const openTeamTable = sqliteTable("open_team", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `otm_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.team).notNull(),
   eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
   name: text({ length: 255 }).notNull(),
   slug: text({ length: 255 }).notNull(),
@@ -518,7 +538,7 @@ export const openTeamTable = sqliteTable("open_team", {
 
 export const openTeamCoachTable = sqliteTable("open_team_coach", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `otc_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.teamCoach).notNull(),
   teamId: text().notNull().references(() => openTeamTable.id, { onDelete: "cascade" }),
   coachId: text().notNull().references(() => coachTable.id, { onDelete: "cascade" }),
 }, (table) => ([
@@ -528,7 +548,7 @@ export const openTeamCoachTable = sqliteTable("open_team_coach", {
 
 export const openParticipantTable = sqliteTable("open_participant", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `opp_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.participant).notNull(),
   name: text({ length: 255 }).notNull(),
   email: text({ length: 255 }),
   userId: text().references(() => userTable.id, { onDelete: "set null" }),
@@ -539,7 +559,7 @@ export const openParticipantTable = sqliteTable("open_participant", {
 
 export const openEntryTable = sqliteTable("open_entry", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `oen_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.entry).notNull(),
   eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
   participantId: text().notNull().references(() => openParticipantTable.id),
   // No onDelete: a team with entries can't be deleted (reassign first). Points follow current teamId.
@@ -553,7 +573,7 @@ export const openEntryTable = sqliteTable("open_entry", {
 
 export const openPointRuleTable = sqliteTable("open_point_rule", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `opr_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.rule).notNull(),
   eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
   name: text({ length: 255 }).notNull(),
   description: text(),
@@ -575,7 +595,7 @@ export const openPointRuleTable = sqliteTable("open_point_rule", {
  */
 export const openAwardTable = sqliteTable("open_award", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `oaw_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.award).notNull(),
   entryId: text().notNull().references(() => openEntryTable.id, { onDelete: "cascade" }),
   // No onDelete on rule/week: deleting a rule or week with awards fails (retire rules via isActive)
   ruleId: text().notNull().references(() => openPointRuleTable.id),
@@ -593,7 +613,7 @@ export const openAwardTable = sqliteTable("open_award", {
 
 export const openScalingTable = sqliteTable("open_scaling", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `osl_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.scaling).notNull(),
   eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
   name: text({ length: 255 }).notNull(),
   slug: text({ length: 255 }).notNull(),
@@ -605,7 +625,7 @@ export const openScalingTable = sqliteTable("open_scaling", {
 
 export const openWorkoutTable = sqliteTable("open_workout", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `owo_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.workout).notNull(),
   eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
   weekId: text().references(() => openWeekTable.id, { onDelete: "set null" }),
   name: text({ length: 255 }).notNull(),
@@ -629,7 +649,7 @@ export const openWorkoutTable = sqliteTable("open_workout", {
  */
 export const openScoreTable = sqliteTable("open_score", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `osc_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.score).notNull(),
   entryId: text().notNull().references(() => openEntryTable.id, { onDelete: "cascade" }),
   workoutId: text().notNull().references(() => openWorkoutTable.id, { onDelete: "cascade" }),
   scalingId: text().notNull().references(() => openScalingTable.id),
@@ -650,7 +670,7 @@ export const openScoreTable = sqliteTable("open_score", {
  */
 export const openAuditLogTable = sqliteTable("open_audit_log", {
   ...commonColumns,
-  id: text().primaryKey().$defaultFn(() => `oal_${createId()}`).notNull(),
+  id: text().primaryKey().$defaultFn(newOpenId.auditLog).notNull(),
   // Plain column, not an FK: audit rows must outlive the event; some entities aren't event-scoped
   eventId: text(),
   actorUserId: text().references(() => userTable.id, { onDelete: "set null" }),

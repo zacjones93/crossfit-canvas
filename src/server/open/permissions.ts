@@ -144,15 +144,17 @@ export function assertEntryInContext({
 }
 
 /**
- * Convenience for single-entry actions: loads the entry, then its manage context
+ * Convenience for single-entry actions: loads the entry (must be in `eventId`), then its manage context
  * (two round trips), and checks the entry. Returns the loaded rows so actions don't re-query.
  */
 export async function assertCanManageEntry({
   session,
+  eventId,
   entryId,
   ...refs
 }: {
   session: OpenActorSession;
+  eventId: string;
   entryId: string;
   kind: ManageKind;
   ruleId?: string;
@@ -165,9 +167,10 @@ export async function assertCanManageEntry({
     where: eq(openEntryTable.id, entryId),
     with: { participant: { columns: { id: true, name: true } } },
   });
-  if (!entry) throw new ZSAError("NOT_FOUND", "Entry not found");
+  // The caller's eventId pins the request: an entry from another event is simply "not found"
+  if (!entry || entry.eventId !== eventId) throw new ZSAError("NOT_FOUND", "Athlete not found in this event");
 
-  const context = await loadManageContext({ session, eventId: entry.eventId, ...refs });
+  const context = await loadManageContext({ session, eventId, ...refs });
   assertEntryInContext({ context, entry });
   return { ...context, entry };
 }
