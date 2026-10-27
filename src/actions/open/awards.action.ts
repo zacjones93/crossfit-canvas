@@ -5,7 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { getDB } from "@/db";
 import { newOpenId, openAwardTable, openEntryTable, openParticipantTable } from "@/db/schema";
 import { AWARD_VERB, describeAward } from "@/lib/open/audit";
-import { diffAwards } from "@/lib/open/award-diff";
+import { planAwardDelta } from "@/lib/open/award-diff";
 import { awardDedupeKey } from "@/lib/open/awards";
 import { OPEN_AUDIT_ENTITY, OPEN_AUDIT_VERB, OPEN_RULE_CADENCE } from "@/lib/open/constants";
 import { MANAGE_KIND } from "@/lib/open/permissions";
@@ -13,7 +13,7 @@ import {
   addUnlimitedAwardSchema,
   removeAwardSchema,
   setAwardSchema,
-  setAwardsForRuleWeekSchema,
+  setAwardsForEntriesSchema,
 } from "@/schemas/open.schema";
 import { auditStatement, auditStatements, type OpenAuditInput } from "@/server/open/audit-write";
 import { assertCanManageEntry, assertEntryInContext, loadManageContext } from "@/server/open/permissions";
@@ -160,21 +160,23 @@ export const setAwardAction = createServerAction()
       result = existing ? await deleteAward({ db, session, context, award: existing }) : { changed: false, awardId: null };
     }
 
-    if (result.changed) revalidateOpenEvent({ eventId });
+    // Always revalidate: a no-op usually means the caller's view was stale
+    revalidateOpenEvent({ eventId });
     return result;
   });
 
 /**
- * Desired-state sync for one grid column (rule × week): `entryIds` should hold the award, every
- * other entry the actor may manage should not. Coaches never touch other teams' awards.
+ * Bulk toggle for one grid column (rule × week): applies `awarded` to exactly `entryIds` and
+ * touches nothing else, so a grid only ever changes the athletes it shows. Every listed entry
+ * passes the full per-entry check (team, flags, lock, rule awardability). Idempotent.
  * Not for `unlimited` rules.
  */
-export const setAwardsForRuleWeekAction = createServerAction()
-  .input(setAwardsForRuleWeekSchema)
+export const setAwardsForEntriesAction = createServerAction()
+  .input(setAwardsForEntriesSchema)
   .handler(async ({ input }) => {
     const session = await requireOpenSession();
     const db = getDB();
-    const { eventId, ruleId, weekId, entryIds } = input;
+    const { eventId, ruleId, weekId, entryIds, awarded } = input;
 
     const context = await loadManageContext({
       session,
@@ -207,20 +209,16 @@ export const setAwardsForRuleWeekAction = createServerAction()
 
     const entryById = new Map(entries.map((entry) => [entry.id, entry]));
     for (const entryId of entryIds) {
-      if (!entryById.has(entryId)) throw new ZSAError("NOT_FOUND", "An athlete in the list isn't in this event");
+      const entry = entryById.get(entryId);
+      if (!entry) throw new ZSAError("NOT_FOUND", "An athlete in the list isn't in this event");
+      assertEntryInContext({ context, entry });
     }
 
-    const scopeEntryIds = new Set(
-      entries
-        .filter((entry) => context.isAdmin || (entry.teamId !== null && context.manageableTeamIds.has(entry.teamId)))
-        .map((entry) => entry.id),
-    );
-    const { toAdd, toRemove } = diffAwards({ desiredEntryIds: entryIds, existingAwards, scopeEntryIds });
-    if (toAdd.length === 0 && toRemove.length === 0) return { added: 0, removed: 0 };
-
-    // Every changed entry passes the full per-entry check (team, flags, lock, rule awardability)
-    for (const entryId of [...toAdd, ...toRemove.map((award) => award.entryId)]) {
-      assertEntryInContext({ context, entry: entryById.get(entryId)! });
+    const { toAdd, toRemove } = planAwardDelta({ entryIds, existingAwards, awarded });
+    if (toAdd.length === 0 && toRemove.length === 0) {
+      // Still revalidate: a no-op usually means the caller's view was stale
+      revalidateOpenEvent({ eventId });
+      return { added: 0, removed: 0 };
     }
 
     const describe = ({ verb, entryId, points }: { verb: (typeof AWARD_VERB)[keyof typeof AWARD_VERB]; entryId: string; points: number }) =>
@@ -309,7 +307,11 @@ export const removeAwardAction = createServerAction()
     const { eventId, awardId } = input;
 
     const award = await db.query.openAwardTable.findFirst({ where: eq(openAwardTable.id, awardId) });
-    if (!award) return { changed: false, awardId };
+    if (!award) {
+      // Already gone: revalidate so a stale grid drops it
+      revalidateOpenEvent({ eventId });
+      return { changed: false, awardId };
+    }
 
     const context = await assertCanManageEntry({
       session,
@@ -321,6 +323,6 @@ export const removeAwardAction = createServerAction()
     });
 
     const result = await deleteAward({ db, session, context, award });
-    if (result.changed) revalidateOpenEvent({ eventId });
+    revalidateOpenEvent({ eventId });
     return result;
   });

@@ -5,9 +5,10 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
-// Points and Scores grids arrive with the coach workspace (Stage 5).
 const SECTIONS = [
   { segment: "", label: "Overview" },
+  { segment: "points", label: "Points" },
+  { segment: "scores", label: "Scores" },
   { segment: "teams", label: "Teams" },
   { segment: "participants", label: "Participants" },
   { segment: "rules", label: "Rules" },

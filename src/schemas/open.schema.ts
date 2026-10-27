@@ -30,8 +30,8 @@ const MAX_WEEKS = 52;
  * Max list size for bulk inputs (roster lines, grid entryIds, team assignments). Assumes the
  * Workers Paid plan: 1000 D1 queries per invocation, where each statement in a `db.batch` counts
  * (Free allows 50). Statement math, worst case: a 1000-name roster import ≈ 90 participant + 100
- * entry + 290 audit inserts (multi-row, ≤ 90 bound params each) ≈ 480; a grid sync costs
- * 2 statements per removed award (conditional audit + guarded delete) + ~2 per 7 added awards.
+ * entry + 290 audit inserts (multi-row, ≤ 90 bound params each) ≈ 480; a bulk award toggle
+ * costs 2 statements per removed award (conditional audit + guarded delete) + ~2 per 7 added awards.
  * `runOpenBatch` refuses batches over MAX_BATCH_STATEMENTS as a backstop.
  */
 const MAX_BULK = 1000;
@@ -253,11 +253,13 @@ export const setAwardSchema = z.object({
   note,
 });
 
-export const setAwardsForRuleWeekSchema = z.object({
+/** Bulk toggle: applies `awarded` to exactly `entryIds` (the grid's visible athletes). */
+export const setAwardsForEntriesSchema = z.object({
   eventId: id,
   ruleId: id,
   weekId: id.nullish(),
-  entryIds: z.array(id).max(MAX_BULK),
+  entryIds: z.array(id).min(1).max(MAX_BULK),
+  awarded: z.boolean(),
 });
 
 export const addUnlimitedAwardSchema = z.object({

@@ -71,11 +71,13 @@ export async function getWorkoutBySlug({ eventId, slug }: { eventId: string; slu
   });
 }
 
-/** Entries with participant + team, sorted by participant name. */
-export async function getEntries({ eventId }: { eventId: string }) {
+/** Entries with participant + team (optionally one team's), sorted by participant name. */
+export async function getEntries({ eventId, teamId }: { eventId: string; teamId?: string }) {
   const db = getDB();
   const entries = await db.query.openEntryTable.findMany({
-    where: eq(openEntryTable.eventId, eventId),
+    where: teamId
+      ? and(eq(openEntryTable.eventId, eventId), eq(openEntryTable.teamId, teamId))
+      : eq(openEntryTable.eventId, eventId),
     with: {
       participant: true,
       team: { columns: { id: true, name: true, slug: true, color: true } },

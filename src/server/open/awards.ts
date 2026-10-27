@@ -1,7 +1,7 @@
 import "server-only";
 import { getDB } from "@/db";
 import { openAwardTable, openEntryTable, openParticipantTable, openPointRuleTable } from "@/db/schema";
-import { and, desc, eq, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, type SQL } from "drizzle-orm";
 
 /** Awards in an event (optionally one week / one team), joined through the entry. */
 export async function getAwards({
@@ -39,4 +39,38 @@ export async function getAwards({
     .innerJoin(openPointRuleTable, eq(openAwardTable.ruleId, openPointRuleTable.id))
     .where(and(...conditions))
     .orderBy(desc(openAwardTable.createdAt));
+}
+
+/**
+ * Slim award rows for one grid view: a week's awards (`weekId`) or the event-level ones
+ * (`weekId` null: once-per-event + unweeked repeatable awards), optionally one team's entries.
+ * Filters by eventId/teamId through the entry join — never an `inArray` over entry ids.
+ */
+export async function getGridAwards({
+  eventId,
+  weekId,
+  teamId,
+}: {
+  eventId: string;
+  weekId: string | null;
+  teamId?: string;
+}) {
+  const db = getDB();
+  const conditions: SQL[] = [
+    eq(openEntryTable.eventId, eventId),
+    weekId ? eq(openAwardTable.weekId, weekId) : isNull(openAwardTable.weekId),
+  ];
+  if (teamId) conditions.push(eq(openEntryTable.teamId, teamId));
+
+  return db
+    .select({
+      id: openAwardTable.id,
+      entryId: openAwardTable.entryId,
+      ruleId: openAwardTable.ruleId,
+      points: openAwardTable.points,
+    })
+    .from(openAwardTable)
+    .innerJoin(openEntryTable, eq(openAwardTable.entryId, openEntryTable.id))
+    .where(and(...conditions))
+    .orderBy(asc(openAwardTable.createdAt));
 }

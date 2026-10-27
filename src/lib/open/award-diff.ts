@@ -1,4 +1,4 @@
-// Plain module: desired-state sync for one (rule, dedupeKey) column of the award grid.
+// Plain module: the bulk award delta for one (rule, dedupeKey) column of the award grid.
 
 export interface ExistingAward {
   id: string;
@@ -6,24 +6,22 @@ export interface ExistingAward {
 }
 
 /**
- * `desiredEntryIds` should hold the award after the sync; everything else in scope should not.
- * Removals are limited to `scopeEntryIds` (entries the actor may manage) so a coach syncing their
- * team never strips other teams' awards. Callers must permission-check every desired entry first.
+ * Applies `awarded` to exactly `entryIds` (nothing else is touched): awarding adds the entries
+ * that lack the award; un-awarding removes their existing awards. Idempotent; ids are deduped.
+ * Callers must permission-check every entry in `entryIds` first.
  */
-export function diffAwards<T extends ExistingAward>({
-  desiredEntryIds,
+export function planAwardDelta<T extends ExistingAward>({
+  entryIds,
   existingAwards,
-  scopeEntryIds,
+  awarded,
 }: {
-  desiredEntryIds: readonly string[];
+  entryIds: readonly string[];
   existingAwards: readonly T[];
-  scopeEntryIds: ReadonlySet<string>;
+  awarded: boolean;
 }): { toAdd: string[]; toRemove: T[] } {
-  const desired = new Set(desiredEntryIds);
-  const awarded = new Set(existingAwards.map((award) => award.entryId));
+  const targets = new Set(entryIds);
+  if (!awarded) return { toAdd: [], toRemove: existingAwards.filter((award) => targets.has(award.entryId)) };
 
-  return {
-    toAdd: [...desired].filter((entryId) => !awarded.has(entryId)),
-    toRemove: existingAwards.filter((award) => scopeEntryIds.has(award.entryId) && !desired.has(award.entryId)),
-  };
+  const has = new Set(existingAwards.map((award) => award.entryId));
+  return { toAdd: [...targets].filter((entryId) => !has.has(entryId)), toRemove: [] };
 }

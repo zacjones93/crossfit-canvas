@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { diffAwards } from "./award-diff";
+import { planAwardDelta } from "./award-diff";
 
 const existingAwards = [
   { id: "a1", entryId: "e1" },
@@ -7,33 +7,20 @@ const existingAwards = [
   { id: "a3", entryId: "e3" },
 ];
 
-describe("diffAwards", () => {
-  it("adds missing and removes undesired awards within scope", () => {
-    const result = diffAwards({
-      desiredEntryIds: ["e1", "e4"],
-      existingAwards,
-      scopeEntryIds: new Set(["e1", "e2", "e3", "e4"]),
-    });
-    expect(result.toAdd).toEqual(["e4"]);
-    expect(result.toRemove.map((award) => award.id)).toEqual(["a2", "a3"]);
+describe("planAwardDelta", () => {
+  it("awards only the listed entries that lack the award (deduped)", () => {
+    const result = planAwardDelta({ entryIds: ["e1", "e4", "e4"], existingAwards, awarded: true });
+    expect(result).toEqual({ toAdd: ["e4"], toRemove: [] });
   });
 
-  it("never removes awards outside scope (other teams)", () => {
-    const result = diffAwards({
-      desiredEntryIds: [],
-      existingAwards,
-      scopeEntryIds: new Set(["e1"]),
-    });
+  it("removes only the listed entries' awards, never anyone else's", () => {
+    const result = planAwardDelta({ entryIds: ["e2", "e9"], existingAwards, awarded: false });
     expect(result.toAdd).toEqual([]);
-    expect(result.toRemove.map((award) => award.id)).toEqual(["a1"]);
+    expect(result.toRemove.map((award) => award.id)).toEqual(["a2"]);
   });
 
-  it("is a no-op when state already matches, and dedupes desired ids", () => {
-    const result = diffAwards({
-      desiredEntryIds: ["e1", "e2", "e3", "e1"],
-      existingAwards,
-      scopeEntryIds: new Set(["e1", "e2", "e3"]),
-    });
-    expect(result).toEqual({ toAdd: [], toRemove: [] });
+  it("is a no-op when the listed entries already match", () => {
+    expect(planAwardDelta({ entryIds: ["e1", "e2"], existingAwards, awarded: true })).toEqual({ toAdd: [], toRemove: [] });
+    expect(planAwardDelta({ entryIds: ["e4"], existingAwards, awarded: false })).toEqual({ toAdd: [], toRemove: [] });
   });
 });
