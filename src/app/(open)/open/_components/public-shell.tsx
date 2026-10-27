@@ -1,11 +1,13 @@
-import type { ReactNode } from "react"
+import { Suspense, type ReactNode } from "react"
 import type { Route } from "next"
 import Link from "next/link"
+import { ClipboardPen } from "lucide-react"
 import { Footer } from "@/components/landing/footer"
 import NavFooterLayout from "@/layouts/NavFooterLayout"
 import { OPEN_EVENT_STATUS } from "@/lib/open/constants"
 import { EVENT_STATUS_LABEL, labelFor } from "@/lib/open/labels"
 import { cn } from "@/lib/utils"
+import { loadManageLink } from "../_lib/load-manage-link"
 import type { PublicEvent } from "../_lib/load-public-event"
 
 export const PUBLIC_SECTION = {
@@ -48,6 +50,9 @@ export function PublicShell({ event, isPreview, active, title, children }: Publi
               <span>CrossFit Canvas Open {event.year}</span>
             )}
             <StatusPill status={event.status} />
+            <Suspense fallback={null}>
+              <ManageEntry event={event} />
+            </Suspense>
           </div>
           <h1 className="mt-2 font-heading text-5xl uppercase leading-none tracking-wide text-balance md:text-7xl">
             {title ?? event.name}
@@ -75,6 +80,24 @@ export function PublicShell({ event, isPreview, active, title, children }: Publi
       <div className="container mx-auto flex flex-col gap-12 px-4 py-8 md:py-12">{children}</div>
       <Footer />
     </NavFooterLayout>
+  )
+}
+
+/** Coach workspace entry: a button for viewers who can manage a team here, otherwise a quiet sign-in link. */
+async function ManageEntry({ event }: { event: PublicEvent }) {
+  const link = await loadManageLink(event)
+  return link.canManage ? (
+    <Link
+      href={link.href as Route}
+      className="ml-auto inline-flex items-center gap-1.5 rounded-sm bg-crimson px-3 py-1.5 text-xs font-bold tracking-wider text-white transition-colors hover:bg-crimson/90"
+    >
+      <ClipboardPen className="h-3.5 w-3.5" aria-hidden />
+      {link.label}
+    </Link>
+  ) : (
+    <Link href={link.href as Route} className="ml-auto normal-case tracking-normal text-white/60 underline-offset-4 hover:text-white hover:underline">
+      {link.label}
+    </Link>
   )
 }
 

@@ -3,11 +3,12 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import { cache } from "react"
 import { getCoachPhoto } from "@/lib/open/coach-photo"
-import { formatAverage, initials, tiebreakLabel, weekColumns } from "@/lib/open/public-view"
+import { formatAverage, initials, tiebreakLabel, weekColumns, type PublicTeamCoach } from "@/lib/open/public-view"
 import { formatScore } from "@/lib/open/score-codec"
 import { teamPhotoUrl } from "@/lib/open/team-photo"
-import { getPublicTeam, getPublicTeamRoster } from "@/server/open/public"
+import { getPublicTeam, getPublicTeamScores } from "@/server/open/public"
 import { Note, PublicShell, PUBLIC_SECTION, SectionHeading } from "../../../_components/public-shell"
+import { CoachBadge, Points } from "../../../_components/team-members"
 import { TeamPhoto } from "../../../_components/team-photo"
 import { loadEventBoard } from "../../../_lib/load-event-board"
 import { loadPublicEvent, previewRobots } from "../../../_lib/load-public-event"
@@ -37,12 +38,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function TeamPage({ params }: PageProps) {
   const { slug, teamSlug } = await params
   const { event, isPreview, team, board } = await loadTeam(slug, teamSlug)
-  const roster = await getPublicTeamRoster({ eventId: event.id, teamId: team.id, withScores: event.showIndividuals })
+  const scores = event.showIndividuals ? await getPublicTeamScores({ eventId: event.id, teamId: team.id }) : []
 
   const standing = board.teams.find((item) => item.id === team.id)
   const columns = standing ? weekColumns({ weeks: board.weeks, teams: [standing] }) : []
-  const scoreByKey = new Map(roster.scores.map((score) => [`${score.entryId}:${score.workoutId}`, score]))
+  const scoreByKey = new Map(scores.map((score) => [`${score.entryId}:${score.workoutId}`, score]))
   const workouts = event.showIndividuals ? board.workouts : []
+  // Sorted, Coach-flagged, and points-gated by buildTeamRosters (the one place coach-ness is derived)
+  const members = standing?.members ?? []
+  const rosterCoachBySlug = new Map((standing?.coaches ?? []).map((coach) => [coach.slug, coach]))
 
   return (
     <PublicShell event={event} isPreview={isPreview} active={PUBLIC_SECTION.TEAMS} title={team.name}>
@@ -65,7 +69,7 @@ export default async function TeamPage({ params }: PageProps) {
             <Stat label="Rank" value={standing ? `#${standing.rank}` : "–"} hint={`of ${board.teams.length}`} />
             <Stat label="Total" value={String(standing?.total ?? 0)} hint="points" />
             <Stat label="Avg / member" value={formatAverage(standing?.avgPerMember ?? 0)} hint="points" />
-            <Stat label="Members" value={String(roster.members.length)} />
+            <Stat label="Members" value={String(members.length)} />
           </dl>
         </div>
       </section>
@@ -77,7 +81,7 @@ export default async function TeamPage({ params }: PageProps) {
           </SectionHeading>
           <ul className="grid gap-4 md:grid-cols-2">
             {team.coaches.map((coach) => (
-              <CoachCard key={coach.slug} coach={coach} />
+              <CoachCard key={coach.slug} coach={coach} standing={rosterCoachBySlug.get(coach.slug)} />
             ))}
           </ul>
         </section>
@@ -87,7 +91,7 @@ export default async function TeamPage({ params }: PageProps) {
         <SectionHeading>
           <span id="roster">Roster</span>
         </SectionHeading>
-        {roster.members.length === 0 ? (
+        {members.length === 0 ? (
           <Note>No athletes on this team yet.</Note>
         ) : event.showIndividuals ? (
           <div className="overflow-x-auto rounded-lg border">
@@ -109,12 +113,15 @@ export default async function TeamPage({ params }: PageProps) {
               </thead>
               <tbody>
                 {/* Index keys: entry ids stay server-side (keys are serialized into the page payload) */}
-                {roster.members.map((member, index) => (
+                {members.map((member, index) => (
                   <tr key={index} className="border-t">
                     <th scope="row" className="sticky left-0 bg-background px-3 py-2 text-left font-semibold">
-                      {member.name}
+                      <span className="flex items-center gap-2">
+                        {member.name}
+                        {member.isCoach && <CoachBadge />}
+                      </span>
                     </th>
-                    <td className="px-3 py-2 text-right font-bold tabular-nums">{board.pointsByEntry.get(member.entryId) ?? 0}</td>
+                    <td className="px-3 py-2 text-right font-bold tabular-nums">{member.points ?? 0}</td>
                     {workouts.map((workout) => {
                       const score = scoreByKey.get(`${member.entryId}:${workout.id}`)
                       const tiebreak = score && tiebreakLabel({ workout, tiebreakMs: score.tiebreakMs })
@@ -140,9 +147,10 @@ export default async function TeamPage({ params }: PageProps) {
         ) : (
           <>
             <ul className="grid grid-cols-2 gap-x-6 gap-y-2 rounded-lg border p-4 sm:grid-cols-3 lg:grid-cols-4">
-              {roster.members.map((member, index) => (
-                <li key={index} className="truncate font-semibold">
-                  {member.name}
+              {members.map((member, index) => (
+                <li key={index} className="flex min-w-0 items-center gap-2 font-semibold">
+                  <span className="truncate">{member.name}</span>
+                  {member.isCoach && <CoachBadge />}
                 </li>
               ))}
             </ul>
@@ -192,7 +200,8 @@ interface PublicCoach {
   bio: string | null
 }
 
-function CoachCard({ coach }: { coach: PublicCoach }) {
+/** `standing`: the coach as shown on the board (whether they compete on this roster, and their points). */
+function CoachCard({ coach, standing }: { coach: PublicCoach; standing?: PublicTeamCoach }) {
   const photo = getCoachPhoto({ slug: coach.slug })
   return (
     <li className="flex gap-4 rounded-lg border bg-card p-4">
@@ -215,6 +224,17 @@ function CoachCard({ coach }: { coach: PublicCoach }) {
       )}
       <div className="min-w-0">
         <h3 className="font-heading text-2xl uppercase leading-none tracking-wide">{coach.name}</h3>
+        {standing?.onRoster && (
+          <p className="mt-1 text-sm text-muted-foreground">
+            Competing on this team
+            {standing.points !== undefined && (
+              <>
+                {" · "}
+                <Points value={standing.points} className="font-bold text-foreground" />
+              </>
+            )}
+          </p>
+        )}
         {coach.credentials && <p className="mt-1 text-sm font-semibold">{coach.credentials}</p>}
         {coach.bio && (
           <details className="group mt-2 text-sm">

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildTeamRosters,
   decideEventVisibility,
   formatAverage,
   initials,
@@ -113,5 +114,81 @@ describe("tiebreakLabel", () => {
     expect(tiebreakLabel({ workout: { hasTiebreak: true }, tiebreakMs: 301000 })).toBe("TB 5:01");
     expect(tiebreakLabel({ workout: { hasTiebreak: true }, tiebreakMs: null })).toBeNull();
     expect(tiebreakLabel({ workout: { hasTiebreak: false }, tiebreakMs: 301000 })).toBeNull();
+  });
+});
+
+describe("buildTeamRosters ordering", () => {
+  const entries = [
+    { entryId: "e1", teamId: "t", name: "Cy", coachId: null, total: 5 },
+    { entryId: "e2", teamId: "t", name: "Al", coachId: "c1", total: 5 },
+    { entryId: "e3", teamId: "t", name: "Bo", coachId: "c2", total: 9 },
+    { entryId: "e4", teamId: "t", name: "Di", coachId: null, total: 0 },
+  ];
+  const teamCoaches = [
+    { teamId: "t", coachId: "c1", name: "Al", slug: "al" },
+    { teamId: "other", coachId: "c2", name: "Bo", slug: "bo" },
+  ];
+
+  it("sorts by points desc, ties by name, and flags only this team's coaches", () => {
+    const members = buildTeamRosters({ entries, teamCoaches, showIndividuals: true }).get("t")!.members;
+    expect(members.map((member) => [member.name, member.isCoach, member.entryId])).toEqual([
+      ["Bo", false, "e3"], // coaches another team: a regular member here
+      ["Al", true, "e2"],
+      ["Cy", false, "e1"],
+      ["Di", false, "e4"],
+    ]);
+  });
+
+  it("sorts alphabetically when individuals are hidden", () => {
+    const members = buildTeamRosters({ entries, teamCoaches, showIndividuals: false }).get("t")!.members;
+    expect(members.map((member) => member.name)).toEqual(["Al", "Bo", "Cy", "Di"]);
+  });
+});
+
+describe("buildTeamRosters", () => {
+  const entries = [
+    { entryId: "zed", teamId: "t1", name: "Zed", coachId: null, total: 3 },
+    { entryId: "kim", teamId: "t1", name: "Coach Kim", coachId: "k", total: 7 },
+    { entryId: "amy", teamId: "t1", name: "Amy", coachId: null, total: 3 },
+    { entryId: "lee", teamId: "t2", name: "Coach Lee", coachId: "l", total: 4 },
+    { entryId: "free", teamId: null, name: "Free Agent", coachId: null, total: 1 },
+  ];
+  const teamCoaches = [
+    { teamId: "t1", coachId: "k", name: "Coach Kim", slug: "kim" },
+    { teamId: "t1", coachId: "l", name: "Coach Lee", slug: "lee" },
+    { teamId: "t3", coachId: "m", name: "Coach Mo", slug: "mo" },
+  ];
+
+  it("groups members per team with points, coach flags, and coach roster status", () => {
+    const rosters = buildTeamRosters({ entries, teamCoaches, showIndividuals: true });
+    expect(rosters.get("t1")).toEqual({
+      coaches: [
+        { name: "Coach Kim", slug: "kim", onRoster: true, points: 7 },
+        { name: "Coach Lee", slug: "lee", onRoster: false },
+      ],
+      members: [
+        { entryId: "kim", name: "Coach Kim", isCoach: true, points: 7 },
+        { entryId: "amy", name: "Amy", isCoach: false, points: 3 },
+        { entryId: "zed", name: "Zed", isCoach: false, points: 3 },
+      ],
+    });
+    // Lee coaches t1 but competes on t2: a regular member there
+    expect(rosters.get("t2")?.members).toEqual([{ entryId: "lee", name: "Coach Lee", isCoach: false, points: 4 }]);
+    expect(rosters.get("t3")).toEqual({ coaches: [{ name: "Coach Mo", slug: "mo", onRoster: false }], members: [] });
+  });
+
+  it("omits per-person points and sorts alphabetically when individuals are hidden", () => {
+    const rosters = buildTeamRosters({ entries, teamCoaches, showIndividuals: false });
+    expect(rosters.get("t1")).toEqual({
+      coaches: [
+        { name: "Coach Kim", slug: "kim", onRoster: true },
+        { name: "Coach Lee", slug: "lee", onRoster: false },
+      ],
+      members: [
+        { entryId: "amy", name: "Amy", isCoach: false },
+        { entryId: "kim", name: "Coach Kim", isCoach: true },
+        { entryId: "zed", name: "Zed", isCoach: false },
+      ],
+    });
   });
 });

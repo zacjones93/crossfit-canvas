@@ -11,8 +11,17 @@ import { formOptionalId, formText, NONE } from "@/lib/open/form-data"
 import { OptionalIdSelect } from "@/components/open/selects"
 import type { AdminOpenEntry, TeamOption } from "./types"
 
-/** Edit an athlete: name/email (the person, shared across events) and division/team (this event). */
-export function EntryFormDialog({ entry, teams, trigger }: { entry: AdminOpenEntry; teams: TeamOption[]; trigger: ReactNode }) {
+interface EntryFormDialogProps {
+  entry: AdminOpenEntry
+  teams: TeamOption[]
+  coaches: TeamOption[]
+  trigger: ReactNode
+}
+
+/**
+ * Edit an athlete: name/email/coach link (the person, shared across events) and division/team (this event).
+ */
+export function EntryFormDialog({ entry, teams, coaches, trigger }: EntryFormDialogProps) {
   const { execute } = useServerAction(updateOpenEntryAction)
 
   async function handleSubmit(formData: FormData) {
@@ -20,6 +29,7 @@ export function EntryFormDialog({ entry, teams, trigger }: { entry: AdminOpenEnt
       entryId: entry.id,
       name: formText({ formData, name: "name" }) ?? "",
       email: formText({ formData, name: "email" }) ?? null,
+      coachId: formOptionalId({ formData, name: "coachId" }),
       division: formText({ formData, name: "division" }) ?? null,
       teamId: formOptionalId({ formData, name: "teamId" }),
     })
@@ -39,6 +49,19 @@ export function EntryFormDialog({ entry, teams, trigger }: { entry: AdminOpenEnt
       </Field>
       <Field id="entry-email" label="Email">
         <Input id="entry-email" name="email" type="email" defaultValue={entry.participant.email ?? ""} />
+      </Field>
+      <Field
+        id="entry-coach"
+        label="Coach profile"
+        hint="Same person as this coach. They show as Coach on teams the coach is assigned to."
+      >
+        <OptionalIdSelect
+          id="entry-coach"
+          name="coachId"
+          defaultValue={entry.participant.coachId ?? NONE}
+          items={coaches}
+          noneLabel="Not a coach"
+        />
       </Field>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field id="entry-team" label="Team">

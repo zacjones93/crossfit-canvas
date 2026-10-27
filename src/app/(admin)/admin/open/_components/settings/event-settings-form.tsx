@@ -1,6 +1,7 @@
 "use client"
 
 import type { FormEvent } from "react"
+import { toast } from "sonner"
 import { useServerAction } from "zsa-react"
 import { saveOpenEventSettingsAction } from "../../../_actions/open-event-navigation.action"
 import { Button } from "@/components/ui/button"
@@ -20,7 +21,7 @@ export function EventSettingsForm({ event }: { event: OpenEvent }) {
     formEvent.preventDefault()
     const formData = new FormData(formEvent.currentTarget)
     // A slug change redirects from the action, so this only resolves for in-place saves
-    const [, err] = await execute({
+    const [data, err] = await execute({
       eventId: event.id,
       currentSlug: event.slug,
       name: formText({ formData, name: "name" }) ?? "",
@@ -31,8 +32,12 @@ export function EventSettingsForm({ event }: { event: OpenEvent }) {
       showIndividuals: formBool({ formData, name: "showIndividuals" }),
       coachPointsEnabled: formBool({ formData, name: "coachPointsEnabled" }),
       coachScoresEnabled: formBool({ formData, name: "coachScoresEnabled" }),
+      autoRosterCoaches: formBool({ formData, name: "autoRosterCoaches" }),
     })
-    toastResult({ err, success: "Event saved", fallback: "Failed to save event" })
+    const added = data?.roster.added ?? 0
+    if (toastResult({ err, success: added > 0 ? `Event saved; added ${added} coach(es) to rosters` : "Event saved", fallback: "Failed to save event" })) {
+      for (const note of data?.roster.notes ?? []) toast.info(note)
+    }
   }
 
   return (
@@ -70,6 +75,13 @@ export function EventSettingsForm({ event }: { event: OpenEvent }) {
           </SwitchField>
           <SwitchField id="settings-coach-scores" label="Coaches enter scores" hint="Linked coaches can enter workout scores for their teams' athletes.">
             <Switch id="settings-coach-scores" name="coachScoresEnabled" defaultChecked={event.coachScoresEnabled} />
+          </SwitchField>
+          <SwitchField
+            id="settings-auto-roster"
+            label="Automatically add coaches to their team's roster"
+            hint="Coaches compete too: assigning a coach to a team also enters them as an athlete on it (turning this on adds current coaches)."
+          >
+            <Switch id="settings-auto-roster" name="autoRosterCoaches" defaultChecked={event.autoRosterCoaches} />
           </SwitchField>
         </CardContent>
         <CardFooter className="justify-end">

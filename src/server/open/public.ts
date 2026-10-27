@@ -15,7 +15,7 @@ import {
   openWorkoutTable,
 } from "@/db/schema";
 import { OPEN_EVENT_STATUS } from "@/lib/open/constants";
-import { and, asc, desc, eq, exists, inArray, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, exists, inArray, isNotNull, or, sql } from "drizzle-orm";
 
 // Reads for the public Open pages. Each selects only display columns: never emails, user ids, notes, or
 // who-entered-what. Uncached (the root layout is force-dynamic); standings come from the tagged
@@ -33,11 +33,12 @@ export async function getPublicEvents() {
 
 /**
  * Everything the public event pages share, in one round trip: team profile fields (merge with standings by
- * id), weeks, rules (active, plus retired ones that still carry awards), workouts, and scalings.
+ * id), weeks, rules (active, plus retired ones that still carry awards), workouts, scalings, team coaches, and
+ * which entries are coaches (entry → linked coach; feeds `buildTeamRosters`, ids stay server-side).
  */
 export async function getPublicEventData({ eventId }: { eventId: string }) {
   const db = getDB();
-  const [teamProfiles, weeks, rules, workouts, scalings] = await db.batch([
+  const [teamProfiles, weeks, rules, workouts, scalings, teamCoaches, entryCoaches] = await db.batch([
     db
       .select({ id: openTeamTable.id, photoKey: openTeamTable.photoKey, motto: openTeamTable.motto })
       .from(openTeamTable)
@@ -87,8 +88,19 @@ export async function getPublicEventData({ eventId }: { eventId: string }) {
       .from(openScalingTable)
       .where(eq(openScalingTable.eventId, eventId))
       .orderBy(asc(openScalingTable.rank)),
+    db
+      .select({ teamId: openTeamCoachTable.teamId, coachId: coachTable.id, name: coachTable.name, slug: coachTable.slug })
+      .from(openTeamCoachTable)
+      .innerJoin(coachTable, eq(openTeamCoachTable.coachId, coachTable.id))
+      .innerJoin(openTeamTable, eq(openTeamCoachTable.teamId, openTeamTable.id))
+      .where(eq(openTeamTable.eventId, eventId)),
+    db
+      .select({ entryId: openEntryTable.id, coachId: openParticipantTable.coachId })
+      .from(openEntryTable)
+      .innerJoin(openParticipantTable, eq(openEntryTable.participantId, openParticipantTable.id))
+      .where(and(eq(openEntryTable.eventId, eventId), isNotNull(openParticipantTable.coachId))),
   ]);
-  return { teamProfiles, weeks, rules, workouts, scalings };
+  return { teamProfiles, weeks, rules, workouts, scalings, teamCoaches, entryCoaches };
 }
 
 export type PublicEventData = Awaited<ReturnType<typeof getPublicEventData>>;
@@ -122,46 +134,22 @@ export async function getPublicTeam({ eventId, slug }: { eventId: string; slug: 
   return team ? { ...team, coaches } : null;
 }
 
-/**
- * A team's roster (entry id + display name), and, when `withScores` (the event shows individuals), its
- * members' scores across all workouts.
- */
-export async function getPublicTeamRoster({
-  eventId,
-  teamId,
-  withScores,
-}: {
-  eventId: string;
-  teamId: string;
-  withScores: boolean;
-}) {
+/** A team's members' scores across all workouts (only for events that show individuals). */
+export async function getPublicTeamScores({ eventId, teamId }: { eventId: string; teamId: string }) {
   const db = getDB();
-  const onTeam = and(eq(openEntryTable.eventId, eventId), eq(openEntryTable.teamId, teamId));
-  const membersQuery = db
-    .select({ entryId: openEntryTable.id, name: openParticipantTable.name })
-    .from(openEntryTable)
-    .innerJoin(openParticipantTable, eq(openEntryTable.participantId, openParticipantTable.id))
-    .where(onTeam)
-    .orderBy(asc(openParticipantTable.name));
-  if (!withScores) return { members: await membersQuery, scores: [] };
-
-  const [members, scores] = await db.batch([
-    membersQuery,
-    db
-      .select({
-        entryId: openScoreTable.entryId,
-        workoutId: openScoreTable.workoutId,
-        value: openScoreTable.value,
-        capped: openScoreTable.capped,
-        tiebreakMs: openScoreTable.tiebreakMs,
-        scalingName: openScalingTable.name,
-      })
-      .from(openScoreTable)
-      .innerJoin(openEntryTable, eq(openScoreTable.entryId, openEntryTable.id))
-      .innerJoin(openScalingTable, eq(openScoreTable.scalingId, openScalingTable.id))
-      .where(onTeam),
-  ]);
-  return { members, scores };
+  return db
+    .select({
+      entryId: openScoreTable.entryId,
+      workoutId: openScoreTable.workoutId,
+      value: openScoreTable.value,
+      capped: openScoreTable.capped,
+      tiebreakMs: openScoreTable.tiebreakMs,
+      scalingName: openScalingTable.name,
+    })
+    .from(openScoreTable)
+    .innerJoin(openEntryTable, eq(openScoreTable.entryId, openEntryTable.id))
+    .innerJoin(openScalingTable, eq(openScoreTable.scalingId, openScalingTable.id))
+    .where(and(eq(openEntryTable.eventId, eventId), eq(openEntryTable.teamId, teamId)));
 }
 
 /** One workout's scores with display fields, shaped as RankableScore for `rankScores`. */

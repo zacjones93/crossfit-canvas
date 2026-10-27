@@ -2,6 +2,7 @@ import "server-only";
 import { getDB } from "@/db";
 import {
   openEntryTable,
+  openParticipantTable,
   openPointRuleTable,
   openScalingTable,
   openTeamTable,
@@ -79,7 +80,7 @@ export async function getEntries({ eventId, teamId }: { eventId: string; teamId?
       ? and(eq(openEntryTable.eventId, eventId), eq(openEntryTable.teamId, teamId))
       : eq(openEntryTable.eventId, eventId),
     with: {
-      participant: true,
+      participant: { with: { coach: { columns: { id: true, name: true } } } },
       team: { columns: { id: true, name: true, slug: true, color: true } },
     },
   });
@@ -95,4 +96,15 @@ export async function getTeamMemberCounts({ eventId }: { eventId: string }): Pro
     .where(and(eq(openEntryTable.eventId, eventId), isNotNull(openEntryTable.teamId)))
     .groupBy(openEntryTable.teamId);
   return Object.fromEntries(rows.flatMap((row) => (row.teamId ? [[row.teamId, row.total]] : [])));
+}
+
+/** Entries in the event whose participant is linked to a coach: coachId → that entry's teamId (null = no team). */
+export async function getCoachEntryTeams({ eventId }: { eventId: string }): Promise<Record<string, string | null>> {
+  const db = getDB();
+  const rows = await db
+    .select({ coachId: openParticipantTable.coachId, teamId: openEntryTable.teamId })
+    .from(openEntryTable)
+    .innerJoin(openParticipantTable, eq(openEntryTable.participantId, openParticipantTable.id))
+    .where(and(eq(openEntryTable.eventId, eventId), isNotNull(openParticipantTable.coachId)));
+  return Object.fromEntries(rows.flatMap((row) => (row.coachId ? [[row.coachId, row.teamId]] : [])));
 }

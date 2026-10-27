@@ -11,9 +11,14 @@ import {
   openTeamIdSchema,
   updateOpenTeamSchema,
 } from "@/schemas/open.schema";
-import { auditStatement, auditStatements } from "@/server/open/audit-write";
+import { planCoachRoster } from "@/lib/open/coach-roster";
+import { auditStatement } from "@/server/open/audit-write";
+import { coachRosterStatements, loadCoachRosterState } from "@/server/open/coach-roster";
 import { deleteOpenMediaKeys } from "@/server/open/media";
 import {
+  affectedRows,
+  auditedDelete,
+  auditedDeleteStatements,
   auditedUpdate,
   loadEvent,
   orNotFound,
@@ -108,40 +113,42 @@ export const deleteOpenTeamAction = createServerAction()
       with: { coach: { columns: { name: true } } },
     });
 
-    const actor = { eventId: team.eventId, actorUserId: session.userId, verb: OPEN_AUDIT_VERB.DELETE };
-    await runOpenBatch({
+    // Guarded deletes with conditional audits: a concurrent double-delete audits once
+    const actor = { db, eventId: team.eventId, actorUserId: session.userId };
+    const results = await runOpenBatch({
       db,
       statements: [
-        db.delete(openTeamTable).where(eq(openTeamTable.id, team.id)),
-        ...auditStatements({
-          db,
-          entries: [
-            {
-              ...actor,
-              entityType: OPEN_AUDIT_ENTITY.TEAM,
-              entityId: team.id,
-              before: team,
-              summary: `Deleted team "${team.name}"`,
-            },
-            ...teamCoaches.map(({ coach, ...teamCoach }) => ({
-              ...actor,
-              entityType: OPEN_AUDIT_ENTITY.TEAM_COACH,
-              entityId: teamCoach.id,
-              before: teamCoach,
-              summary: `Unassigned ${coach.name} from "${team.name}" (team deleted)`,
-            })),
-          ],
+        ...teamCoaches.flatMap(({ coach, ...teamCoach }) =>
+          auditedDeleteStatements({
+            ...actor,
+            table: openTeamCoachTable,
+            entityType: OPEN_AUDIT_ENTITY.TEAM_COACH,
+            row: teamCoach,
+            summary: `Unassigned ${coach.name} from "${team.name}" (team deleted)`,
+          }),
+        ),
+        ...auditedDeleteStatements({
+          ...actor,
+          table: openTeamTable,
+          entityType: OPEN_AUDIT_ENTITY.TEAM,
+          row: team,
+          summary: `Deleted team "${team.name}"`,
         }),
       ],
       messages: { foreignKey: `"${team.name}" still has athletes; move them to another team first` },
     });
+    if (affectedRows(results.at(-1)) === 0) return { success: true };
 
     await deleteOpenMediaKeys([team.photoKey]);
     revalidateOpenEvent({ eventId: team.eventId });
     return { success: true };
   });
 
-/** Idempotent: assigning an already-assigned coach is a no-op. */
+/**
+ * Idempotent: assigning an already-assigned coach is a no-op. With the event's `autoRosterCoaches` on, the
+ * same batch also puts the coach on this team's roster (`planCoachRoster`, never moving an existing entry);
+ * `notes` say why that didn't happen.
+ */
 export const assignOpenTeamCoachAction = createServerAction()
   .input(openTeamCoachSchema)
   .handler(async ({ input }) => {
@@ -161,7 +168,18 @@ export const assignOpenTeamCoachAction = createServerAction()
     const coach = coaches[0];
     if (!team) throw new ZSAError("NOT_FOUND", "Team not found");
     if (!coach) throw new ZSAError("NOT_FOUND", "Coach not found");
-    if (existing[0]) return { id: existing[0].id, teamId, coachId };
+    if (existing[0]) return { id: existing[0].id, teamId, coachId, notes: [] };
+
+    const { eventId } = team;
+    const event = await loadEvent({ db, eventId });
+    const roster = event.autoRosterCoaches ? await loadCoachRosterState({ db, eventId }) : null;
+    const plan = roster
+      ? planCoachRoster({
+          requests: [{ coachId, teamId }],
+          state: { ...roster.state, coaches: [...roster.state.coaches, coach] },
+          move: false,
+        })
+      : { steps: [], notes: [] };
 
     const teamCoach = { id: newOpenId.teamCoach(), teamId, coachId };
     await runOpenBatch({
@@ -170,7 +188,7 @@ export const assignOpenTeamCoachAction = createServerAction()
         db.insert(openTeamCoachTable).values(teamCoach),
         auditStatement({
           db,
-          eventId: team.eventId,
+          eventId,
           actorUserId: session.userId,
           verb: OPEN_AUDIT_VERB.CREATE,
           entityType: OPEN_AUDIT_ENTITY.TEAM_COACH,
@@ -178,16 +196,19 @@ export const assignOpenTeamCoachAction = createServerAction()
           after: teamCoach,
           summary: `Assigned ${coach.name} to "${team.name}"`,
         }),
+        ...(roster
+          ? coachRosterStatements({ db, eventId, actorUserId: session.userId, steps: plan.steps, entries: roster.entries, teams: roster.state.teams })
+          : []),
       ],
-      // Lost a race with an identical assignment: the desired state holds
-      messages: { unique: "That coach was just assigned to this team" },
+      // Lost a race with an identical assignment (or a roster change): the caller refreshes
+      messages: { unique: "That coach was just assigned to this team, or their roster entry just changed; refresh and try again" },
     });
 
-    revalidateOpenEvent({ eventId: team.eventId });
-    return teamCoach;
+    revalidateOpenEvent({ eventId });
+    return { ...teamCoach, notes: plan.notes };
   });
 
-/** Idempotent: unassigning a coach who isn't assigned is a no-op. */
+/** Idempotent: unassigning a coach who isn't assigned is a no-op. Their roster entry (and points) stay. */
 export const unassignOpenTeamCoachAction = createServerAction()
   .input(openTeamCoachSchema)
   .handler(async ({ input }) => {
@@ -202,22 +223,16 @@ export const unassignOpenTeamCoachAction = createServerAction()
     if (!teamCoach) return { success: true };
     const { team, coach, ...row } = teamCoach;
 
-    await runOpenBatch({
+    const { deleted } = await auditedDelete({
       db,
-      statements: [
-        db.delete(openTeamCoachTable).where(eq(openTeamCoachTable.id, row.id)),
-        auditStatement({
-          db,
-          eventId: team.eventId,
-          actorUserId: session.userId,
-          verb: OPEN_AUDIT_VERB.DELETE,
-          entityType: OPEN_AUDIT_ENTITY.TEAM_COACH,
-          entityId: row.id,
-          before: row,
-          summary: `Unassigned ${coach.name} from "${team.name}"`,
-        }),
-      ],
+      table: openTeamCoachTable,
+      entityType: OPEN_AUDIT_ENTITY.TEAM_COACH,
+      eventId: team.eventId,
+      actorUserId: session.userId,
+      row,
+      summary: `Unassigned ${coach.name} from "${team.name}"`,
     });
+    if (!deleted) return { success: true };
 
     revalidateOpenEvent({ eventId: team.eventId });
     return { success: true };

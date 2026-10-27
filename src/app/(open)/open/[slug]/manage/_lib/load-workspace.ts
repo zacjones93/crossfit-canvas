@@ -1,6 +1,8 @@
 import "server-only"
 import { cache } from "react"
+import type { Route } from "next"
 import { notFound, redirect } from "next/navigation"
+import { manageSignInHref } from "@/lib/open/manage-links"
 import { getEventBySlug } from "@/server/open/events"
 import type { GridScope } from "@/server/open/grid-data"
 import { getManageableTeams, isOpenAdmin } from "@/server/open/permissions"
@@ -13,7 +15,7 @@ import { getSessionFromCookie } from "@/utils/auth"
  */
 export const loadWorkspace = cache(async (slug: string) => {
   const session = await getSessionFromCookie()
-  if (!session) redirect(`/sign-in?redirect=${encodeURIComponent(`/open/${slug}/manage`)}`)
+  if (!session) redirect(manageSignInHref(slug) as Route)
 
   const event = await getEventBySlug({ slug })
   if (!event) notFound()

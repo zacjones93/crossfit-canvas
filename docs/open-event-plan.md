@@ -21,11 +21,11 @@ Ported (and uncomplected) from `zacjones93/bcf-open-2025` (Supabase). Lessons fr
 | Table | Prefix | Columns |
 |---|---|---|
 | `coach` (existing) | — | **add** `userId` nullable FK → `user.id`, unique |
-| `open_event` | `oev_` | name, slug (unique), year, status (`draft`\|`live`\|`closed`), weightUnit (`lb`\|`kg`, default `lb`), showIndividuals (bool, default true), coachPointsEnabled (bool, default false), coachScoresEnabled (bool, default false) |
+| `open_event` | `oev_` | name, slug (unique), year, status (`draft`\|`live`\|`closed`), weightUnit (`lb`\|`kg`, default `lb`), showIndividuals (bool, default true), coachPointsEnabled (bool, default false), coachScoresEnabled (bool, default false), autoRosterCoaches (bool, default true; migration 0015) |
 | `open_week` | `owk_` | eventId, number, label, startsAt?, lockedAt? · unique(eventId, number) |
 | `open_team` | `otm_` | eventId, name, slug, color?, sortOrder · unique(eventId, slug) |
 | `open_team_coach` | `otc_` | teamId, coachId · unique(teamId, coachId) |
-| `open_participant` | `opp_` | name, email?, userId? (FK user) |
+| `open_participant` | `opp_` | name, email?, userId? (FK user), coachId? (FK coach, unique, set null; migration 0015) — the same person as that coach profile |
 | `open_entry` | `oen_` | eventId, participantId (restrict), teamId? (restrict — reassign before deleting a team), division? · unique(eventId, participantId) |
 | `open_point_rule` | `opr_` | eventId, name, description?, points (int), cadence (`per_week`\|`once_per_event`\|`unlimited`), coachAwardable (bool, default true), sortOrder, isActive |
 | `open_award` | `oaw_` | entryId (cascade), ruleId (restrict), weekId? (restrict), points (snapshot int), dedupeKey?, note?, awardedByUserId? · unique(entryId, ruleId, dedupeKey) · check(dedupeKey IS NULL OR dedupeKey = 'event' OR dedupeKey = weekId) |
@@ -93,7 +93,7 @@ Public (`src/app/(open)/open/...`):
 - `/open/[slug]/tv` big-screen standings (no site chrome, 60s meta refresh, `?sort=avg`); `/open/[slug]?tv=1` redirects there
 - `/open/[slug]/teams` team cards; `/open/[slug]/workouts` workout list
 - Only `live`/`closed` events are public; `draft` 404s except for admins ("Draft preview" banner, noindex). When `showIndividuals` is false, workout leaderboards and per-athlete points/scores are hidden with a note.
-- `/open/[slug]/teams/[teamSlug]` roster + history + scores
+- `/open/[slug]/teams/[teamSlug]` roster + history + scores (see "Coaches compete" for member/coach display rules)
 - `/open/[slug]/workouts/[workoutSlug]` combined ranked leaderboard, filter by scaling
 
 Shared components: `src/components/open/award-grid.tsx`, `score-grid.tsx` (props-driven, no knowledge of admin vs coach).
@@ -106,6 +106,17 @@ Shared components: `src/components/open/award-grid.tsx`, `score-grid.tsx` (props
 - Photo cleanup on deletes: team delete and event delete collect the affected `photoKey`s before the batch and best-effort delete the R2 objects after it succeeds (failures logged; an orphaned object is harmless).
 - Profile permission (`decideManageTeam` / `assertCanManageTeam`, separate from entry-level points/scores): admins edit everything on any team in the event (name, slug, color via the admin-only teams action; photo, motto, description via the profile actions); coaches edit photo/motto/description of teams they coach only. A team outside the request's event is "not found". Profile edits are not gated by event flags or week locks.
 - Public: `/open/[slug]/teams` (grid: photo, name, motto, rank, total, member count) and `/open/[slug]/teams/[teamSlug]` (header with photo/name/motto/rank/total; coaches with existing coach photos/bios; roster with points and scores; week-by-week history).
+
+## Coaches compete (added after Stage 6)
+- Person-level link: `open_participant.coachId` (nullable, unique, FK coach, `ON DELETE set null` appended by hand to drizzle's ALTER in 0015). A coach is the same person across events, so the link lives on the participant, not the entry.
+- "Coach of this team" is derived, never stored: participant.coachId ∈ that team's `open_team_coach` coachIds (`sortRoster` in `src/lib/open/public-view.ts`). A coach on the roster of a team they don't coach shows as a regular member there. Their entry is just an entry: standings totals are unchanged.
+- Admin: the Participants edit dialog links/unlinks a coach profile through `updateOpenEntry` (`coachId`; name/email/coach link on the participant, team/division on the entry; one batch, one audit per changed entity; one participant per coach, friendly error). Linked participants show a "Coach profile" badge (the person link, not team-coach status). `addCoachToRoster({ eventId, teamId, coachId })` (Teams page button per assigned coach not on that roster): reuses the coach's linked participant or creates one named after the coach, then creates the entry or moves it to the team. Roster import reuses linked participants through the normal name/email matching (no coach-name matching).
+- `autoRosterCoaches` (event setting, default on): assigning a coach to a team also enters them on that team in the same batch; an existing entry on another team is never moved (the action returns a note the UI toasts). Turning the setting on (Settings save) runs the backfill: every assigned coach without an entry gets one on their first assigned team (by sortOrder); coaches already entered on any team they coach are skipped silently; only coaches entered on a team they don't coach get a note. It runs in its own batch after the settings write commits (revalidated before and after); a backfill failure is returned as a note ("Settings saved; adding coaches failed: …"), not thrown — re-saving off → on retries it. No data migration for existing events (none are deployed yet); the column default is on. Unassigning never removes the entry. One planner for all three paths: pure `planCoachRoster` / `backfillCoachRequests` (`src/lib/open/coach-roster.ts`); one writer: `coachRosterStatements` (`src/server/open/coach-roster.ts`). An unlinked athlete in the event with the coach's name blocks creation with a "link them" note (no duplicate person).
+- Public display (`buildTeamRosters`, from standings individuals + `getPublicEventData` team coaches/entry coach links — the one place coach-ness is derived for the leaderboard, teams grid, coach cards, and roster badges; display fields plus a server-only `entryId` for score lookups, no coach ids/emails):
+  - Leaderboard: each team row expands (`<details>`, no JS) into members sorted by points desc, then name, each with points and a Coach badge, plus the team total.
+  - Teams grid: coaches (photo via `getCoachPhoto`, name, points if on that roster) and the other members with points. Team profile: coach cards say "Competing on this team" + points; roster sorted the same way with Coach badges.
+  - `showIndividuals` false: names and Coach badges still show, but no per-person points and alphabetical order; team totals still shown.
+- Coach entry point: public event pages (not TV) show "Manage my team" / "Manage teams" (signed-in viewer with ≥1 manageable team; `loadManageLink`) or a subtle "Coach sign in" (`manageSignInHref`, the same URL the workspace's sign-in redirect uses). The workspace header links back to the public page.
 
 ## Stages
 1. Schema + migration + seeds

@@ -106,6 +106,13 @@
       "when": 1793074339253,
       "tag": "0014_add-open-team-profile",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1793112305244,
+      "tag": "0015_add-open-participant-coach",
+      "breakpoints": true
     }
   ]
 }

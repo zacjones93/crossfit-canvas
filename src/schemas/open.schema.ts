@@ -56,6 +56,7 @@ export const updateOpenEventSchema = z.object({
   showIndividuals: z.boolean().optional(),
   coachPointsEnabled: z.boolean().optional(),
   coachScoresEnabled: z.boolean().optional(),
+  autoRosterCoaches: z.boolean().optional(),
 });
 
 export const openEventIdSchema = z.object({ eventId: id });
@@ -220,6 +221,8 @@ export const updateOpenEntrySchema = z.object({
   entryId: id,
   name: name.optional(),
   email: z.string().trim().toLowerCase().email().max(255).nullish().or(z.literal("").transform(() => null)),
+  /** Link the participant to their coach profile (same person); null unlinks, omitted leaves it. */
+  coachId: id.nullish(),
   division: z.string().trim().max(100).nullish(),
   teamId: id.nullish(),
 });
@@ -228,6 +231,9 @@ export const bulkAssignTeamsSchema = z.object({
   eventId: id,
   assignments: z.array(z.object({ entryId: id, teamId: id.nullable() })).min(1).max(MAX_BULK),
 });
+
+/** Put a team's assigned coach on that team's roster (reusing their linked participant). */
+export const addCoachToRosterSchema = z.object({ eventId: id, teamId: id, coachId: id });
 
 export const removeOpenEntrySchema = z.object({
   entryId: id,

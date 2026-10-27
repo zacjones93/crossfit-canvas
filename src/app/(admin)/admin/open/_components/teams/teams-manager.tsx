@@ -19,10 +19,12 @@ interface TeamsManagerProps {
   eventId: string
   teams: AdminOpenTeam[]
   memberCounts: Record<string, number>
+  /** coachId → team of the coach's entry in this event (null = no team); absent = not entered */
+  coachEntryTeams: Record<string, string | null>
   coaches: CoachOption[]
 }
 
-export function TeamsManager({ eventId, teams, memberCounts, coaches }: TeamsManagerProps) {
+export function TeamsManager({ eventId, teams, memberCounts, coachEntryTeams, coaches }: TeamsManagerProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
@@ -48,6 +50,7 @@ export function TeamsManager({ eventId, teams, memberCounts, coaches }: TeamsMan
               eventId={eventId}
               team={team}
               memberCount={memberCounts[team.id] ?? 0}
+              coachEntryTeams={coachEntryTeams}
               coaches={coaches}
             />
           ))}
@@ -61,11 +64,13 @@ function TeamCard({
   eventId,
   team,
   memberCount,
+  coachEntryTeams,
   coaches,
 }: {
   eventId: string
   team: AdminOpenTeam
   memberCount: number
+  coachEntryTeams: Record<string, string | null>
   coaches: CoachOption[]
 }) {
   const photoUrl = teamPhotoUrl(team.photoKey)
@@ -143,7 +148,7 @@ function TeamCard({
               }
             />
           </div>
-          <TeamCoachesControl team={team} coaches={coaches} />
+          <TeamCoachesControl eventId={eventId} team={team} coaches={coaches} coachEntryTeams={coachEntryTeams} />
         </div>
       </CardContent>
     </Card>

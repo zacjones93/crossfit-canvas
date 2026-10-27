@@ -508,6 +508,8 @@ export const openEventTable = sqliteTable("open_event", {
   showIndividuals: integer({ mode: "boolean" }).notNull().default(true),
   coachPointsEnabled: integer({ mode: "boolean" }).notNull().default(false),
   coachScoresEnabled: integer({ mode: "boolean" }).notNull().default(false),
+  // Assigning a coach to a team also puts them on that team's roster (coaches compete too)
+  autoRosterCoaches: integer({ mode: "boolean" }).notNull().default(true),
 }, (table) => ([
   index('open_event_status_idx').on(table.status),
 ]));
@@ -556,6 +558,9 @@ export const openParticipantTable = sqliteTable("open_participant", {
   name: text({ length: 255 }).notNull(),
   email: text({ length: 255 }),
   userId: text().references(() => userTable.id, { onDelete: "set null" }),
+  // The same person as this coach profile (a coach can compete). Whether they coach a given team is
+  // derived: coachId ∈ that team's open_team_coach rows.
+  coachId: text().references(() => coachTable.id, { onDelete: "set null" }).unique(),
 }, (table) => ([
   index('open_participant_user_id_idx').on(table.userId),
   index('open_participant_email_idx').on(table.email),
@@ -739,6 +744,10 @@ export const openParticipantRelations = relations(openParticipantTable, ({ one, 
   user: one(userTable, {
     fields: [openParticipantTable.userId],
     references: [userTable.id],
+  }),
+  coach: one(coachTable, {
+    fields: [openParticipantTable.coachId],
+    references: [coachTable.id],
   }),
   entries: many(openEntryTable),
 }));

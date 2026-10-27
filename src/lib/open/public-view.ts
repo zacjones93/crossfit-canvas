@@ -132,3 +132,97 @@ export function weekColumns({
   const hasEventPoints = teams.some((team) => (team.byWeek[NO_WEEK_KEY] ?? 0) !== 0);
   return hasEventPoints ? [...columns, { key: NO_WEEK_KEY, label: "Event-wide", shortLabel: "Event" }] : columns;
 }
+
+export interface RosterEntry {
+  entryId: string;
+  name: string;
+  /** The participant's linked coach profile, if any. */
+  coachId: string | null;
+  total: number;
+}
+
+/**
+ * A team's roster in display order, each flagged `isCoach` iff the person is one of *this* team's coaches
+ * (a coach on another team's roster is a regular member there). With `showIndividuals`: points desc, then
+ * name; without: alphabetical (no per-person ordering by points).
+ */
+function sortRoster<T extends RosterEntry>({
+  entries,
+  teamCoachIds,
+  showIndividuals,
+}: {
+  entries: readonly T[];
+  teamCoachIds: ReadonlySet<string>;
+  showIndividuals: boolean;
+}): (T & { isCoach: boolean })[] {
+  return entries
+    .map((entry) => ({ ...entry, isCoach: entry.coachId !== null && teamCoachIds.has(entry.coachId) }))
+    .sort((a, b) => (showIndividuals ? b.total - a.total : 0) || a.name.localeCompare(b.name));
+}
+
+export interface PublicMember {
+  /** Server-side lookups only (e.g. scores); never render or pass to client components. */
+  entryId: string;
+  name: string;
+  isCoach: boolean;
+  /** Omitted when the event hides individuals. */
+  points?: number;
+}
+
+export interface PublicTeamCoach {
+  name: string;
+  slug: string;
+  /** Competing on this team's roster. */
+  onRoster: boolean;
+  /** Only when on the roster and the event shows individuals. */
+  points?: number;
+}
+
+export interface PublicTeamRoster {
+  coaches: PublicTeamCoach[];
+  /** Everyone on the roster (coaches included, flagged), in `sortRoster` order. */
+  members: PublicMember[];
+}
+
+/**
+ * Per-team public rosters (teamId → coaches + members) from entries with totals and the event's team-coach
+ * assignments: the one place coach-ness is derived for public pages (coach cards and roster badges). Display
+ * fields plus `entryId` for server-side lookups; no coach ids or emails.
+ */
+export function buildTeamRosters({
+  entries,
+  teamCoaches,
+  showIndividuals,
+}: {
+  entries: readonly (RosterEntry & { teamId: string | null })[];
+  teamCoaches: readonly { teamId: string; coachId: string; name: string; slug: string }[];
+  showIndividuals: boolean;
+}): Map<string, PublicTeamRoster> {
+  const coachIdsByTeam = new Map<string, Set<string>>();
+  for (const { teamId, coachId } of teamCoaches) coachIdsByTeam.set(teamId, (coachIdsByTeam.get(teamId) ?? new Set()).add(coachId));
+  const entriesByTeam = new Map<string, (RosterEntry & { teamId: string | null })[]>();
+  for (const entry of entries) {
+    if (entry.teamId) entriesByTeam.set(entry.teamId, [...(entriesByTeam.get(entry.teamId) ?? []), entry]);
+  }
+
+  const teamIds = new Set([...entriesByTeam.keys(), ...coachIdsByTeam.keys()]);
+  return new Map(
+    [...teamIds].map((teamId) => {
+      const sorted = sortRoster({
+        entries: entriesByTeam.get(teamId) ?? [],
+        teamCoachIds: coachIdsByTeam.get(teamId) ?? new Set(),
+        showIndividuals,
+      });
+      const pointsOf = (entry: RosterEntry) => (showIndividuals ? { points: entry.total } : {});
+      const coaches = teamCoaches
+        .filter((coach) => coach.teamId === teamId)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((coach) => {
+          const entry = sorted.find((member) => member.coachId === coach.coachId);
+          return { name: coach.name, slug: coach.slug, onRoster: Boolean(entry), ...(entry ? pointsOf(entry) : {}) };
+        });
+      const members = sorted.map((entry) => ({ entryId: entry.entryId, name: entry.name, isCoach: entry.isCoach, ...pointsOf(entry) }));
+      return [teamId, { coaches, members }];
+    }),
+  );
+}

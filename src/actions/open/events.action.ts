@@ -14,9 +14,11 @@ import {
 } from "@/db/schema";
 import { OPEN_AUDIT_ENTITY, OPEN_AUDIT_VERB, OPEN_EVENT_STATUS, OPEN_WEIGHT_UNIT } from "@/lib/open/constants";
 import { DEFAULT_OPEN_RULES, DEFAULT_OPEN_SCALINGS } from "@/lib/open/defaults";
+import { backfillCoachRequests, planCoachRoster } from "@/lib/open/coach-roster";
 import { resolveEventSlug } from "@/lib/open/event-slug";
 import { createOpenEventSchema, openEventIdSchema, updateOpenEventSchema } from "@/schemas/open.schema";
 import { auditStatements, type OpenAuditInput } from "@/server/open/audit-write";
+import { COACH_ROSTER_RACE, coachRosterStatements, loadCoachRosterState } from "@/server/open/coach-roster";
 import { deleteOpenMediaKeys } from "@/server/open/media";
 import {
   auditedDelete,
@@ -26,6 +28,8 @@ import {
   requireOpenAdmin,
   revalidateOpenEvent,
   runOpenBatch,
+  toFriendlyError,
+  type OpenDB,
 } from "@/server/open/write";
 
 const SLUG_TAKEN = "An event with that slug already exists";
@@ -164,8 +168,31 @@ export const updateOpenEventAction = createServerAction()
     });
 
     if (changed) revalidateOpenEvent({ eventId });
-    return row;
+    if (event.autoRosterCoaches || !row.autoRosterCoaches) return { ...row, roster: { added: 0, notes: [] } };
+
+    // The settings are saved; a failed backfill is reported, not thrown (re-saving off → on retries it)
+    const roster = await backfillCoachRoster({ db, eventId, actorUserId: session.userId }).catch((error: unknown) => {
+      const message = toFriendlyError({ error, messages: { unique: COACH_ROSTER_RACE } }).message;
+      return { added: 0, notes: [`Settings saved; adding coaches failed: ${message}`] };
+    });
+    if (roster.added > 0) revalidateOpenEvent({ eventId });
+    return { ...row, roster };
   });
+
+/**
+ * Turning `autoRosterCoaches` on: every assigned coach without an entry gets one on their first assigned team
+ * (by team sortOrder). Its own batch after the settings write.
+ */
+async function backfillCoachRoster({ db, eventId, actorUserId }: { db: OpenDB; eventId: string; actorUserId: string }) {
+  const { state, assignments, entries } = await loadCoachRosterState({ db, eventId });
+  const plan = planCoachRoster({ requests: backfillCoachRequests({ assignments, state }), state, move: false });
+  await runOpenBatch({
+    db,
+    statements: coachRosterStatements({ db, eventId, actorUserId, steps: plan.steps, entries, teams: state.teams }),
+    messages: { unique: COACH_ROSTER_RACE },
+  });
+  return { added: plan.steps.length, notes: plan.notes };
+}
 
 const NOT_EMPTY = "Only empty draft events can be deleted; remove its athletes first, or close the event instead";
 

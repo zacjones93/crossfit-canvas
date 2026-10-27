@@ -4,6 +4,7 @@ import { createServerAction, ZSAError } from "zsa";
 import { and, count, eq, inArray, notExists } from "drizzle-orm";
 import { getDB } from "@/db";
 import {
+  coachTable,
   newOpenId,
   openAwardTable,
   openEntryTable,
@@ -15,14 +16,17 @@ import {
 import { AWARD_VERB, describeAward, diffRow } from "@/lib/open/audit";
 import { chunk, MAX_BOUND_PARAMS } from "@/lib/open/chunk";
 import { OPEN_AUDIT_ENTITY, OPEN_AUDIT_VERB } from "@/lib/open/constants";
+import { planCoachRoster } from "@/lib/open/coach-roster";
 import { parseRosterText, planRosterImport } from "@/lib/open/roster";
 import {
+  addCoachToRosterSchema,
   bulkAssignTeamsSchema,
   importRosterSchema,
   removeOpenEntrySchema,
   updateOpenEntrySchema,
 } from "@/schemas/open.schema";
 import { auditStatements, type OpenAuditInput } from "@/server/open/audit-write";
+import { COACH_ROSTER_RACE, coachRosterStatements, loadCoachRosterState } from "@/server/open/coach-roster";
 import {
   affectedRows,
   auditedDeleteStatements,
@@ -48,6 +52,17 @@ async function loadTeamInEvent({ db, teamId, eventId }: { db: OpenDB; teamId: st
   });
   if (!team) throw new ZSAError("NOT_FOUND", "Team not found in this event");
   return team;
+}
+
+/** A coach that exists and isn't linked to another participant yet (friendly errors otherwise). */
+async function loadLinkableCoach({ db, coachId }: { db: OpenDB; coachId: string }) {
+  const [coaches, linked] = await db.batch([
+    db.select({ id: coachTable.id, name: coachTable.name }).from(coachTable).where(eq(coachTable.id, coachId)),
+    db.select({ name: openParticipantTable.name }).from(openParticipantTable).where(eq(openParticipantTable.coachId, coachId)),
+  ]);
+  if (!coaches[0]) throw new ZSAError("NOT_FOUND", "Coach not found");
+  if (linked[0]) throw new ZSAError("CONFLICT", `That coach is already linked to ${linked[0].name}; unlink them first`);
+  return coaches[0];
 }
 
 /**
@@ -144,13 +159,16 @@ export const importRosterAction = createServerAction()
     };
   });
 
-/** Name/email edit the participant (shared across events); division/team edit the entry. */
+/**
+ * Name/email/coach link edit the participant (shared across events); division/team edit the entry. One batch,
+ * one audit per changed entity. A coach links to at most one participant.
+ */
 export const updateOpenEntryAction = createServerAction()
   .input(updateOpenEntrySchema)
   .handler(async ({ input }) => {
     const session = await requireOpenAdmin();
     const db = getDB();
-    const { entryId, name, email, division, teamId } = input;
+    const { entryId, name, email, coachId, division, teamId } = input;
 
     const found = await orNotFound({
       row: db.query.openEntryTable.findFirst({ where: eq(openEntryTable.id, entryId), with: { participant: true } }),
@@ -158,8 +176,9 @@ export const updateOpenEntryAction = createServerAction()
     });
     const { participant, ...entry } = found;
     if (teamId) await loadTeamInEvent({ db, teamId, eventId: entry.eventId });
+    const coach = coachId && coachId !== participant.coachId ? await loadLinkableCoach({ db, coachId }) : null;
 
-    const participantDiff = diffRow({ before: participant, updates: { name, email } });
+    const participantDiff = diffRow({ before: participant, updates: { name, email, coachId } });
     const entryDiff = diffRow({ before: entry, updates: { division, teamId } });
 
     const actor = { eventId: entry.eventId, actorUserId: session.userId, verb: OPEN_AUDIT_VERB.UPDATE };
@@ -173,7 +192,9 @@ export const updateOpenEntryAction = createServerAction()
         entityId: participant.id,
         before: participant,
         after: participantDiff.after,
-        summary: `Updated ${participantDiff.after.name} (${participantDiff.changedKeys.join(", ")})`,
+        summary: `Updated ${participantDiff.after.name} (${participantDiff.changedKeys.join(", ")})${
+          coach ? `; linked to coach ${coach.name}` : participantDiff.changedKeys.includes("coachId") ? "; unlinked from coach" : ""
+        }`,
       });
     }
     if (entryDiff.changedKeys.length > 0) {
@@ -189,7 +210,11 @@ export const updateOpenEntryAction = createServerAction()
     }
     if (statements.length === 0) return found;
 
-    await runOpenBatch({ db, statements: [...statements, ...auditStatements({ db, entries: audits })] });
+    await runOpenBatch({
+      db,
+      statements: [...statements, ...auditStatements({ db, entries: audits })],
+      messages: { unique: "That coach is already linked to another athlete" },
+    });
 
     revalidateOpenEvent({ eventId: entry.eventId });
     return { ...entryDiff.after, participant: participantDiff.after };
@@ -340,4 +365,36 @@ export const removeOpenEntryAction = createServerAction()
       }
     }
     return { success: true, deletedAwards: awards.length, deletedScores: scores.length };
+  });
+
+/**
+ * Puts one of a team's assigned coaches on that team's roster: reuses the participant linked to the coach
+ * (or creates one named after the coach, linked via `coachId`), then creates their entry or moves it to the
+ * team (points follow the entry's team). Idempotent when they're already on the team.
+ */
+export const addCoachToRosterAction = createServerAction()
+  .input(addCoachToRosterSchema)
+  .handler(async ({ input }) => {
+    const session = await requireOpenAdmin();
+    const db = getDB();
+    const { eventId, teamId, coachId } = input;
+
+    const { state, assignments, entries } = await loadCoachRosterState({ db, eventId });
+    if (!state.teams.some((team) => team.id === teamId)) throw new ZSAError("NOT_FOUND", "Team not found in this event");
+    if (!assignments.some((assignment) => assignment.teamId === teamId && assignment.coachId === coachId)) {
+      throw new ZSAError("PRECONDITION_FAILED", "Assign the coach to this team first");
+    }
+
+    const plan = planCoachRoster({ requests: [{ coachId, teamId }], state, move: true });
+    if (plan.notes.length > 0) throw new ZSAError("PRECONDITION_FAILED", plan.notes.join("; "));
+    if (plan.steps.length === 0) return { changed: false };
+
+    await runOpenBatch({
+      db,
+      statements: coachRosterStatements({ db, eventId, actorUserId: session.userId, steps: plan.steps, entries, teams: state.teams }),
+      messages: { unique: COACH_ROSTER_RACE },
+    });
+
+    revalidateOpenEvent({ eventId });
+    return { changed: true };
   });

@@ -1,6 +1,6 @@
 import "server-only"
 import { cache } from "react"
-import { rankTeams, withStandingRanks } from "@/lib/open/public-view"
+import { buildTeamRosters, rankTeams, withStandingRanks } from "@/lib/open/public-view"
 import { teamPhotoUrl } from "@/lib/open/team-photo"
 import { getPublicEventData } from "@/server/open/public"
 import { getStandings } from "@/server/open/standings"
@@ -22,13 +22,26 @@ export const loadEventBoard = cache(async (event: PublicEvent) => {
       return { ...team, photoUrl: teamPhotoUrl(profile?.photoKey), motto: profile?.motto ?? null }
     }),
   })
+  const coachIdByEntry = new Map(data.entryCoaches.map((row) => [row.entryId, row.coachId]))
+  // Names (and coach flags) are public even when individuals are hidden; points are dropped by buildTeamRosters
+  const rosters = buildTeamRosters({
+    entries: standings.individuals.map((individual) => ({
+      entryId: individual.entryId,
+      name: individual.name,
+      teamId: individual.teamId,
+      total: individual.total,
+      coachId: coachIdByEntry.get(individual.entryId) ?? null,
+    })),
+    teamCoaches: data.teamCoaches,
+    showIndividuals: event.showIndividuals,
+  })
   const individuals = event.showIndividuals ? standings.individuals : []
   const topIndividuals = rankTeams({
     teams: individuals.filter((individual) => individual.total > 0).slice(0, TOP_INDIVIDUALS),
   })
 
   return {
-    teams,
+    teams: teams.map((team) => ({ ...team, ...(rosters.get(team.id) ?? { coaches: [], members: [] }) })),
     /** entryId → points; empty when the event hides individuals */
     pointsByEntry: new Map(individuals.map((individual) => [individual.entryId, individual.total])),
     topIndividuals,

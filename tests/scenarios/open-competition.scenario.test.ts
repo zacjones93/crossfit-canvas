@@ -80,6 +80,8 @@ describe("Open 2026 competition scenarios (real actions + isolated local D1)", (
 
     const event = await call({ action: createOpenEventAction as SafeAction<any>, input: { name: "Open 2026", slug: "open-2026-scenario", year: 2026, weekCount: 3, weightUnit: "lb" } });
     ids.eventId = event.id;
+    // These scenarios build the roster explicitly; auto-roster planning is unit-tested in src/lib/open/coach-roster.test.ts
+    await call({ action: updateOpenEventAction as SafeAction<any>, input: { eventId: ids.eventId, autoRosterCoaches: false } });
     const [weeks, scalings, rules] = await Promise.all([
       db.select().from(openWeekTable).where(eq(openWeekTable.eventId, event.id)).orderBy(openWeekTable.number),
       db.select().from(openScalingTable).where(eq(openScalingTable.eventId, event.id)).orderBy(openScalingTable.rank),

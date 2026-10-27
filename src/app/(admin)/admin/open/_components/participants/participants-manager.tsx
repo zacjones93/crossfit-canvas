@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import { Pencil, Upload } from "lucide-react"
 import { useServerAction } from "zsa-react"
 import { bulkAssignTeamsAction, updateOpenEntryAction } from "@/actions/open/roster.action"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -21,9 +22,11 @@ interface ParticipantsManagerProps {
   eventId: string
   entries: AdminOpenEntry[]
   teams: TeamOption[]
+  /** For linking an athlete to their coach profile (coaches compete too) */
+  coaches: TeamOption[]
 }
 
-export function ParticipantsManager({ eventId, entries, teams }: ParticipantsManagerProps) {
+export function ParticipantsManager({ eventId, entries, teams, coaches }: ParticipantsManagerProps) {
   const [query, setQuery] = useState("")
   const [teamFilter, setTeamFilter] = useState(ALL)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
@@ -174,7 +177,14 @@ export function ParticipantsManager({ eventId, entries, teams }: ParticipantsMan
                     />
                   </TableCell>
                   <TableCell className="font-medium">
-                    {entry.participant.name}
+                    <span className="inline-flex items-center gap-2">
+                      {entry.participant.name}
+                      {entry.participant.coach && (
+                        <Badge variant="secondary" title={`Linked to coach ${entry.participant.coach.name}`}>
+                          Coach profile
+                        </Badge>
+                      )}
+                    </span>
                     <div className="text-xs font-normal text-muted-foreground md:hidden">{entry.participant.email}</div>
                   </TableCell>
                   <TableCell className="hidden text-muted-foreground md:table-cell">{entry.participant.email ?? "--"}</TableCell>
@@ -193,6 +203,7 @@ export function ParticipantsManager({ eventId, entries, teams }: ParticipantsMan
                       <EntryFormDialog
                         entry={entry}
                         teams={teams}
+                        coaches={coaches}
                         trigger={
                           <Button variant="ghost" size="icon" aria-label={`Edit ${entry.participant.name}`}>
                             <Pencil className="h-4 w-4" />

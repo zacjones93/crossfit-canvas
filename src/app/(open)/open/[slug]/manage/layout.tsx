@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import type { Route } from "next"
 import Link from "next/link"
+import { Globe } from "lucide-react"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -20,7 +21,16 @@ export default async function ManageLayout({ children, params }: { children: Rea
             <p className="text-xs font-semibold uppercase tracking-widest text-white/60">Coach workspace</p>
             <h1 className="font-heading text-4xl uppercase tracking-wide md:text-5xl">{event.name}</h1>
           </div>
-          {isAdmin && <Badge variant="secondary">Admin</Badge>}
+          <div className="flex items-center gap-3">
+            {isAdmin && <Badge variant="secondary">Admin</Badge>}
+            <Link
+              href={`/open/${event.slug}` as Route}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-white/70 hover:text-white"
+            >
+              View public page
+              <Globe className="h-3.5 w-3.5" aria-hidden />
+            </Link>
+          </div>
         </div>
       </header>
       <div className="container mx-auto flex flex-col gap-4 px-4 py-6">
