@@ -1,5 +1,10 @@
 import type { ReactNode } from "react"
+import Link from "next/link"
+import { ExternalLink } from "lucide-react"
 import { PageHeader } from "@/components/page-header"
+import { Button } from "@/components/ui/button"
+import { CopyLinkButton } from "@/components/open/copy-link-button"
+import { OPEN_EVENT_STATUS } from "@/lib/open/constants"
 import { EventStatusBadge } from "../_components/event-status-badge"
 import { EventNav } from "../_components/event-nav"
 import { loadAdminEvent } from "../_lib/load-event"
@@ -28,7 +33,22 @@ export default async function OpenEventLayout({
           <h1 className="text-2xl font-bold sm:text-3xl">{event.name}</h1>
           <EventStatusBadge status={event.status} />
           <span className="text-sm text-muted-foreground">{event.year}</span>
+          <div className="flex flex-wrap items-center gap-2 sm:ml-auto">
+            <CopyLinkButton path={`/open/${event.slug}`} label="Copy public link" />
+            <CopyLinkButton path={`/open/${event.slug}/tv`} label="Copy TV link" />
+            <Button asChild variant="ghost" size="sm">
+              <Link href={`/open/${event.slug}`} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="size-4" />
+                View
+              </Link>
+            </Button>
+          </div>
         </div>
+        {event.status === OPEN_EVENT_STATUS.DRAFT && (
+          <p className="text-sm text-muted-foreground">
+            This event is a draft. Public links only work for admins until you set the status to live in Settings.
+          </p>
+        )}
         <EventNav slug={event.slug} />
         <div className="min-w-0">{children}</div>
       </div>
