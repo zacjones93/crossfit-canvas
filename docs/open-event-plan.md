@@ -49,6 +49,8 @@ Scaling levels are data: seed every new event with Rx (rank 0), Scaled (1), Foun
 - Rule `cadence` can't change once the rule has awards; workout `scoreType`/`repsPerRound` can't change once it has scores.
 - Retire rules via `isActive`, not delete; deleting a rule/week/team/participant with dependent rows fails.
 - A week is locked iff `lockedAt IS NOT NULL` (locks coach edits; admins unaffected).
+- Award `dedupeKey` is always computed by `awardDedupeKey({ cadence, weekId })` (`src/lib/open/awards.ts`): `per_week` → weekId, `once_per_event` → `"event"`, `unlimited` → null. Weekly rules require a week; once-per-event rules take none.
+- Permission checks are split (`src/server/open/permissions.ts` + pure `src/lib/open/permissions.ts`): `loadManageContext({ session, eventId, kind, ruleId?, weekId?, workoutId?, scalingId? })` loads + validates all referenced rows and the session's manageable team ids in one `db.batch` (pure `decideManageContext`); then `decideManageEntry({ context, entry })` / `assertEntryInContext` checks each entry. Bulk writers load entries by eventId (never `inArray` with large id lists — D1 caps bound params at ~100). Single-entry actions use `assertCanManageEntry`. Admin rights come only from `isOpenAdmin(session)`. Score checks take no weekId: the lock week is the workout's week.
 - Team points follow the entry's current `teamId` (moving an athlete moves their points) — intentional.
 - Audit rows: `action` is the verb; written in the same `db.batch` as the change; never updated/deleted.
 
@@ -58,13 +60,14 @@ Scaling levels are data: seed every new event with Rx (rank 0), Scaled (1), Foun
 
 ## Server reads (`src/server/open/`, `server-only`)
 events, weeks, teams, rules, entries, scalings, workouts, scores, awards, standings (single grouped queries; feed the pure functions), `permissions.ts`:
-- `getManageableTeamIds({userId, eventId})` → all teams if admin, else teams where the user's linked coach is assigned.
-- `canManageEntry({userId, entryId, kind: "points" | "scores", ruleId?, weekId?})` → admin ⇒ true; else coach on entry's team AND event flag (`coachPointsEnabled`/`coachScoresEnabled`) AND week not locked AND (points ⇒ rule.coachAwardable).
+- `getManageableTeams({session, eventId})` → all teams if `isOpenAdmin(session)`, else teams where the user's linked coach is assigned.
+- `loadManageContext` + `assertEntryInContext` (bulk) / `assertCanManageEntry` (single) — see Write invariants. Coaches additionally need: entry's team in their manageable teams, event flag (`coachPointsEnabled`/`coachScoresEnabled`), week not locked, (points ⇒ rule.coachAwardable AND rule.isActive).
+- `getStandings({eventId})` (cached, tag `openEventTag({eventId})` = `open:<eventId>`) and `getPublicStandings({eventId})` (drops individuals when `showIndividuals` is false).
 
 ## Actions (`src/actions/open/*.action.ts`, zsa)
 - Admin config (requireAdmin): events CRUD (+ seed scalings), weeks, teams, team coaches, rules, scalings, workouts, roster (`importRoster` paste names; `assignTeam`/`bulkAssignTeams`), coach ↔ user link.
 - Shared (permission-checked): `setAward({entryId, ruleId, weekId, awarded, note})` idempotent; `setAwardsForRuleWeek({ruleId, weekId, entryIds})` diff + `db.batch`; `setScore({entryId, workoutId, input, scalingId, tiebreak?, note?})`; `clearScore`.
-- Every write `revalidateTag("open:<eventSlug>")` / revalidatePath as appropriate.
+- Every write `revalidateTag(openEventTag({ eventId }))` (`open:<eventId>`, from `src/lib/open/cache-tags.ts`) / revalidatePath as appropriate.
 - Every mutation writes one `open_audit_log` row in the same `db.batch` as the change, via a single `writeAudit`/`auditStatement` helper.
 
 ## Routes
@@ -72,7 +75,7 @@ Admin (`src/app/(admin)/admin/open/...`, existing requireAdmin layout; add "Open
 - `/admin/open` events list/create
 - `/admin/open/[slug]` overview (standings preview, links)
 - `.../weeks`, `.../teams` (incl. coach assignment), `.../participants`, `.../rules`, `.../scalings`, `.../workouts`, `.../settings` (status, flags, weightUnit, showIndividuals)
-- `.../audit` — filterable audit log (actor, entity type, week, team)
+- `.../audit` — filterable audit log (actor, entityType, entityId)
 - `.../points` and `.../scores` → shared grids, all teams
 - `/admin/coaches` gets "Linked user" picker
 
