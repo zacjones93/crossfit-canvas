@@ -8,6 +8,7 @@ import { OPEN_AUDIT_ENTITY, OPEN_AUDIT_VERB, OPEN_SCORE_TYPE } from "@/lib/open/
 import { createOpenWorkoutSchema, openWorkoutIdSchema, updateOpenWorkoutSchema } from "@/schemas/open.schema";
 import { auditStatement } from "@/server/open/audit-write";
 import {
+  auditedDelete,
   auditedUpdate,
   loadEvent,
   requireOpenAdmin,
@@ -157,21 +158,19 @@ export const deleteOpenWorkoutAction = createServerAction()
       throw new ZSAError("PRECONDITION_FAILED", `"${workout.name}" has ${scoreCount} score(s); clear them before deleting it`);
     }
 
-    await runOpenBatch({
+    // Scores cascade with the workout, so guard against one landing after the check above
+    await auditedDelete({
       db,
-      statements: [
-        db.delete(openWorkoutTable).where(eq(openWorkoutTable.id, workoutId)),
-        auditStatement({
-          db,
-          eventId: workout.eventId,
-          actorUserId: session.userId,
-          verb: OPEN_AUDIT_VERB.DELETE,
-          entityType: OPEN_AUDIT_ENTITY.WORKOUT,
-          entityId: workoutId,
-          before: workout,
-          summary: `Deleted workout "${workout.name}"`,
-        }),
-      ],
+      table: openWorkoutTable,
+      entityType: OPEN_AUDIT_ENTITY.WORKOUT,
+      eventId: workout.eventId,
+      actorUserId: session.userId,
+      row: workout,
+      summary: `Deleted workout "${workout.name}"`,
+      guard: {
+        condition: notExists(db.select({ id: openScoreTable.id }).from(openScoreTable).where(eq(openScoreTable.workoutId, workoutId))),
+        message: `"${workout.name}" just got a score or was already deleted; refresh and try again`,
+      },
     });
 
     revalidateOpenEvent({ eventId: workout.eventId });

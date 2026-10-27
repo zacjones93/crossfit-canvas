@@ -9,6 +9,7 @@ import { OPEN_AUDIT_ENTITY, OPEN_AUDIT_VERB } from "@/lib/open/constants";
 import { createOpenRuleSchema, openRuleIdSchema, updateOpenRuleSchema } from "@/schemas/open.schema";
 import { auditStatement } from "@/server/open/audit-write";
 import {
+  auditedDelete,
   auditedUpdate,
   loadEvent,
   requireOpenAdmin,
@@ -119,21 +120,14 @@ export const deleteOpenRuleAction = createServerAction()
     const { rule, awardCount } = await loadRuleWithAwardCount({ db, ruleId: input.ruleId });
     if (awardCount > 0) throw new ZSAError("PRECONDITION_FAILED", hasAwardsMessage(rule.name));
 
-    await runOpenBatch({
+    await auditedDelete({
       db,
-      statements: [
-        db.delete(openPointRuleTable).where(eq(openPointRuleTable.id, rule.id)),
-        auditStatement({
-          db,
-          eventId: rule.eventId,
-          actorUserId: session.userId,
-          verb: OPEN_AUDIT_VERB.DELETE,
-          entityType: OPEN_AUDIT_ENTITY.RULE,
-          entityId: rule.id,
-          before: rule,
-          summary: `Deleted rule "${rule.name}"`,
-        }),
-      ],
+      table: openPointRuleTable,
+      entityType: OPEN_AUDIT_ENTITY.RULE,
+      eventId: rule.eventId,
+      actorUserId: session.userId,
+      row: rule,
+      summary: `Deleted rule "${rule.name}"`,
       // An award landed between the check and the delete
       messages: { foreignKey: hasAwardsMessage(rule.name) },
     });

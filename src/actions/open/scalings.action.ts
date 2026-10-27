@@ -8,6 +8,7 @@ import { OPEN_AUDIT_ENTITY, OPEN_AUDIT_VERB } from "@/lib/open/constants";
 import { createOpenScalingSchema, openScalingIdSchema, updateOpenScalingSchema } from "@/schemas/open.schema";
 import { auditStatement } from "@/server/open/audit-write";
 import {
+  auditedDelete,
   auditedUpdate,
   loadEvent,
   orNotFound,
@@ -94,21 +95,14 @@ export const deleteOpenScalingAction = createServerAction()
     const db = getDB();
     const scaling = await loadScaling({ db, scalingId: input.scalingId });
 
-    await runOpenBatch({
+    await auditedDelete({
       db,
-      statements: [
-        db.delete(openScalingTable).where(eq(openScalingTable.id, scaling.id)),
-        auditStatement({
-          db,
-          eventId: scaling.eventId,
-          actorUserId: session.userId,
-          verb: OPEN_AUDIT_VERB.DELETE,
-          entityType: OPEN_AUDIT_ENTITY.SCALING,
-          entityId: scaling.id,
-          before: scaling,
-          summary: `Deleted scaling "${scaling.name}"`,
-        }),
-      ],
+      table: openScalingTable,
+      entityType: OPEN_AUDIT_ENTITY.SCALING,
+      eventId: scaling.eventId,
+      actorUserId: session.userId,
+      row: scaling,
+      summary: `Deleted scaling "${scaling.name}"`,
       messages: { foreignKey: `Scores are recorded as "${scaling.name}"; change or clear them before deleting it` },
     });
 
