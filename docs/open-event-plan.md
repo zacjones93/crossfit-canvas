@@ -65,7 +65,7 @@ Scaling levels are data: seed every new event with Rx (rank 0), Scaled (1), Foun
 events, weeks, teams, rules, entries, scalings, workouts, scores, awards, standings (single grouped queries; feed the pure functions), `permissions.ts`:
 - `getManageableTeams({session, eventId})` → all teams if `isOpenAdmin(session)`, else teams where the user's linked coach is assigned.
 - `loadManageContext` + `assertEntryInContext` (bulk) / `assertCanManageEntry` (single) — see Write invariants. Coaches additionally need: entry's team in their manageable teams, event flag (`coachPointsEnabled`/`coachScoresEnabled`), week not locked, (points ⇒ rule.coachAwardable AND rule.isActive).
-- `getStandings({eventId})` (cached, tag `openEventTag({eventId})` = `open:<eventId>`) and `getPublicStandings({eventId})` (drops individuals when `showIndividuals` is false).
+- `getStandings({eventId})` (cached, tag `openEventTag({eventId})` = `open:<eventId>`) — public pages read it through `loadEventBoard` (`src/app/(open)/open/_lib/`), the one place individuals are dropped when the (uncached) event row has `showIndividuals` false, and where both team ranks (total, avg per member) are computed once.
 
 ## Actions (`src/actions/open/*.action.ts`, zsa)
 - Admin config (requireAdmin): events CRUD (+ seed scalings), weeks, teams, team coaches, rules, scalings, workouts, roster (`importRoster` paste names; `assignTeam`/`bulkAssignTeams`), coach ↔ user link.
@@ -89,7 +89,10 @@ Coach workspace (`src/app/(open)/open/[slug]/manage/...`, session required):
 
 Public (`src/app/(open)/open/...`):
 - `/open` → redirect to live event (or list)
-- `/open/[slug]` team standings (total + avg toggle), week-by-week, rules explainer, top individuals if showIndividuals; `?tv=1` big-screen mode
+- `/open/[slug]` team standings (total + avg toggle via `?sort=avg`), week-by-week, rules explainer (active rules + retired rules that carry awards, labeled), top individuals if showIndividuals
+- `/open/[slug]/tv` big-screen standings (no site chrome, 60s meta refresh, `?sort=avg`); `/open/[slug]?tv=1` redirects there
+- `/open/[slug]/teams` team cards; `/open/[slug]/workouts` workout list
+- Only `live`/`closed` events are public; `draft` 404s except for admins ("Draft preview" banner, noindex). When `showIndividuals` is false, workout leaderboards and per-athlete points/scores are hidden with a note.
 - `/open/[slug]/teams/[teamSlug]` roster + history + scores
 - `/open/[slug]/workouts/[workoutSlug]` combined ranked leaderboard, filter by scaling
 
