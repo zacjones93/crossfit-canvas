@@ -92,6 +92,13 @@
       "when": 1771112940000,
       "tag": "0012_add-feedback-item-annotations",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1793072144181,
+      "tag": "0013_add-open-event",
+      "breakpoints": true
     }
   ]
 }

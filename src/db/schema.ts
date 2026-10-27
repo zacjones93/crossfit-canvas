@@ -1,8 +1,20 @@
-import { sqliteTable, integer, text, index } from "drizzle-orm/sqlite-core";
+import { sqliteTable, integer, text, index, uniqueIndex, check } from "drizzle-orm/sqlite-core";
 import { relations, sql } from "drizzle-orm";
 import { type InferSelectModel } from "drizzle-orm";
 
 import { createId } from '@paralleldrive/cuid2'
+
+import {
+  OPEN_EVENT_STATUS,
+  OPEN_RULE_CADENCE,
+  OPEN_WEIGHT_UNIT,
+  openAuditEntityTuple,
+  openAuditVerbTuple,
+  openEventStatusTuple,
+  openRuleCadenceTuple,
+  openScoreTypeTuple,
+  openWeightUnitTuple,
+} from "../lib/open/constants";
 
 export const ROLES_ENUM = {
   ADMIN: 'admin',
@@ -361,6 +373,8 @@ export const coachTable = sqliteTable("coach", {
   slug: text({ length: 255 }).notNull().unique(),
   credentials: text({ length: 255 }),
   bio: text(),
+  // Optional login link (lets a coach act in the Open coach workspace)
+  userId: text().references(() => userTable.id, { onDelete: "set null" }).unique(),
 }, (table) => ([
   index('coach_slug_idx').on(table.slug),
   index('coach_name_idx').on(table.name),
@@ -390,7 +404,12 @@ export const feedbackItemTable = sqliteTable("feedback_item", {
   index('feedback_item_category_idx').on(table.category),
 ]));
 
-export const coachRelations = relations(coachTable, ({ many }) => ({
+export const coachRelations = relations(coachTable, ({ one, many }) => ({
+  user: one(userTable, {
+    fields: [coachTable.userId],
+    references: [userTable.id],
+  }),
+  teamAssignments: many(openTeamCoachTable),
   feedbackGiven: many(coachFeedbackTable, { relationName: 'reviewer' }),
   feedbackReceived: many(coachFeedbackTable, { relationName: 'reviewed' }),
 }));
@@ -450,6 +469,350 @@ export const feedbackQuestionTable = sqliteTable("feedback_question", {
   index('feedback_question_sort_order_idx').on(table.sortOrder),
 ]));
 
+// ---------------------------------------------------------------------------
+// CrossFit Open intramural (namespaced `open_*`; `team` is the SaaS tenancy table)
+// ---------------------------------------------------------------------------
+
+export const openEventTable = sqliteTable("open_event", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `oev_${createId()}`).notNull(),
+  name: text({ length: 255 }).notNull(),
+  slug: text({ length: 255 }).notNull().unique(),
+  year: integer().notNull(),
+  status: text({
+    enum: openEventStatusTuple,
+  }).default(OPEN_EVENT_STATUS.DRAFT).notNull(),
+  weightUnit: text({
+    enum: openWeightUnitTuple,
+  }).default(OPEN_WEIGHT_UNIT.LB).notNull(),
+  showIndividuals: integer({ mode: "boolean" }).notNull().default(true),
+  coachPointsEnabled: integer({ mode: "boolean" }).notNull().default(false),
+  coachScoresEnabled: integer({ mode: "boolean" }).notNull().default(false),
+}, (table) => ([
+  index('open_event_status_idx').on(table.status),
+]));
+
+export const openWeekTable = sqliteTable("open_week", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `owk_${createId()}`).notNull(),
+  eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
+  number: integer().notNull(),
+  label: text({ length: 255 }).notNull(),
+  startsAt: integer({ mode: "timestamp" }),
+  lockedAt: integer({ mode: "timestamp" }),
+}, (table) => ([
+  uniqueIndex('open_week_event_number_unique_idx').on(table.eventId, table.number),
+]));
+
+export const openTeamTable = sqliteTable("open_team", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `otm_${createId()}`).notNull(),
+  eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
+  name: text({ length: 255 }).notNull(),
+  slug: text({ length: 255 }).notNull(),
+  color: text({ length: 50 }),
+  sortOrder: integer().notNull().default(0),
+}, (table) => ([
+  uniqueIndex('open_team_event_slug_unique_idx').on(table.eventId, table.slug),
+]));
+
+export const openTeamCoachTable = sqliteTable("open_team_coach", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `otc_${createId()}`).notNull(),
+  teamId: text().notNull().references(() => openTeamTable.id, { onDelete: "cascade" }),
+  coachId: text().notNull().references(() => coachTable.id, { onDelete: "cascade" }),
+}, (table) => ([
+  uniqueIndex('open_team_coach_unique_idx').on(table.teamId, table.coachId),
+  index('open_team_coach_coach_id_idx').on(table.coachId),
+]));
+
+export const openParticipantTable = sqliteTable("open_participant", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `opp_${createId()}`).notNull(),
+  name: text({ length: 255 }).notNull(),
+  email: text({ length: 255 }),
+  userId: text().references(() => userTable.id, { onDelete: "set null" }),
+}, (table) => ([
+  index('open_participant_user_id_idx').on(table.userId),
+  index('open_participant_email_idx').on(table.email),
+]));
+
+export const openEntryTable = sqliteTable("open_entry", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `oen_${createId()}`).notNull(),
+  eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
+  participantId: text().notNull().references(() => openParticipantTable.id),
+  // No onDelete: a team with entries can't be deleted (reassign first). Points follow current teamId.
+  teamId: text().references(() => openTeamTable.id),
+  division: text({ length: 100 }),
+}, (table) => ([
+  uniqueIndex('open_entry_event_participant_unique_idx').on(table.eventId, table.participantId),
+  index('open_entry_participant_id_idx').on(table.participantId),
+  index('open_entry_team_id_idx').on(table.teamId),
+]));
+
+export const openPointRuleTable = sqliteTable("open_point_rule", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `opr_${createId()}`).notNull(),
+  eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
+  name: text({ length: 255 }).notNull(),
+  description: text(),
+  points: integer().notNull(),
+  cadence: text({
+    enum: openRuleCadenceTuple,
+  }).default(OPEN_RULE_CADENCE.PER_WEEK).notNull(),
+  coachAwardable: integer({ mode: "boolean" }).notNull().default(true),
+  sortOrder: integer().notNull().default(0),
+  isActive: integer({ mode: "boolean" }).notNull().default(true),
+}, (table) => ([
+  index('open_point_rule_event_id_idx').on(table.eventId),
+]));
+
+/**
+ * One ledger of point awards. `points` is snapshotted from the rule at award time.
+ * `dedupeKey` is derived from the rule's cadence by the award-writing function:
+ * per_week → weekId, once_per_event → "event", unlimited → null (NULLs are distinct in SQLite).
+ */
+export const openAwardTable = sqliteTable("open_award", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `oaw_${createId()}`).notNull(),
+  entryId: text().notNull().references(() => openEntryTable.id, { onDelete: "cascade" }),
+  // No onDelete on rule/week: deleting a rule or week with awards fails (retire rules via isActive)
+  ruleId: text().notNull().references(() => openPointRuleTable.id),
+  weekId: text().references(() => openWeekTable.id),
+  points: integer().notNull(),
+  dedupeKey: text({ length: 255 }),
+  note: text(),
+  awardedByUserId: text().references(() => userTable.id, { onDelete: "set null" }),
+}, (table) => ([
+  uniqueIndex('open_award_entry_rule_dedupe_unique_idx').on(table.entryId, table.ruleId, table.dedupeKey),
+  check('open_award_dedupe_key_check', sql`${table.dedupeKey} IS NULL OR ${table.dedupeKey} = 'event' OR ${table.dedupeKey} = ${table.weekId}`),
+  index('open_award_rule_id_idx').on(table.ruleId),
+  index('open_award_week_id_idx').on(table.weekId),
+]));
+
+export const openScalingTable = sqliteTable("open_scaling", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `osl_${createId()}`).notNull(),
+  eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
+  name: text({ length: 255 }).notNull(),
+  slug: text({ length: 255 }).notNull(),
+  // Lower rank = better (Rx = 0); also the display order
+  rank: integer().notNull(),
+}, (table) => ([
+  uniqueIndex('open_scaling_event_slug_unique_idx').on(table.eventId, table.slug),
+]));
+
+export const openWorkoutTable = sqliteTable("open_workout", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `owo_${createId()}`).notNull(),
+  eventId: text().notNull().references(() => openEventTable.id, { onDelete: "cascade" }),
+  weekId: text().references(() => openWeekTable.id, { onDelete: "set null" }),
+  name: text({ length: 255 }).notNull(),
+  slug: text({ length: 255 }).notNull(),
+  description: text(),
+  scoreType: text({
+    enum: openScoreTypeTuple,
+  }).notNull(),
+  timeCapSeconds: integer(),
+  repsPerRound: integer(),
+  hasTiebreak: integer({ mode: "boolean" }).notNull().default(false),
+  sortOrder: integer().notNull().default(0),
+}, (table) => ([
+  uniqueIndex('open_workout_event_slug_unique_idx').on(table.eventId, table.slug),
+  index('open_workout_week_id_idx').on(table.weekId),
+]));
+
+/**
+ * Canonical `value`: time → ms; time & capped → reps; reps → count;
+ * rounds_reps → total reps (rounds × repsPerRound + reps); load → grams; points → int.
+ */
+export const openScoreTable = sqliteTable("open_score", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `osc_${createId()}`).notNull(),
+  entryId: text().notNull().references(() => openEntryTable.id, { onDelete: "cascade" }),
+  workoutId: text().notNull().references(() => openWorkoutTable.id, { onDelete: "cascade" }),
+  scalingId: text().notNull().references(() => openScalingTable.id),
+  value: integer().notNull(),
+  capped: integer({ mode: "boolean" }).notNull().default(false),
+  tiebreakMs: integer(),
+  note: text(),
+  enteredByUserId: text().references(() => userTable.id, { onDelete: "set null" }),
+}, (table) => ([
+  uniqueIndex('open_score_entry_workout_unique_idx').on(table.entryId, table.workoutId),
+  index('open_score_workout_id_idx').on(table.workoutId),
+  index('open_score_scaling_id_idx').on(table.scalingId),
+]));
+
+/**
+ * Append-only audit trail of every Open mutation. Rows are written in the same `db.batch`
+ * as the change they describe. Never update or delete rows in this table.
+ */
+export const openAuditLogTable = sqliteTable("open_audit_log", {
+  ...commonColumns,
+  id: text().primaryKey().$defaultFn(() => `oal_${createId()}`).notNull(),
+  // Plain column, not an FK: audit rows must outlive the event; some entities aren't event-scoped
+  eventId: text(),
+  actorUserId: text().references(() => userTable.id, { onDelete: "set null" }),
+  action: text({
+    enum: openAuditVerbTuple,
+  }).notNull(),
+  entityType: text({
+    enum: openAuditEntityTuple,
+  }).notNull(),
+  entityId: text().notNull(),
+  // JSON snapshots of the entity before/after the change (null for create/delete respectively)
+  before: text(),
+  after: text(),
+  // Human-readable one-liner, e.g. "Awarded Costume (1) to Jane Doe for Week 2"
+  summary: text(),
+}, (table) => ([
+  index('open_audit_log_event_created_at_idx').on(table.eventId, table.createdAt),
+  index('open_audit_log_entity_idx').on(table.entityType, table.entityId),
+  index('open_audit_log_actor_user_id_idx').on(table.actorUserId),
+]));
+
+export const openEventRelations = relations(openEventTable, ({ many }) => ({
+  weeks: many(openWeekTable),
+  teams: many(openTeamTable),
+  entries: many(openEntryTable),
+  rules: many(openPointRuleTable),
+  scalings: many(openScalingTable),
+  workouts: many(openWorkoutTable),
+  auditLogs: many(openAuditLogTable),
+}));
+
+export const openWeekRelations = relations(openWeekTable, ({ one, many }) => ({
+  event: one(openEventTable, {
+    fields: [openWeekTable.eventId],
+    references: [openEventTable.id],
+  }),
+  awards: many(openAwardTable),
+  workouts: many(openWorkoutTable),
+}));
+
+export const openTeamRelations = relations(openTeamTable, ({ one, many }) => ({
+  event: one(openEventTable, {
+    fields: [openTeamTable.eventId],
+    references: [openEventTable.id],
+  }),
+  coaches: many(openTeamCoachTable),
+  entries: many(openEntryTable),
+}));
+
+export const openTeamCoachRelations = relations(openTeamCoachTable, ({ one }) => ({
+  team: one(openTeamTable, {
+    fields: [openTeamCoachTable.teamId],
+    references: [openTeamTable.id],
+  }),
+  coach: one(coachTable, {
+    fields: [openTeamCoachTable.coachId],
+    references: [coachTable.id],
+  }),
+}));
+
+export const openParticipantRelations = relations(openParticipantTable, ({ one, many }) => ({
+  user: one(userTable, {
+    fields: [openParticipantTable.userId],
+    references: [userTable.id],
+  }),
+  entries: many(openEntryTable),
+}));
+
+export const openEntryRelations = relations(openEntryTable, ({ one, many }) => ({
+  event: one(openEventTable, {
+    fields: [openEntryTable.eventId],
+    references: [openEventTable.id],
+  }),
+  participant: one(openParticipantTable, {
+    fields: [openEntryTable.participantId],
+    references: [openParticipantTable.id],
+  }),
+  team: one(openTeamTable, {
+    fields: [openEntryTable.teamId],
+    references: [openTeamTable.id],
+  }),
+  awards: many(openAwardTable),
+  scores: many(openScoreTable),
+}));
+
+export const openPointRuleRelations = relations(openPointRuleTable, ({ one, many }) => ({
+  event: one(openEventTable, {
+    fields: [openPointRuleTable.eventId],
+    references: [openEventTable.id],
+  }),
+  awards: many(openAwardTable),
+}));
+
+export const openAwardRelations = relations(openAwardTable, ({ one }) => ({
+  entry: one(openEntryTable, {
+    fields: [openAwardTable.entryId],
+    references: [openEntryTable.id],
+  }),
+  rule: one(openPointRuleTable, {
+    fields: [openAwardTable.ruleId],
+    references: [openPointRuleTable.id],
+  }),
+  week: one(openWeekTable, {
+    fields: [openAwardTable.weekId],
+    references: [openWeekTable.id],
+  }),
+  awardedByUser: one(userTable, {
+    fields: [openAwardTable.awardedByUserId],
+    references: [userTable.id],
+  }),
+}));
+
+export const openScalingRelations = relations(openScalingTable, ({ one, many }) => ({
+  event: one(openEventTable, {
+    fields: [openScalingTable.eventId],
+    references: [openEventTable.id],
+  }),
+  scores: many(openScoreTable),
+}));
+
+export const openWorkoutRelations = relations(openWorkoutTable, ({ one, many }) => ({
+  event: one(openEventTable, {
+    fields: [openWorkoutTable.eventId],
+    references: [openEventTable.id],
+  }),
+  week: one(openWeekTable, {
+    fields: [openWorkoutTable.weekId],
+    references: [openWeekTable.id],
+  }),
+  scores: many(openScoreTable),
+}));
+
+export const openScoreRelations = relations(openScoreTable, ({ one }) => ({
+  entry: one(openEntryTable, {
+    fields: [openScoreTable.entryId],
+    references: [openEntryTable.id],
+  }),
+  workout: one(openWorkoutTable, {
+    fields: [openScoreTable.workoutId],
+    references: [openWorkoutTable.id],
+  }),
+  scaling: one(openScalingTable, {
+    fields: [openScoreTable.scalingId],
+    references: [openScalingTable.id],
+  }),
+  enteredByUser: one(userTable, {
+    fields: [openScoreTable.enteredByUserId],
+    references: [userTable.id],
+  }),
+}));
+
+export const openAuditLogRelations = relations(openAuditLogTable, ({ one }) => ({
+  event: one(openEventTable, {
+    fields: [openAuditLogTable.eventId],
+    references: [openEventTable.id],
+  }),
+  actorUser: one(userTable, {
+    fields: [openAuditLogTable.actorUserId],
+    references: [userTable.id],
+  }),
+}));
+
 export type User = InferSelectModel<typeof userTable>;
 export type PassKeyCredential = InferSelectModel<typeof passKeyCredentialTable>;
 export type CreditTransaction = InferSelectModel<typeof creditTransactionTable>;
@@ -463,3 +826,15 @@ export type CoachFeedback = InferSelectModel<typeof coachFeedbackTable>;
 export type FeedbackItem = InferSelectModel<typeof feedbackItemTable>;
 export type FeedbackQuestion = InferSelectModel<typeof feedbackQuestionTable>;
 export type FeedbackItemAnnotation = InferSelectModel<typeof feedbackItemAnnotationTable>;
+export type OpenEvent = InferSelectModel<typeof openEventTable>;
+export type OpenWeek = InferSelectModel<typeof openWeekTable>;
+export type OpenTeam = InferSelectModel<typeof openTeamTable>;
+export type OpenTeamCoach = InferSelectModel<typeof openTeamCoachTable>;
+export type OpenParticipant = InferSelectModel<typeof openParticipantTable>;
+export type OpenEntry = InferSelectModel<typeof openEntryTable>;
+export type OpenPointRule = InferSelectModel<typeof openPointRuleTable>;
+export type OpenAward = InferSelectModel<typeof openAwardTable>;
+export type OpenScaling = InferSelectModel<typeof openScalingTable>;
+export type OpenWorkout = InferSelectModel<typeof openWorkoutTable>;
+export type OpenScore = InferSelectModel<typeof openScoreTable>;
+export type OpenAuditLog = InferSelectModel<typeof openAuditLogTable>;
