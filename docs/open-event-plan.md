@@ -25,7 +25,7 @@ Ported (and uncomplected) from `zacjones93/bcf-open-2025` (Supabase). Lessons fr
 | `open_week` | `owk_` | eventId, number, label, startsAt?, lockedAt? · unique(eventId, number) |
 | `open_team` | `otm_` | eventId, name, slug, color?, sortOrder · unique(eventId, slug) |
 | `open_team_coach` | `otc_` | teamId, coachId · unique(teamId, coachId) |
-| `open_participant` | `opp_` | name, email?, userId? (FK user), coachId? (FK coach, unique, set null; migration 0015) — the same person as that coach profile |
+| `open_participant` | `opp_` | name, email?, userId? (FK user), coachId? (FK coach, unique, set null; migration 0015) — the same person as that coach profile, gender? (`male`\|`female`; migration 0016) |
 | `open_entry` | `oen_` | eventId, participantId (restrict), teamId? (restrict — reassign before deleting a team), division? · unique(eventId, participantId) |
 | `open_point_rule` | `opr_` | eventId, name, description?, points (int), cadence (`per_week`\|`once_per_event`\|`unlimited`), coachAwardable (bool, default true), sortOrder, isActive |
 | `open_award` | `oaw_` | entryId (cascade), ruleId (restrict), weekId? (restrict), points (snapshot int), dedupeKey?, note?, awardedByUserId? · unique(entryId, ruleId, dedupeKey) · check(dedupeKey IS NULL OR dedupeKey = 'event' OR dedupeKey = weekId) |
@@ -117,6 +117,12 @@ Shared components: `src/components/open/award-grid.tsx`, `score-grid.tsx` (props
   - Teams grid: coaches (photo via `getCoachPhoto`, name, points if on that roster) and the other members with points. Team profile: coach cards say "Competing on this team" + points; roster sorted the same way with Coach badges.
   - `showIndividuals` false: names and Coach badges still show, but no per-person points and alphabetical order; team totals still shown.
 - Coach entry point: public event pages (not TV) show "Manage my team" / "Manage teams" (signed-in viewer with ≥1 manageable team; `loadManageLink`) or a subtle "Coach sign in" (`manageSignInHref`, the same URL the workspace's sign-in redirect uses). The workspace header links back to the public page.
+
+## Placement points (added after "Coaches compete")
+- Derived from scores, never stored (no ledger rows, nothing to keep in sync). Pure `computePlacements` (`src/lib/open/placement.ts`); `getStandings` loads workouts/scalings/scores/genders in the same batch, feeds placements into `computeStandings` (totals, `byWeek` via the workout's week, `byWorkout`), and returns `placements` for the workout leaderboard's "+N pts".
+- Per workout × scaling × gender, scores rank gym-wide with `rankScores` (ties share a place). Place p earns `max(first − step × (p − 1), min)`. Only each team's top `placementPerTeam` athletes per gender (by place; ties at the cutoff all count; 0 = everyone) earn points; the rest keep their place and earn 0. No gender ⇒ not ranked; no team ⇒ ranked, 0 points. Scaling with `placementFirst` 0 ⇒ no placement.
+- Defaults: Rx 100/−5/min 5/top 3, Scaled 50/−5/min 5/top 2, Foundations off. Copied from the previous event like the rest of the scaling.
+- Gender is a person fact (participant), edited inline on Participants or in the edit dialog via `updateOpenEntry`.
 
 ## Stages
 1. Schema + migration + seeds

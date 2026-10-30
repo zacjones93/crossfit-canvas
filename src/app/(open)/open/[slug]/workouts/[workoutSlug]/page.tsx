@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { getPublicWorkoutScores, type PublicWorkout } from "@/server/open/public"
 import { Note, PublicShell, PUBLIC_SECTION, SectionHeading } from "../../../_components/public-shell"
 import { WorkoutMeta } from "../../../_components/workout-meta"
-import { loadEventBoard } from "../../../_lib/load-event-board"
+import { loadEventBoard, placementKey } from "../../../_lib/load-event-board"
 import { loadPublicEvent, previewRobots } from "../../../_lib/load-public-event"
 
 interface PageProps {
@@ -52,6 +52,7 @@ export default async function WorkoutPage({ params, searchParams }: PageProps) {
             workout={workout}
             weightUnit={event.weightUnit}
             scalings={board.scalings}
+            placementPoints={board.placementPoints}
             scaling={typeof query.scaling === "string" ? query.scaling : undefined}
           />
         ) : (
@@ -73,6 +74,7 @@ async function Leaderboard({
   workout,
   weightUnit,
   scalings,
+  placementPoints,
   scaling,
 }: {
   slug: string
@@ -80,6 +82,7 @@ async function Leaderboard({
   workout: PublicWorkout
   weightUnit: string
   scalings: { name: string; slug: string }[]
+  placementPoints: ReadonlyMap<string, number>
   scaling: string | undefined
 }) {
   const active = scalings.find((item) => item.slug === scaling)
@@ -126,6 +129,7 @@ async function Leaderboard({
           <ol className="divide-y rounded-lg border">
             {scores.map((score) => {
               const tiebreak = tiebreakLabel({ workout, tiebreakMs: score.tiebreakMs })
+              const points = placementPoints.get(placementKey({ entryId: score.entryId, workoutId: workout.id })) ?? 0
               return (
               <li key={score.id} className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-3 px-4 py-3">
                 <span className="font-heading text-2xl tabular-nums">{score.rank}</span>
@@ -154,6 +158,7 @@ async function Leaderboard({
                   <p className="mt-1 text-xs text-muted-foreground">
                     <span className="rounded-sm border px-1.5 py-px font-semibold uppercase tracking-wider">{score.scalingName}</span>
                     {tiebreak && <span className="ml-2">{tiebreak}</span>}
+                    {points > 0 && <span className="ml-2 font-semibold text-foreground">+{points} pts</span>}
                   </p>
                 </div>
               </li>

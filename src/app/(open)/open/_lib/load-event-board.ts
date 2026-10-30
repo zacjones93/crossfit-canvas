@@ -8,6 +8,10 @@ import type { PublicEvent } from "./load-public-event"
 
 const TOP_INDIVIDUALS = 10
 
+export function placementKey({ entryId, workoutId }: { entryId: string; workoutId: string }) {
+  return `${entryId}|${workoutId}`
+}
+
 /**
  * Standings (tagged cache) merged with team profile fields and both ranks, plus the event's weeks, rules,
  * workouts, and scalings. The single place individuals are dropped for public pages: gated on the fresh
@@ -44,6 +48,12 @@ export const loadEventBoard = cache(async (event: PublicEvent) => {
     teams: teams.map((team) => ({ ...team, ...(rosters.get(team.id) ?? { coaches: [], members: [] }) })),
     /** entryId → points; empty when the event hides individuals */
     pointsByEntry: new Map(individuals.map((individual) => [individual.entryId, individual.total])),
+    /** `placementKey({ entryId, workoutId })` → placement points earned; empty when the event hides individuals */
+    placementPoints: new Map(
+      event.showIndividuals
+        ? standings.placements.map((placement) => [placementKey(placement), placement.points])
+        : [],
+    ),
     topIndividuals,
     weeks: data.weeks,
     rules: data.rules,

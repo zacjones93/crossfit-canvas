@@ -33,6 +33,14 @@ export const OPEN_SCORE_TYPE = {
 
 export const openScoreTypeTuple = Object.values(OPEN_SCORE_TYPE) as [string, ...string[]];
 
+// Competition gender: placement points rank men and women separately
+export const OPEN_GENDER = {
+  MALE: 'male',
+  FEMALE: 'female',
+} as const;
+
+export const openGenderTuple = Object.values(OPEN_GENDER) as [string, ...string[]];
+
 export const OPEN_AUDIT_VERB = {
   CREATE: 'create',
   UPDATE: 'update',

@@ -160,7 +160,7 @@ export const importRosterAction = createServerAction()
   });
 
 /**
- * Name/email/coach link edit the participant (shared across events); division/team edit the entry. One batch,
+ * Name/email/coach link/gender edit the participant (shared across events); division/team edit the entry. One batch,
  * one audit per changed entity. A coach links to at most one participant.
  */
 export const updateOpenEntryAction = createServerAction()
@@ -168,7 +168,7 @@ export const updateOpenEntryAction = createServerAction()
   .handler(async ({ input }) => {
     const session = await requireOpenAdmin();
     const db = getDB();
-    const { entryId, name, email, coachId, division, teamId } = input;
+    const { entryId, name, email, coachId, gender, division, teamId } = input;
 
     const found = await orNotFound({
       row: db.query.openEntryTable.findFirst({ where: eq(openEntryTable.id, entryId), with: { participant: true } }),
@@ -178,7 +178,7 @@ export const updateOpenEntryAction = createServerAction()
     if (teamId) await loadTeamInEvent({ db, teamId, eventId: entry.eventId });
     const coach = coachId && coachId !== participant.coachId ? await loadLinkableCoach({ db, coachId }) : null;
 
-    const participantDiff = diffRow({ before: participant, updates: { name, email, coachId } });
+    const participantDiff = diffRow({ before: participant, updates: { name, email, coachId, gender } });
     const entryDiff = diffRow({ before: entry, updates: { division, teamId } });
 
     const actor = { eventId: entry.eventId, actorUserId: session.userId, verb: OPEN_AUDIT_VERB.UPDATE };
@@ -216,7 +216,14 @@ export const updateOpenEntryAction = createServerAction()
       messages: { unique: "That coach is already linked to another athlete" },
     });
 
-    revalidateOpenEvent({ eventId: entry.eventId });
+    // The participant (name, gender, …) is shared: every event they're entered in derives standings from it
+    const eventIds = participantDiff.changedKeys.length > 0
+      ? (await db
+          .select({ eventId: openEntryTable.eventId })
+          .from(openEntryTable)
+          .where(eq(openEntryTable.participantId, participant.id))).map((row) => row.eventId)
+      : [];
+    for (const eventId of new Set([entry.eventId, ...eventIds])) revalidateOpenEvent({ eventId });
     return { ...entryDiff.after, participant: participantDiff.after };
   });
 

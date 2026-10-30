@@ -11,6 +11,7 @@ import {
   openAuditEntityTuple,
   openAuditVerbTuple,
   openEventStatusTuple,
+  openGenderTuple,
   openRuleCadenceTuple,
   openScoreTypeTuple,
   openWeightUnitTuple,
@@ -561,6 +562,10 @@ export const openParticipantTable = sqliteTable("open_participant", {
   // The same person as this coach profile (a coach can compete). Whether they coach a given team is
   // derived: coachId ∈ that team's open_team_coach rows.
   coachId: text().references(() => coachTable.id, { onDelete: "set null" }).unique(),
+  // Placement points rank each gender separately; null = not ranked for placement
+  gender: text({
+    enum: openGenderTuple,
+  }),
 }, (table) => ([
   index('open_participant_user_id_idx').on(table.userId),
   index('open_participant_email_idx').on(table.email),
@@ -628,6 +633,13 @@ export const openScalingTable = sqliteTable("open_scaling", {
   slug: text({ length: 255 }).notNull(),
   // Lower rank = better (Rx = 0); also the display order
   rank: integer().notNull(),
+  // Placement points per workout (derived, never stored): place p in this scaling's gender leaderboard earns
+  // max(placementFirst − placementStep × (p − 1), placementMin); only each team's top placementPerTeam per
+  // gender count. placementFirst 0 = no placement points for this scaling.
+  placementFirst: integer().notNull().default(0),
+  placementStep: integer().notNull().default(0),
+  placementMin: integer().notNull().default(0),
+  placementPerTeam: integer().notNull().default(0),
 }, (table) => ([
   uniqueIndex('open_scaling_event_slug_unique_idx').on(table.eventId, table.slug),
 ]));

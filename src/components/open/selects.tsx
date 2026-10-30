@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { NONE } from "@/lib/open/form-data"
 import {
   EVENT_STATUS_LABEL,
+  GENDER_LABEL,
   RULE_CADENCE_LABEL,
   SCORE_TYPE_LABEL,
   WEIGHT_UNIT_LABEL,
@@ -61,6 +62,11 @@ export function CadenceSelect(props: OptionSelectProps) {
 
 export function ScoreTypeSelect(props: OptionSelectProps) {
   return <OptionSelect {...props} options={optionsFrom(SCORE_TYPE_LABEL)} />
+}
+
+/** Gender with a "not set" option (submits NONE; read it with `formOptionalId`). */
+export function GenderSelect(props: OptionSelectProps) {
+  return <OptionSelect {...props} options={[{ value: NONE, label: "Not set" }, ...optionsFrom(GENDER_LABEL)]} />
 }
 
 /** Team/week picker with a "none" option (submits NONE; read it with `formOptionalId`). */

@@ -113,6 +113,13 @@
       "when": 1793112305244,
       "tag": "0015_add-open-participant-coach",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "6",
+      "when": 1793396833490,
+      "tag": "0016_add-open-placement-points",
+      "breakpoints": true
     }
   ]
 }

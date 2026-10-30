@@ -88,3 +88,31 @@ describe("computeStandings", () => {
     expect(teams[0]).toEqual({ id: "t1", name: "Red", slug: "red", color: "#f00", sortOrder: 0 });
   });
 });
+
+describe("computeStandings with placements", () => {
+  const result = computeStandings({
+    teams,
+    entries,
+    awards: [{ entryId: "e1", ruleId: "r1", weekId: "w1", points: 2 }],
+    placements: [
+      { entryId: "e1", workoutId: "o1", weekId: "w1", points: 100 },
+      { entryId: "e2", workoutId: "o1", weekId: "w1", points: 0 },
+      { entryId: "e3", workoutId: "o2", weekId: null, points: 50 },
+      { entryId: "e4", workoutId: "o1", weekId: "w1", points: 95 },
+    ],
+  });
+
+  it("adds placement points to team and individual totals, by week and workout", () => {
+    const red = result.teams.find((t) => t.id === "t1")!;
+    expect(red.total).toBe(102);
+    expect(red.byWeek).toEqual({ w1: 102 });
+    expect(red.byRule).toEqual({ r1: 2 });
+    expect(red.byWorkout).toEqual({ o1: 100 });
+    expect(result.teams.find((t) => t.id === "t2")!.byWeek).toEqual({ [NO_WEEK_KEY]: 50 });
+    expect(result.individuals[0]).toEqual({ entryId: "e1", name: "Ann", teamId: "t1", total: 102 });
+  });
+
+  it("puts team-less placement points into unassigned", () => {
+    expect(result.unassigned).toBe(95);
+  });
+});
