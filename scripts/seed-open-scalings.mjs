@@ -3,9 +3,9 @@ import { parseWranglerConfig } from './utils/parse-wrangler.mjs';
 
 // Mirrors DEFAULT_OPEN_SCALINGS in src/lib/open/defaults.ts (plain .mjs can't import TS).
 const scalings = [
-  { name: 'Rx', slug: 'rx', rank: 0 },
-  { name: 'Scaled', slug: 'scaled', rank: 1 },
-  { name: 'Foundations', slug: 'foundations', rank: 2 },
+  { name: 'Rx', slug: 'rx', rank: 0, placementFirst: 100, placementStep: 5, placementMin: 5, placementPerTeam: 3 },
+  { name: 'Scaled', slug: 'scaled', rank: 1, placementFirst: 50, placementStep: 5, placementMin: 5, placementPerTeam: 2 },
+  { name: 'Foundations', slug: 'foundations', rank: 2, placementFirst: 0, placementStep: 0, placementMin: 0, placementPerTeam: 0 },
 ];
 
 function escSql(str) {
@@ -24,12 +24,15 @@ if (!dbName) {
 const now = Math.floor(Date.now() / 1000);
 
 const defaultRows = scalings
-  .map((scaling) => `('${escSql(scaling.name)}', '${escSql(scaling.slug)}', ${scaling.rank})`)
+  .map(
+    (s) =>
+      `('${escSql(s.name)}', '${escSql(s.slug)}', ${s.rank}, ${s.placementFirst}, ${s.placementStep}, ${s.placementMin}, ${s.placementPerTeam})`,
+  )
   .join(', ');
 
 // Single statement so the NOT EXISTS check sees the pre-insert state: only events with
 // zero scalings get the defaults, events with any (custom or copied) are left alone. Safe to re-run.
-const sql = `INSERT INTO open_scaling (id, eventId, name, slug, rank, createdAt, updatedAt) WITH defaults(name, slug, rank) AS (VALUES ${defaultRows}) SELECT 'osl_' || lower(hex(randomblob(12))), e.id, d.name, d.slug, d.rank, ${now}, ${now} FROM open_event e CROSS JOIN defaults d WHERE NOT EXISTS (SELECT 1 FROM open_scaling s WHERE s.eventId = e.id);`;
+const sql = `INSERT INTO open_scaling (id, eventId, name, slug, rank, placementFirst, placementStep, placementMin, placementPerTeam, createdAt, updatedAt) WITH defaults(name, slug, rank, placementFirst, placementStep, placementMin, placementPerTeam) AS (VALUES ${defaultRows}) SELECT 'osl_' || lower(hex(randomblob(12))), e.id, d.name, d.slug, d.rank, d.placementFirst, d.placementStep, d.placementMin, d.placementPerTeam, ${now}, ${now} FROM open_event e CROSS JOIN defaults d WHERE NOT EXISTS (SELECT 1 FROM open_scaling s WHERE s.eventId = e.id);`;
 
 const flag = isRemote ? '--remote' : '--local';
 

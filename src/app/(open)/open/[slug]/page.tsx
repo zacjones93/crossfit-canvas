@@ -3,6 +3,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { Monitor } from "lucide-react"
 import { RULE_CADENCE_LABEL, labelFor } from "@/lib/open/labels"
+import { isPlacementEnabled, placementSummary } from "@/lib/open/placement"
 import { STANDINGS_SORT, orderTeams, parseStandingsSort, weekColumns } from "@/lib/open/public-view"
 import { cn } from "@/lib/utils"
 import { Note, PublicShell, PUBLIC_SECTION, SectionHeading } from "../_components/public-shell"
@@ -40,6 +41,7 @@ export default async function LeaderboardPage({ params, searchParams }: PageProp
   const columns = weekColumns({ weeks: board.weeks, teams: board.teams })
   const teamById = new Map(board.teams.map((team) => [team.id, team]))
   const { topIndividuals } = board
+  const placementScalings = board.scalings.filter(isPlacementEnabled)
 
   return (
     <PublicShell event={event} isPreview={isPreview} active={PUBLIC_SECTION.LEADERBOARD}>
@@ -70,8 +72,25 @@ export default async function LeaderboardPage({ params, searchParams }: PageProp
           <SectionHeading>
             <span id="how-points-work">How points work</span>
           </SectionHeading>
+          {placementScalings.length > 0 && (
+            <ul className="mb-4 divide-y rounded-lg border">
+              {placementScalings.map((scaling) => (
+                <li key={scaling.slug} className="flex items-start justify-between gap-4 p-4">
+                  <div className="min-w-0">
+                    <p className="font-subheading font-bold">{scaling.name} workout placement</p>
+                    <p className="text-sm text-muted-foreground">{placementSummary(scaling)}</p>
+                    <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">Every workout · from scores</p>
+                  </div>
+                  <p className="shrink-0 font-heading text-3xl leading-none">
+                    {scaling.placementFirst}
+                    <span className="ml-1 font-sans text-xs text-muted-foreground">pts 1st</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
           {board.rules.length === 0 ? (
-            <Note>Point rules are coming soon.</Note>
+            placementScalings.length === 0 && <Note>Point rules are coming soon.</Note>
           ) : (
             <ul className="divide-y rounded-lg border">
               {board.rules.map((rule) => (

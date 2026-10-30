@@ -3,6 +3,7 @@ import { resolveEventSlug } from "@/lib/open/event-slug";
 import {
   OPEN_SCORE_TYPE,
   openEventStatusTuple,
+  openGenderTuple,
   openRuleCadenceTuple,
   openScoreTypeTuple,
   openWeightUnitTuple,
@@ -154,12 +155,22 @@ export const openRuleIdSchema = z.object({ ruleId: id });
 // --- scalings ---------------------------------------------------------------
 
 const rank = z.number().int().min(0).max(1000);
+const placementPoints = z.number().int().min(0).max(10_000);
+
+/** Placement points table (see open_scaling); placementFirst 0 turns it off. */
+const placementFields = {
+  placementFirst: placementPoints.optional(),
+  placementStep: placementPoints.optional(),
+  placementMin: placementPoints.optional(),
+  placementPerTeam: z.number().int().min(0).max(1000).optional(),
+};
 
 export const createOpenScalingSchema = z.object({
   eventId: id,
   name,
   slug: slug.optional(),
   rank,
+  ...placementFields,
 });
 
 export const updateOpenScalingSchema = z.object({
@@ -167,6 +178,7 @@ export const updateOpenScalingSchema = z.object({
   name: name.optional(),
   slug: slug.optional(),
   rank: rank.optional(),
+  ...placementFields,
 });
 
 export const openScalingIdSchema = z.object({ scalingId: id });
@@ -223,6 +235,8 @@ export const updateOpenEntrySchema = z.object({
   email: z.string().trim().toLowerCase().email().max(255).nullish().or(z.literal("").transform(() => null)),
   /** Link the participant to their coach profile (same person); null unlinks, omitted leaves it. */
   coachId: id.nullish(),
+  /** Placement points rank each gender separately; null clears it, omitted leaves it. */
+  gender: z.enum(openGenderTuple).nullish(),
   division: z.string().trim().max(100).nullish(),
   teamId: id.nullish(),
 });

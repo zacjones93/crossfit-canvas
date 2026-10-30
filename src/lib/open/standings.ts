@@ -1,4 +1,4 @@
-// Plain module (no DB / server-only imports): derives standings from the award ledger.
+// Plain module (no DB / server-only imports): derives standings from the award ledger plus placement points.
 // Team points follow the entry's *current* teamId (moving an athlete moves their points).
 
 export interface StandingsTeam {
@@ -22,14 +22,24 @@ export interface StandingsAward {
   points: number;
 }
 
+/** Derived placement points (see `computePlacements`) */
+export interface StandingsPlacement {
+  entryId: string;
+  workoutId: string;
+  weekId: string | null;
+  points: number;
+}
+
 export interface TeamStanding extends StandingsTeam {
   total: number;
   memberCount: number;
   avgPerMember: number;
   /** weekId → points; awards with no week (e.g. once-per-event) are keyed under NO_WEEK_KEY */
   byWeek: Record<string, number>;
-  /** ruleId → points */
+  /** ruleId → award points */
   byRule: Record<string, number>;
+  /** workoutId → placement points */
+  byWorkout: Record<string, number>;
 }
 
 export interface IndividualStanding {
@@ -60,15 +70,17 @@ export function computeStandings({
   teams,
   entries,
   awards,
+  placements = [],
 }: {
   teams: readonly StandingsTeam[];
   entries: readonly StandingsEntry[];
   awards: readonly StandingsAward[];
+  placements?: readonly StandingsPlacement[];
 }): Standings {
   const teamById = new Map<string, TeamStanding>(
     teams.map((team) => [
       team.id,
-      { ...team, total: 0, memberCount: 0, avgPerMember: 0, byWeek: {}, byRule: {} },
+      { ...team, total: 0, memberCount: 0, avgPerMember: 0, byWeek: {}, byRule: {}, byWorkout: {} },
     ]),
   );
   const individualById = new Map<string, IndividualStanding>(
@@ -84,19 +96,30 @@ export function computeStandings({
   }
 
   let unassigned = 0;
-  for (const award of awards) {
-    const individual = individualById.get(award.entryId);
-    if (!individual) continue;
-    individual.total += award.points;
+  /** Credits the entry and its team; returns the team, if any */
+  function credit({ entryId, weekId, points }: { entryId: string; weekId: string | null; points: number }) {
+    const individual = individualById.get(entryId);
+    if (!individual) return undefined;
+    individual.total += points;
 
     const team = individual.teamId ? teamById.get(individual.teamId) : undefined;
     if (!team) {
-      unassigned += award.points;
-      continue;
+      unassigned += points;
+      return undefined;
     }
-    team.total += award.points;
-    addTo({ map: team.byWeek, key: award.weekId ?? NO_WEEK_KEY, points: award.points });
-    addTo({ map: team.byRule, key: award.ruleId, points: award.points });
+    team.total += points;
+    addTo({ map: team.byWeek, key: weekId ?? NO_WEEK_KEY, points });
+    return team;
+  }
+
+  for (const award of awards) {
+    const team = credit(award);
+    if (team) addTo({ map: team.byRule, key: award.ruleId, points: award.points });
+  }
+  for (const placement of placements) {
+    if (placement.points === 0) continue;
+    const team = credit(placement);
+    if (team) addTo({ map: team.byWorkout, key: placement.workoutId, points: placement.points });
   }
 
   const teamStandings = [...teamById.values()].map((team) => ({

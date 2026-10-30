@@ -8,7 +8,7 @@ import { toastResult } from "@/components/open/action-error"
 import { Field } from "@/components/open/field"
 import { FormDialog } from "@/components/open/form-dialog"
 import { formOptionalId, formText, NONE } from "@/lib/open/form-data"
-import { OptionalIdSelect } from "@/components/open/selects"
+import { GenderSelect, OptionalIdSelect } from "@/components/open/selects"
 import type { AdminOpenEntry, TeamOption } from "./types"
 
 interface EntryFormDialogProps {
@@ -19,7 +19,7 @@ interface EntryFormDialogProps {
 }
 
 /**
- * Edit an athlete: name/email/coach link (the person, shared across events) and division/team (this event).
+ * Edit an athlete: name/email/coach link/gender (the person, shared across events) and division/team (this event).
  */
 export function EntryFormDialog({ entry, teams, coaches, trigger }: EntryFormDialogProps) {
   const { execute } = useServerAction(updateOpenEntryAction)
@@ -30,6 +30,7 @@ export function EntryFormDialog({ entry, teams, coaches, trigger }: EntryFormDia
       name: formText({ formData, name: "name" }) ?? "",
       email: formText({ formData, name: "email" }) ?? null,
       coachId: formOptionalId({ formData, name: "coachId" }),
+      gender: formOptionalId({ formData, name: "gender" }),
       division: formText({ formData, name: "division" }) ?? null,
       teamId: formOptionalId({ formData, name: "teamId" }),
     })
@@ -40,7 +41,7 @@ export function EntryFormDialog({ entry, teams, coaches, trigger }: EntryFormDia
     <FormDialog
       trigger={trigger}
       title={`Edit ${entry.participant.name}`}
-      description="Name and email belong to the person and are shared with their other events."
+      description="Name, email, and gender belong to the person and are shared with their other events."
       submitLabel="Save changes"
       onSubmit={handleSubmit}
     >
@@ -49,6 +50,9 @@ export function EntryFormDialog({ entry, teams, coaches, trigger }: EntryFormDia
       </Field>
       <Field id="entry-email" label="Email">
         <Input id="entry-email" name="email" type="email" defaultValue={entry.participant.email ?? ""} />
+      </Field>
+      <Field id="entry-gender" label="Gender" hint="Placement points rank men and women separately; unset athletes aren't placed.">
+        <GenderSelect id="entry-gender" name="gender" defaultValue={entry.participant.gender ?? NONE} />
       </Field>
       <Field
         id="entry-coach"

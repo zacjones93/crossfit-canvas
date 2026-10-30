@@ -39,7 +39,17 @@ export const createOpenScalingAction = createServerAction()
     const slug = input.slug ?? toSlug(input.name);
     if (!slug) throw new ZSAError("INPUT_PARSE_ERROR", "Name must contain letters or numbers");
 
-    const scaling = { id: newOpenId.scaling(), eventId, name: input.name, slug, rank: input.rank };
+    const scaling = {
+      id: newOpenId.scaling(),
+      eventId,
+      name: input.name,
+      slug,
+      rank: input.rank,
+      placementFirst: input.placementFirst ?? 0,
+      placementStep: input.placementStep ?? 0,
+      placementMin: input.placementMin ?? 0,
+      placementPerTeam: input.placementPerTeam ?? 0,
+    };
 
     await runOpenBatch({
       db,

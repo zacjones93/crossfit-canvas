@@ -56,7 +56,15 @@ export const createOpenEventAction = createServerAction()
 
     const previousScalings = previousEvent[0]
       ? await db
-          .select({ name: openScalingTable.name, slug: openScalingTable.slug, rank: openScalingTable.rank })
+          .select({
+            name: openScalingTable.name,
+            slug: openScalingTable.slug,
+            rank: openScalingTable.rank,
+            placementFirst: openScalingTable.placementFirst,
+            placementStep: openScalingTable.placementStep,
+            placementMin: openScalingTable.placementMin,
+            placementPerTeam: openScalingTable.placementPerTeam,
+          })
           .from(openScalingTable)
           .where(eq(openScalingTable.eventId, previousEvent[0].id))
       : [];
@@ -85,11 +93,16 @@ export const createOpenEventAction = createServerAction()
       name: scaling.name,
       slug: scaling.slug,
       rank: scaling.rank,
+      placementFirst: scaling.placementFirst,
+      placementStep: scaling.placementStep,
+      placementMin: scaling.placementMin,
+      placementPerTeam: scaling.placementPerTeam,
     }));
     const rules = DEFAULT_OPEN_RULES.map((rule, index) => ({
       id: newOpenId.rule(),
       eventId,
       name: rule.name,
+      description: rule.description ?? null,
       points: rule.points,
       cadence: rule.cadence,
       coachAwardable: rule.coachAwardable,

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { toastResult } from "@/components/open/action-error"
 import { NONE } from "@/lib/open/form-data"
-import { OptionalIdSelect, OptionSelect } from "@/components/open/selects"
+import { GenderSelect, OptionalIdSelect, OptionSelect } from "@/components/open/selects"
 import { EntryFormDialog } from "./entry-form-dialog"
 import { ImportRosterDialog } from "./import-roster-dialog"
 import { RemoveEntryButton } from "./remove-entry-button"
@@ -67,6 +67,12 @@ export function ParticipantsManager({ eventId, entries, teams, coaches }: Partic
     const teamId = value === NONE ? null : value
     const [, err] = await updateEntry({ entryId: entry.id, teamId })
     toastResult({ err, success: `Moved ${entry.participant.name}`, fallback: "Failed to change team" })
+  }
+
+  async function handleGenderChange({ entry, value }: { entry: AdminOpenEntry; value: string }) {
+    const gender = value === NONE ? null : value
+    const [, err] = await updateEntry({ entryId: entry.id, gender })
+    toastResult({ err, success: `Updated ${entry.participant.name}`, fallback: "Failed to change gender" })
   }
 
   async function handleBulkAssign() {
@@ -153,6 +159,7 @@ export function ParticipantsManager({ eventId, entries, teams, coaches }: Partic
               <TableHead>Name</TableHead>
               <TableHead className="hidden md:table-cell">Email</TableHead>
               <TableHead>Team</TableHead>
+              <TableHead>Gender</TableHead>
               <TableHead className="hidden sm:table-cell">Division</TableHead>
               <TableHead className="w-24" />
             </TableRow>
@@ -160,7 +167,7 @@ export function ParticipantsManager({ eventId, entries, teams, coaches }: Partic
           <TableBody>
             {visible.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+                <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                   {entries.length === 0 ? "No athletes yet. Import a roster to get started." : "No athletes match."}
                 </TableCell>
               </TableRow>
@@ -195,6 +202,13 @@ export function ParticipantsManager({ eventId, entries, teams, coaches }: Partic
                       items={teams}
                       noneLabel="No team"
                       className="h-9 w-36 sm:w-44"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <GenderSelect
+                      value={entry.participant.gender ?? NONE}
+                      onValueChange={(value) => handleGenderChange({ entry, value })}
+                      className="h-9 w-28"
                     />
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">{entry.division ?? <span className="text-muted-foreground">--</span>}</TableCell>

@@ -1,6 +1,7 @@
 // Plain module: display labels for Open enum values (admin UI).
 import {
   OPEN_EVENT_STATUS,
+  OPEN_GENDER,
   OPEN_RULE_CADENCE,
   OPEN_SCORE_TYPE,
   OPEN_WEIGHT_UNIT,
@@ -29,6 +30,11 @@ export const SCORE_TYPE_LABEL: Record<string, string> = {
   [OPEN_SCORE_TYPE.ROUNDS_REPS]: "Rounds + reps",
   [OPEN_SCORE_TYPE.LOAD]: "Load",
   [OPEN_SCORE_TYPE.POINTS]: "Points",
+}
+
+export const GENDER_LABEL: Record<string, string> = {
+  [OPEN_GENDER.MALE]: "Men",
+  [OPEN_GENDER.FEMALE]: "Women",
 }
 
 /** Label for a value from one of the maps above, falling back to the raw value. */

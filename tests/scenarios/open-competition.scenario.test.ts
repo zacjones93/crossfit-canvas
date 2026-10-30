@@ -18,7 +18,7 @@ import {
 } from "@/db/schema";
 import { createOpenEventAction, updateOpenEventAction, deleteOpenEventAction } from "@/actions/open/events.action";
 import { createOpenTeamAction, assignOpenTeamCoachAction, deleteOpenTeamAction } from "@/actions/open/teams.action";
-import { importRosterAction, bulkAssignTeamsAction, removeOpenEntryAction } from "@/actions/open/roster.action";
+import { importRosterAction, bulkAssignTeamsAction, removeOpenEntryAction, updateOpenEntryAction } from "@/actions/open/roster.action";
 import { linkCoachUserAction } from "@/actions/open/coach-link.action";
 import { createOpenRuleAction, updateOpenRuleAction, deleteOpenRuleAction } from "@/actions/open/rules.action";
 import { createOpenWorkoutAction, updateOpenWorkoutAction } from "@/actions/open/workouts.action";
@@ -26,6 +26,7 @@ import { lockOpenWeekAction, unlockOpenWeekAction, deleteOpenWeekAction } from "
 import { setAwardAction, setAwardsForEntriesAction, addUnlimitedAwardAction, removeAwardAction } from "@/actions/open/awards.action";
 import { setScoreAction, clearScoreAction } from "@/actions/open/scores.action";
 import { getStandings } from "@/server/open/standings";
+import { openEventTag } from "@/lib/open/cache-tags";
 import { computeStandings, NO_WEEK_KEY } from "@/lib/open/standings";
 import { withStandingRanks, decideEventVisibility, EVENT_VISIBILITY } from "@/lib/open/public-view";
 import { compareScores } from "@/lib/open/score-codec";
@@ -89,7 +90,7 @@ describe("Open 2026 competition scenarios (real actions + isolated local D1)", (
     ]);
     ids.weeks = weeks.map((week) => week.id);
     ids.scalings = Object.fromEntries(scalings.map((row) => [row.slug, row.id]));
-    ids.rules.default = rules[0]!.id;
+    ids.rules.default = rules.find((rule) => rule.name === "Complete the Open Workout")!.id;
     await call({ action: updateOpenRuleAction as SafeAction<any>, input: { ruleId: ids.rules.default, points: 2 } });
     ids.rules.costume = (await call({ action: createOpenRuleAction as SafeAction<any>, input: { eventId: event.id, name: "Costume", points: 2, cadence: "per_week", coachAwardable: true } })).id;
     ids.rules.friend = (await call({ action: createOpenRuleAction as SafeAction<any>, input: { eventId: event.id, name: "Bring a friend", points: 1, cadence: "unlimited", coachAwardable: true } })).id;
@@ -141,11 +142,15 @@ describe("Open 2026 competition scenarios (real actions + isolated local D1)", (
       db.select().from(openScalingTable).where(eq(openScalingTable.eventId, ids.eventId)).orderBy(openScalingTable.rank),
       db.select().from(openWeekTable).where(eq(openWeekTable.eventId, ids.eventId)),
     ]);
-    expect(scalings.map(({ name, rank }) => [name, rank])).toEqual([["Rx", 0], ["Scaled", 1], ["Foundations", 2]]);
+    expect(scalings.map(({ name, rank, placementFirst, placementPerTeam }) => [name, rank, placementFirst, placementPerTeam])).toEqual([
+      ["Rx", 0, 100, 3],
+      ["Scaled", 1, 50, 2],
+      ["Foundations", 2, 0, 0],
+    ]);
     expect(weeks).toHaveLength(3);
     const defaultRules = await db.select().from(openPointRuleTable).where(eq(openPointRuleTable.eventId, ids.eventId));
-    expect(defaultRules.some((rule) => rule.name === "Workout Completion" && rule.points === 2 && rule.cadence === "per_week")).toBe(true);
-    expect(defaultRules.some((rule) => rule.name === "Judges Course" && rule.cadence === "once_per_event")).toBe(true);
+    expect(defaultRules.some((rule) => rule.name === "Complete the Open Workout" && rule.points === 2 && rule.cadence === "per_week")).toBe(true);
+    expect(defaultRules.some((rule) => rule.name === "Online Judges Course" && rule.cadence === "once_per_event")).toBe(true);
 
     await call({ action: updateOpenEventAction as SafeAction<any>, input: { eventId: ids.eventId, status: "live", coachPointsEnabled: true, coachScoresEnabled: true } });
     const weeklyTarget = ids.entries.slice(0, 4);
@@ -212,7 +217,8 @@ describe("Open 2026 competition scenarios (real actions + isolated local D1)", (
       .from(openTeamTable).where(eq(openTeamTable.eventId, ids.eventId));
     const independent = computeStandings({ teams, entries, awards: snapshot });
     const actual = await getStandings({ eventId: ids.eventId });
-    expect(actual).toEqual(independent);
+    // No genders set yet, so no placement points
+    expect(actual).toEqual({ ...independent, placements: [] });
     expect(actual.teams.map(({ total, memberCount, avgPerMember }) => [total, memberCount, avgPerMember])).toEqual([[12, 6, 2], [9, 6, 1.5], [9, 6, 1.5], [6, 6, 1]]);
     const [red, blue, green, gold] = actual.teams;
     expect([red!.byWeek, red!.byRule]).toEqual([
@@ -371,5 +377,41 @@ describe("Open 2026 competition scenarios (real actions + isolated local D1)", (
     expect(removed.deletedScores).toBeGreaterThan(0);
     expect(await getDB().query.openEntryTable.findFirst({ where: eq(openEntryTable.id, ids.entries[0]!) })).toBeUndefined();
     expect(await getDB().query.openParticipantTable.findFirst({ where: eq(openParticipantTable.id, entry!.participantId) })).toBeTruthy();
+  });
+
+  it("Scenario 5: derives placement points from scores once athletes have a gender", async () => {
+    const before = await getStandings({ eventId: ids.eventId });
+    const placed = ids.entries.slice(1, 9);
+    for (const entryId of placed) {
+      await call({ action: updateOpenEntryAction as SafeAction<any>, input: { entryId, gender: "male" } });
+    }
+    const after = await getStandings({ eventId: ids.eventId });
+
+    // 26.3 (load, Rx): entries 1..7 lifted 101..107 lb → places 7..1; no team has more than 2 of them, so all count
+    const loadPoints = Object.fromEntries(
+      after.placements.filter((p) => p.workoutId === ids.workouts.load).map((p) => [ids.entries.indexOf(p.entryId), p.points]),
+    );
+    expect(loadPoints).toEqual({ 7: 100, 6: 95, 5: 90, 4: 85, 3: 80, 2: 75, 1: 70 });
+    // 26.1: entry 8 is alone in the Scaled men's leaderboard
+    expect(after.placements.find((p) => p.entryId === ids.entries[8] && p.workoutId === ids.workouts.time)?.points).toBe(50);
+
+    const sumTeams = (standings: typeof after) => standings.teams.reduce((sum, team) => sum + team.total, 0);
+    const placementTotal = after.placements.reduce((sum, p) => sum + p.points, 0);
+    expect(sumTeams(after) - sumTeams(before)).toBe(placementTotal);
+    expect(after.teams.reduce((sum, team) => sum + Object.values(team.byWorkout).reduce((a, b) => a + b, 0), 0)).toBe(placementTotal);
+
+    await call({ action: updateOpenEntryAction as SafeAction<any>, input: { entryId: ids.entries[7], gender: null } });
+    const cleared = await getStandings({ eventId: ids.eventId });
+    expect(cleared.placements.some((p) => p.entryId === ids.entries[7])).toBe(false);
+
+    // Gender lives on the shared participant: editing it from one event refreshes every event they're entered in
+    const db = getDB();
+    const other = await call({ action: createOpenEventAction as SafeAction<any>, input: { name: "Open 2027", slug: "open-2027-scenario", year: 2027, weekCount: 1 } });
+    const shared = (await db.query.openEntryTable.findFirst({ where: eq(openEntryTable.id, ids.entries[7]!) }))!;
+    await db.insert(openEntryTable).values({ eventId: other.id, participantId: shared.participantId });
+    clearScenarioRevalidations();
+    await call({ action: updateOpenEntryAction as SafeAction<any>, input: { entryId: ids.entries[7], gender: "female" } });
+    const tags = scenarioRevalidations().filter((r) => r.kind === "tag").map((r) => r.args[0]);
+    expect(tags).toEqual(expect.arrayContaining([openEventTag({ eventId: ids.eventId }), openEventTag({ eventId: other.id })]));
   });
 });

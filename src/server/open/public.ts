@@ -84,7 +84,15 @@ export async function getPublicEventData({ eventId }: { eventId: string }) {
       .where(eq(openWorkoutTable.eventId, eventId))
       .orderBy(asc(openWorkoutTable.sortOrder), asc(openWorkoutTable.name)),
     db
-      .select({ name: openScalingTable.name, slug: openScalingTable.slug, rank: openScalingTable.rank })
+      .select({
+        name: openScalingTable.name,
+        slug: openScalingTable.slug,
+        rank: openScalingTable.rank,
+        placementFirst: openScalingTable.placementFirst,
+        placementStep: openScalingTable.placementStep,
+        placementMin: openScalingTable.placementMin,
+        placementPerTeam: openScalingTable.placementPerTeam,
+      })
       .from(openScalingTable)
       .where(eq(openScalingTable.eventId, eventId))
       .orderBy(asc(openScalingTable.rank)),
@@ -158,6 +166,7 @@ export async function getPublicWorkoutScores({ eventId, workoutId }: { eventId: 
   return db
     .select({
       id: openScoreTable.id,
+      entryId: openScoreTable.entryId,
       value: openScoreTable.value,
       capped: openScoreTable.capped,
       tiebreakMs: openScoreTable.tiebreakMs,
