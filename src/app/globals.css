@@ -143,10 +143,56 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --color-crimson: #DC143C;
+  /* Open public pages: semantic tokens an event theme (.open-theme-*) can override in its subtree */
+  --color-open-accent: var(--open-accent);
+  --color-open-accent-foreground: var(--open-accent-foreground);
+  --font-open-display: var(--open-font-display);
+  --font-open-heading: var(--open-font-heading);
   --color-charcoal-dark: #2A2A2A;
   --color-charcoal-medium: #3D3D3D;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* --- Open event themes ------------------------------------------------------
+   Defaults = the site look. A theme class on the public event subtree overrides these and the
+   surface tokens; components only ever use the open-* utilities, never a theme's raw values. */
+:root {
+  --open-accent: #DC143C;
+  --open-accent-foreground: #ffffff;
+  --open-font-display: var(--font-bebas-neue);
+  --open-font-heading: var(--font-bebas-neue);
+}
+
+/* Sewer War (TMNT poster): night-black sewer, slime green, graffiti lettering. Always dark. */
+.open-theme-sewer {
+  color-scheme: dark;
+  --open-accent: #8cf229;
+  --open-accent-foreground: #0a0c09;
+  --open-font-display: var(--font-rubik-wet-paint), var(--font-bebas-neue);
+  --open-font-heading: var(--font-permanent-marker), var(--font-bebas-neue);
+  --background: #0b0d0a;
+  --foreground: #f3f4ee;
+  --card: #141812;
+  --card-foreground: #f3f4ee;
+  --popover: #141812;
+  --popover-foreground: #f3f4ee;
+  --muted: #1d221a;
+  --muted-foreground: #a9b0a1;
+  --secondary: #1d221a;
+  --secondary-foreground: #f3f4ee;
+  --accent: #1d221a;
+  --accent-foreground: #f3f4ee;
+  --border: #2a3125;
+  --input: #2a3125;
+  --ring: #8cf229;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.open-theme-sewer ::selection {
+  background: #8cf229;
+  color: #0a0c09;
 }

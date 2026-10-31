@@ -30,6 +30,8 @@ export const loadPublicEvent = cache(async (slug: string) => {
       status: event.status,
       weightUnit: event.weightUnit,
       showIndividuals: event.showIndividuals,
+      theme: event.theme,
+      bannerKey: event.bannerKey,
     },
     isPreview: visibility === EVENT_VISIBILITY.PREVIEW,
   }

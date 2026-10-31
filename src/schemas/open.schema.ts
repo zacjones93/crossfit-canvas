@@ -4,6 +4,7 @@ import {
   OPEN_SCORE_TYPE,
   openEventStatusTuple,
   openGenderTuple,
+  openThemeTuple,
   openRuleCadenceTuple,
   openScoreTypeTuple,
   openWeightUnitTuple,
@@ -58,9 +59,15 @@ export const updateOpenEventSchema = z.object({
   coachPointsEnabled: z.boolean().optional(),
   coachScoresEnabled: z.boolean().optional(),
   autoRosterCoaches: z.boolean().optional(),
+  theme: z.enum(openThemeTuple).optional(),
 });
 
 export const openEventIdSchema = z.object({ eventId: id });
+
+export const uploadEventBannerSchema = z.object({
+  eventId: id,
+  file: z.instanceof(File, { message: "Choose an image to upload" }),
+});
 
 // --- weeks ------------------------------------------------------------------
 

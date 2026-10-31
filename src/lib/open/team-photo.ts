@@ -1,4 +1,5 @@
-// Plain module (no DB / server-only imports): team photo validation, R2 key layout, and public URL.
+// Plain module (no DB / server-only imports): image upload validation, R2 key layout (team photos,
+// event banners), and public URL.
 // Keys are never overwritten (each upload gets a fresh random segment), so served objects can be
 // cached as immutable.
 
@@ -58,6 +59,11 @@ export function teamPhotoKey({ teamId, ext, random }: { teamId: string; ext: Tea
   return `${OPEN_MEDIA_PREFIX}teams/${teamId}/${random}.${ext}`;
 }
 
+/** `open/events/<eventId>/<random>.<ext>` — the event's banner; `random` fresh per upload. */
+export function eventBannerKey({ eventId, ext, random }: { eventId: string; ext: TeamPhotoExt; random: string }): string {
+  return `${OPEN_MEDIA_PREFIX}events/${eventId}/${random}.${ext}`;
+}
+
 const SAFE_SEGMENT = /^[A-Za-z0-9_-][A-Za-z0-9._-]*$/;
 
 /** Only keys under `open/` made of plain segments (no `..`, empty, or odd characters) are servable. */
@@ -66,7 +72,7 @@ export function isServableMediaKey(key: string): boolean {
   return key.split("/").every((segment) => SAFE_SEGMENT.test(segment) && !segment.includes(".."));
 }
 
-/** Public URL for a stored photo key, or null when the team has no photo. */
+/** Public URL for a stored media key (team photo, event banner), or null when there's none. */
 export function teamPhotoUrl(photoKey: string | null | undefined): string | null {
   return photoKey ? `${OPEN_MEDIA_ROUTE}/${photoKey}` : null;
 }

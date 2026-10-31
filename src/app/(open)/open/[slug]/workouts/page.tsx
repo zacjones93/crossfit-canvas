@@ -37,7 +37,7 @@ export default async function WorkoutsPage({ params }: PageProps) {
                 href={`/open/${slug}/workouts/${workout.slug}` as Route}
                 className="group flex h-full flex-col gap-3 rounded-lg border bg-card p-5 transition-shadow hover:shadow-lg"
               >
-                <h2 className="font-heading text-4xl uppercase leading-none tracking-wide group-hover:underline">
+                <h2 className="font-open-heading text-4xl uppercase leading-none tracking-wide group-hover:underline">
                   {workout.name}
                 </h2>
                 <WorkoutMeta workout={workout} weekLabel={workout.weekId ? weekLabelById.get(workout.weekId) : undefined} />

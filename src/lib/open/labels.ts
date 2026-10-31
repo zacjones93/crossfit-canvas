@@ -4,6 +4,7 @@ import {
   OPEN_GENDER,
   OPEN_RULE_CADENCE,
   OPEN_SCORE_TYPE,
+  OPEN_THEME,
   OPEN_WEIGHT_UNIT,
 } from "@/lib/open/constants"
 
@@ -30,6 +31,11 @@ export const SCORE_TYPE_LABEL: Record<string, string> = {
   [OPEN_SCORE_TYPE.ROUNDS_REPS]: "Rounds + reps",
   [OPEN_SCORE_TYPE.LOAD]: "Load",
   [OPEN_SCORE_TYPE.POINTS]: "Points",
+}
+
+export const THEME_LABEL: Record<string, string> = {
+  [OPEN_THEME.CLASSIC]: "Classic (site colors)",
+  [OPEN_THEME.SEWER]: "Sewer War (graffiti, slime green)",
 }
 
 export const GENDER_LABEL: Record<string, string> = {

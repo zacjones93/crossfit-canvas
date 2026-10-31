@@ -96,7 +96,7 @@ export default async function TeamPage({ params }: PageProps) {
         ) : event.showIndividuals ? (
           <div className="overflow-x-auto rounded-lg border">
             <table className="w-full min-w-max text-sm">
-              <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+              <thead className="bg-muted text-xs uppercase tracking-wider text-muted-foreground">
                 <tr>
                   <th scope="col" className="sticky left-0 bg-muted px-3 py-2 text-left font-semibold">
                     Athlete
@@ -223,7 +223,7 @@ function CoachCard({ coach, standing }: { coach: PublicCoach; standing?: PublicT
         </div>
       )}
       <div className="min-w-0">
-        <h3 className="font-heading text-2xl uppercase leading-none tracking-wide">{coach.name}</h3>
+        <h3 className="font-open-heading text-2xl uppercase leading-none tracking-wide">{coach.name}</h3>
         {standing?.onRoster && (
           <p className="mt-1 text-sm text-muted-foreground">
             Competing on this team

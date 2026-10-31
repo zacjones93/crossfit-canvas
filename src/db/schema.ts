@@ -6,12 +6,14 @@ import { createId } from '@paralleldrive/cuid2'
 
 import {
   OPEN_EVENT_STATUS,
+  OPEN_THEME,
   OPEN_RULE_CADENCE,
   OPEN_WEIGHT_UNIT,
   openAuditEntityTuple,
   openAuditVerbTuple,
   openEventStatusTuple,
   openGenderTuple,
+  openThemeTuple,
   openRuleCadenceTuple,
   openScoreTypeTuple,
   openWeightUnitTuple,
@@ -511,6 +513,12 @@ export const openEventTable = sqliteTable("open_event", {
   coachScoresEnabled: integer({ mode: "boolean" }).notNull().default(false),
   // Assigning a coach to a team also puts them on that team's roster (coaches compete too)
   autoRosterCoaches: integer({ mode: "boolean" }).notNull().default(true),
+  // Public-page look (preset in src/app/(open)/open/_lib/themes.ts); content like the banner is separate
+  theme: text({
+    enum: openThemeTuple,
+  }).default(OPEN_THEME.CLASSIC).notNull(),
+  // Banner image: R2 object key in OPEN_MEDIA (never overwritten; replaced keys are deleted)
+  bannerKey: text({ length: 255 }),
 }, (table) => ([
   index('open_event_status_idx').on(table.status),
 ]));

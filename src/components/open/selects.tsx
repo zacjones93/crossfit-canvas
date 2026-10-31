@@ -7,6 +7,7 @@ import {
   GENDER_LABEL,
   RULE_CADENCE_LABEL,
   SCORE_TYPE_LABEL,
+  THEME_LABEL,
   WEIGHT_UNIT_LABEL,
 } from "@/lib/open/labels"
 
@@ -62,6 +63,10 @@ export function CadenceSelect(props: OptionSelectProps) {
 
 export function ScoreTypeSelect(props: OptionSelectProps) {
   return <OptionSelect {...props} options={optionsFrom(SCORE_TYPE_LABEL)} />
+}
+
+export function ThemeSelect(props: OptionSelectProps) {
+  return <OptionSelect {...props} options={optionsFrom(THEME_LABEL)} />
 }
 
 /** Gender with a "not set" option (submits NONE; read it with `formOptionalId`). */

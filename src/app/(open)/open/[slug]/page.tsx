@@ -77,7 +77,7 @@ export default async function LeaderboardPage({ params, searchParams }: PageProp
               {placementScalings.map((scaling) => (
                 <li key={scaling.slug} className="flex items-start justify-between gap-4 p-4">
                   <div className="min-w-0">
-                    <p className="font-subheading font-bold">{scaling.name} workout placement</p>
+                    <p className="font-open-heading text-lg uppercase tracking-wide">{scaling.name} workout placement</p>
                     <p className="text-sm text-muted-foreground">{placementSummary(scaling)}</p>
                     <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">Every workout · from scores</p>
                   </div>
@@ -96,7 +96,7 @@ export default async function LeaderboardPage({ params, searchParams }: PageProp
               {board.rules.map((rule) => (
                 <li key={rule.id} className="flex items-start justify-between gap-4 p-4">
                   <div className="min-w-0">
-                    <p className="font-subheading font-bold">
+                    <p className="font-open-heading text-lg uppercase tracking-wide">
                       {rule.name}
                       {!rule.isActive && (
                         <span className="ml-2 rounded-sm border px-1.5 py-px align-middle text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
