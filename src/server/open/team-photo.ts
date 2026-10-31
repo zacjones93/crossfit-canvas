@@ -1,12 +1,11 @@
 import "server-only";
 import { createId } from "@paralleldrive/cuid2";
 import { eq, isNull } from "drizzle-orm";
-import { ZSAError } from "zsa";
 import { getDB } from "@/db";
 import { openTeamTable } from "@/db/schema";
 import { OPEN_AUDIT_ENTITY } from "@/lib/open/constants";
-import { sniffTeamPhotoType, TEAM_PHOTO_SNIFF_BYTES, teamPhotoKey, validateTeamPhoto } from "@/lib/open/team-photo";
-import { deleteOpenMedia, getOpenMedia, OPEN_MEDIA_CACHE_CONTROL } from "./media";
+import { teamPhotoKey } from "@/lib/open/team-photo";
+import { deleteOpenMedia, putOpenImage } from "./media";
 import { assertCanManageTeam, type OpenActorSession } from "./permissions";
 import { auditedUpdate, CHANGED_BY_SOMEONE_ELSE, revalidateOpenEvent, type WriteGuard } from "./write";
 
@@ -53,18 +52,7 @@ export async function uploadTeamPhoto({
 }): Promise<TeamRow> {
   const team = await assertCanManageTeam({ session, eventId, teamId });
 
-  const validation = validateTeamPhoto({ contentType: file.type, size: file.size });
-  if (!validation.ok) throw new ZSAError("INPUT_PARSE_ERROR", validation.message);
-  const head = new Uint8Array(await file.slice(0, TEAM_PHOTO_SNIFF_BYTES).arrayBuffer());
-  if (sniffTeamPhotoType(head) !== validation.contentType) {
-    throw new ZSAError("INPUT_PARSE_ERROR", "That file doesn't look like a JPEG, PNG, or WebP image");
-  }
-
-  const photoKey = teamPhotoKey({ teamId: team.id, ext: validation.ext, random: createId() });
-  // A Blob has a known length, so R2 streams it without us buffering the whole file
-  await getOpenMedia().put(photoKey, file, {
-    httpMetadata: { contentType: validation.contentType, cacheControl: OPEN_MEDIA_CACHE_CONTROL },
-  });
+  const photoKey = await putOpenImage({ file, keyFor: (ext) => teamPhotoKey({ teamId: team.id, ext, random: createId() }) });
 
   let row: TeamRow;
   try {

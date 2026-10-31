@@ -158,7 +158,7 @@ async function Leaderboard({
                   <p className="mt-1 text-xs text-muted-foreground">
                     <span className="rounded-sm border px-1.5 py-px font-semibold uppercase tracking-wider">{score.scalingName}</span>
                     {tiebreak && <span className="ml-2">{tiebreak}</span>}
-                    {points > 0 && <span className="ml-2 font-semibold text-foreground">+{points} pts</span>}
+                    {points > 0 && <span className="ml-2 font-semibold text-open-accent">+{points} pts</span>}
                   </p>
                 </div>
               </li>

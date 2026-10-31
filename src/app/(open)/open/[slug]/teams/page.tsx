@@ -63,7 +63,7 @@ export default async function TeamsPage({ params }: PageProps) {
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col gap-1 border-t-4 p-4" style={{ borderTopColor: team.color ?? undefined }}>
-                    <h2 className="font-heading text-3xl uppercase leading-none tracking-wide group-hover:underline">{team.name}</h2>
+                    <h2 className="font-open-heading text-3xl uppercase leading-none tracking-wide group-hover:underline">{team.name}</h2>
                     {team.motto && <p className="text-sm italic text-muted-foreground">“{team.motto}”</p>}
                     {team.coaches.length > 0 && (
                       <ul aria-label="Coaches" className="mt-3 flex flex-col gap-2">

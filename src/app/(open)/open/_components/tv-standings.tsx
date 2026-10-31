@@ -15,7 +15,7 @@ export function TvStandings({ teams, sort }: { teams: BoardTeam[]; sort: Standin
             key={team.id}
             className={cn(
               "grid grid-cols-[2.5rem_1fr_auto] items-center gap-3 rounded-lg border border-white/10 bg-white/5 p-3 sm:grid-cols-[3rem_5rem_1fr_auto] sm:gap-4 sm:p-4 lg:grid-cols-[5rem_7rem_1fr_auto]",
-              rank === 1 && "border-crimson",
+              rank === 1 && "border-open-accent",
             )}
           >
             <span className="text-center font-heading text-5xl tabular-nums lg:text-7xl">{rank}</span>
@@ -33,7 +33,7 @@ export function TvStandings({ teams, sort }: { teams: BoardTeam[]; sort: Standin
               />
             </div>
             <div className="min-w-0">
-              <p className="truncate font-subheading text-2xl font-bold sm:text-3xl lg:text-5xl">{team.name}</p>
+              <p className="truncate font-open-heading text-2xl font-bold uppercase sm:text-3xl lg:text-5xl">{team.name}</p>
               {team.motto && <p className="mt-1 truncate text-base italic text-white/60 sm:text-xl lg:text-2xl">“{team.motto}”</p>}
               <p className="mt-1 text-sm text-white/60 sm:text-lg lg:text-xl">
                 {team.memberCount} {team.memberCount === 1 ? "member" : "members"}

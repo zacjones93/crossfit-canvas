@@ -33,6 +33,14 @@ export const OPEN_SCORE_TYPE = {
 
 export const openScoreTypeTuple = Object.values(OPEN_SCORE_TYPE) as [string, ...string[]];
 
+// Public-page look for an event: a preset in code (fonts, colors, surfaces), independent of its content
+export const OPEN_THEME = {
+  CLASSIC: 'classic',
+  SEWER: 'sewer',
+} as const;
+
+export const openThemeTuple = Object.values(OPEN_THEME) as [string, ...string[]];
+
 // Competition gender: placement points rank men and women separately
 export const OPEN_GENDER = {
   MALE: 'male',

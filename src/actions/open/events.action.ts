@@ -220,7 +220,7 @@ export const deleteOpenEventAction = createServerAction()
     const [events, entries, teamPhotos] = await db.batch([
       db.select().from(openEventTable).where(eq(openEventTable.id, eventId)),
       db.select({ id: openEntryTable.id }).from(openEntryTable).where(eq(openEntryTable.eventId, eventId)).limit(1),
-      // Team photos go with the cascade; their R2 objects are removed after the delete succeeds
+      // Team photos go with the cascade; their R2 objects (and the banner's) are removed after the delete succeeds
       db
         .select({ photoKey: openTeamTable.photoKey })
         .from(openTeamTable)
@@ -249,7 +249,7 @@ export const deleteOpenEventAction = createServerAction()
       },
     });
 
-    if (deleted) await deleteOpenMediaKeys(teamPhotos.map((team) => team.photoKey));
+    if (deleted) await deleteOpenMediaKeys([event.bannerKey, ...teamPhotos.map((team) => team.photoKey)]);
     revalidateOpenEvent({ eventId });
     return { success: true };
   });

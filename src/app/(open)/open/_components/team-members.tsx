@@ -6,7 +6,7 @@ export function CoachBadge({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center rounded-sm bg-crimson px-1.5 py-px text-[10px] font-bold uppercase leading-4 tracking-wider text-white",
+        "inline-flex shrink-0 items-center rounded-sm bg-open-accent px-1.5 py-px text-[10px] font-bold uppercase leading-4 tracking-wider text-open-accent-foreground",
         className,
       )}
     >

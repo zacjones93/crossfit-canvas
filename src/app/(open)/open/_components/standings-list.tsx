@@ -28,9 +28,9 @@ export function StandingsList({ teams, slug, sort }: StandingsListProps) {
         const total = <span className="tabular-nums">{team.total}</span>
         const avg = <span className="tabular-nums">{formatAverage(team.avgPerMember)}</span>
         return (
-          <li key={team.id} className={cn("rounded-lg border bg-card", rank === 1 && "border-l-4 border-l-crimson")}>
+          <li key={team.id} className={cn("rounded-lg border bg-card", rank === 1 && "border-open-accent")}>
             <div className="grid grid-cols-[2rem_3rem_1fr_auto] items-center gap-3 p-3 md:grid-cols-[3rem_3.5rem_1fr_auto] md:gap-4 md:p-4">
-              <span className="text-center font-heading text-3xl tabular-nums md:text-4xl" aria-label={`Rank ${rank}`}>
+              <span className={cn("text-center font-heading text-3xl tabular-nums md:text-4xl", rank === 1 && "text-open-accent")} aria-label={`Rank ${rank}`}>
                 {rank}
               </span>
               <TeamPhoto
@@ -48,7 +48,7 @@ export function StandingsList({ teams, slug, sort }: StandingsListProps) {
                   <TeamSwatch color={team.color} className="h-2.5 w-2.5" />
                   <Link
                     href={`/open/${slug}/teams/${team.slug}` as Route}
-                    className="truncate font-subheading text-base font-bold hover:underline md:text-lg"
+                    className="line-clamp-2 min-w-0 font-open-heading text-sm font-bold uppercase leading-tight hover:underline sm:truncate sm:text-base md:text-lg md:tracking-wide"
                   >
                     {team.name}
                   </Link>

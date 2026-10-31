@@ -16,7 +16,7 @@ export function WeekTable({ teams, columns, slug }: { teams: WeekTableTeam[]; co
   return (
     <div className="overflow-x-auto rounded-lg border">
       <table className="w-full min-w-max text-sm">
-        <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
+        <thead className="bg-muted text-xs uppercase tracking-wider text-muted-foreground">
           <tr>
             <th scope="col" className="sticky left-0 bg-muted px-3 py-2 text-left font-semibold">
               Team

@@ -12,7 +12,7 @@ import type { OpenEvent } from "@/db/schema"
 import { toastResult } from "@/components/open/action-error"
 import { Field, SwitchField } from "@/components/open/field"
 import { formBool, formInt, formText } from "@/lib/open/form-data"
-import { EventStatusSelect, WeightUnitSelect } from "@/components/open/selects"
+import { EventStatusSelect, ThemeSelect, WeightUnitSelect } from "@/components/open/selects"
 
 export function EventSettingsForm({ event }: { event: OpenEvent }) {
   const { execute, isPending } = useServerAction(saveOpenEventSettingsAction)
@@ -33,6 +33,7 @@ export function EventSettingsForm({ event }: { event: OpenEvent }) {
       coachPointsEnabled: formBool({ formData, name: "coachPointsEnabled" }),
       coachScoresEnabled: formBool({ formData, name: "coachScoresEnabled" }),
       autoRosterCoaches: formBool({ formData, name: "autoRosterCoaches" }),
+      theme: formText({ formData, name: "theme" }),
     })
     const added = data?.roster.added ?? 0
     if (toastResult({ err, success: added > 0 ? `Event saved; added ${added} coach(es) to rosters` : "Event saved", fallback: "Failed to save event" })) {
@@ -67,6 +68,9 @@ export function EventSettingsForm({ event }: { event: OpenEvent }) {
               <WeightUnitSelect id="settings-weight-unit" name="weightUnit" defaultValue={event.weightUnit} />
             </Field>
           </div>
+          <Field id="settings-theme" label="Public page theme" hint="The look of the public leaderboard, team, and workout pages.">
+            <ThemeSelect id="settings-theme" name="theme" defaultValue={event.theme} />
+          </Field>
           <SwitchField id="settings-show-individuals" label="Show individuals" hint="Show the top-individuals list on the public leaderboard.">
             <Switch id="settings-show-individuals" name="showIndividuals" defaultChecked={event.showIndividuals} />
           </SwitchField>
